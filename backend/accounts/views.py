@@ -3,7 +3,7 @@ from django.contrib import auth
 from utils.views import APIView
 
 from accounts.models import UserService, Profile
-from accounts.serializers import ProfileSerializer
+from accounts.serializers import ProfileSerializer, MessageSerializer
 
 
 class RegisterAPI(APIView):
@@ -81,14 +81,17 @@ class ProfileAPI(APIView):
         return self.success(seri.data)
 
 
-class UserLicksAPI(APIView):
+# TODO serializer
+class UserLikesAPI(APIView):
     def get(self, request, pk, index, count):
         user = UserService.getUserByID(pk)
         if user is None:
             return self.error('not found user')
         profile = user.profile
         likes = profile.agreed_answer.all()[index:(index + count)]
-        return self.success(likes)
+        if likes.exists():
+            return self.success(likes)
+        return self.error('no likes found')
 
 
 class UserFavoritesAPI(APIView):
@@ -103,14 +106,13 @@ class UserFavoritesAPI(APIView):
         return self.error('no favorites found')
 
 
-# TODO
 class UserAnsweredAPI(APIView):
     def get(self, request, pk, index, count):
         user = UserService.getUserByID(pk)
         if user is None:
             return self.error('not found user')
-
-        return self.success()
+        answered = user.answered.all()[index, (index+count)]
+        return self.success(answered)
 
 
 class UserHistoryAPI(APIView):
@@ -127,9 +129,16 @@ class UserHistoryAPI(APIView):
 
 class UserMessageAPI(APIView):
     def get(self, request, pk):
-        pass
+        user = UserService.getUserByID(pk)
+        if user is None:
+            return self.error('no user found')
+        msg = UserService.getUnreadMessage(user)
+        seri = MessageSerializer(msg, many=True)
+        return self.success(seri.data)
 
 
 class MessageAckAPI(APIView):
     def get(self, request, pk, msg_id):
-        pass
+        if UserService.processMessageAck(msg_id):
+            return self.success()
+        return self.error('error when process ack')

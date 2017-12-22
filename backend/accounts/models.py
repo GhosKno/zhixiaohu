@@ -89,3 +89,18 @@ class UserService(object):
             return user
         except User.DoesNotExist:
             return None
+
+    @staticmethod
+    def getUnreadMessage(user):
+        set = Message.objects.filter(receiver=user)
+        return set
+
+    @staticmethod
+    def processMessageAck(msg_id):
+        try:
+            msg = Message.objects.get(msg_id)
+            msg.has_read = True
+            return True
+        except Message.DoesNotExist:
+            return False
+

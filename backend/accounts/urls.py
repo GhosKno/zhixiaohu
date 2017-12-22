@@ -8,7 +8,7 @@ urlpatterns = [
     path('reset_nickname/', views.RestNickAPI.as_view()),
     path('profile/<int:pk>/', views.ProfileAPI.as_view()),
     path('likes/<int:pk>/<int:index>/<int:count>/',
-         views.UserLicksAPI.as_view()),
+         views.UserLikesAPI.as_view()),
     path('favorites/<int:pk>/<int:index>/<int:count>/',
          views.UserFavoritesAPI.as_view()),
     path('answers/<int:pk>/<int:index>/<int:count>/',
