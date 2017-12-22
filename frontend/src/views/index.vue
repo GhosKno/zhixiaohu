@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="layout">
-        <Menu mode="horizontal" :theme="theme1" active-name="1"> 
+        <Menu mode="horizontal" :theme="navTheme" active-name="1"> 
             <div class="layout-logo">知小乎</div>
             <div class="layout-nav">
             <MenuItem name="1">
@@ -30,13 +30,23 @@
 </template>
 
 <script>
+	import cookieManage from '@/mixins/cookieManage'
+	import initInfo from '@/mixins/initInfo'
   export default {
-    name: 'IdxPage',
+		name: 'IdxPage',
+		mixins: [cookieManage, initInfo],
     data () {
         return {
-            theme1: 'light'
+            navTheme: 'light'
         }
-    }
+		},
+		methods: {
+		},
+		components: {
+		},
+		created () {
+			console.log(this.initInfo())
+		}
   }
 </script>
 
