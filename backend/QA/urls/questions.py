@@ -6,8 +6,8 @@ urlpatterns = [
     path('<int:pk>/', questions.QuestionDetailAPI.as_view()),
     path('<int:topic_key>/<int:page>/<int: count>/',
          questions.QuestionAPI.as_view()),
-    path('watch/', ),
-    path('cancel_watch/', ),
-    path('search/<info>/<int:start>/<int:count>/', ),
-    path('page/<int:page>/counts-<int,default=20>/topic-<topic_key>/', )
+    path('watch/', questions.QuestionWatchAPI.as_view()),
+    path('cancel_watch/', questions.CancelWatchAPI.as_view()),
+    path('search/<info>/<int:start>/<int:count>/',
+         questions.QuestionSearchAPI.as_view())
 ]

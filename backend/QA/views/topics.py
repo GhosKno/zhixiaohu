@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 from QA.models import Topic, TopicService
 from QA.serializers.topics import TopicSerializer, TopicListSerializer
+=======
+from utils.views import APIView
+
+from QA.models import Topic, TopicService
+
+from QA.serializers.topics import TopicSerializer,TopicListSerializer
+>>>>>>> finished backend, ready for test
 from utils import paged
 from utils.views import APIView
 
