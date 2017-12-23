@@ -10,8 +10,8 @@ class Profile(models.Model):
     nickname = models.CharField(max_length=30)
     description = models.TextField(max_length=500)
 
-    watched_question = models.ManyToManyField(to=Question, blank=True, related_name='watchedQuestion')
-    watched_user = models.ManyToManyField('self', blank=True)
+    watched_question = models.ManyToManyField(to=Question, blank=True, related_name='watched_user')
+    watched_user = models.ManyToManyField('self', blank=True, related_name='been_wathed')
 
     agreed_answer = models.ManyToManyField(to=Answer, blank=True, related_name='agreed')
     disagreed = models.ManyToManyField(to=Answer, blank=True, related_name='disagreed')
@@ -103,4 +103,13 @@ class UserService(object):
             return True
         except Message.DoesNotExist:
             return False
+
+    @staticmethod
+    def addMessageForUser(rec, question, answer, author):
+        message = Message.objects.create(receiver=rec,
+                               question=question,
+                               answer=answer,
+                               author=author)
+        message.save()
+        return True
 

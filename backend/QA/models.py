@@ -69,7 +69,7 @@ class Answer(models.Model):
     detail = models.TextField(u"描述")
 
 
-class AnswerService(object):
+class QAService(object):
     @staticmethod
     def getAnswerByID(id):
         try:
@@ -77,6 +77,31 @@ class AnswerService(object):
             return answer
         except Answer.DoesNotExist:
             return None
+
+    @staticmethod
+    def getQuestionByID(id):
+        try:
+            q = Question.objects.get(id=id)
+            return q
+        except Question.DoesNotExist:
+            return None
+
+    @staticmethod
+    def getTopicByID(id):
+        try:
+            topic = Topic.objects.get(id=id)
+            return topic
+        except Topic.DoesNotExist:
+            return None
+
+    @staticmethod
+    def addAnswer(content, user, question):
+        answer = Answer.objects\
+            .create(author=user, question=question, detail=content)\
+            .save()
+        return answer
+
+
 
 
 
