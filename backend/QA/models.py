@@ -30,5 +30,16 @@ class Answer(models.Model):
     detail = models.TextField(u"描述")
 
 
+class AnswerService(object):
+    @staticmethod
+    def getAnswerByID(id):
+        try:
+            answer = Answer.objects.get(id=id)
+            return answer
+        except Answer.DoesNotExist:
+            return None
+
+
+
 
 
