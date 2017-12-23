@@ -10,14 +10,16 @@ class Profile(models.Model):
     nickname = models.CharField(max_length=30)
     description = models.TextField(max_length=500)
 
-    watched_question = models.ManyToManyField(to=Question, blank=True, related_name='watched_user')
-    watched_user = models.ManyToManyField('self', blank=True, related_name='been_wathed')
+    watchedQuestion = models.ManyToManyField(to=Question, related_name='watchedUser')
+    watchedUser = models.ManyToManyField(to='self', related_name='WatchedBy')
 
-    agreed_answer = models.ManyToManyField(to=Answer, blank=True, related_name='agreed')
-    disagreed = models.ManyToManyField(to=Answer, blank=True, related_name='disagreed')
-    favitor_answer = models.ManyToManyField(to=Answer, blank=True, related_name='favitor')
+    agreed = models.ManyToManyField(to=Answer, related_name='agreedUser')
+    disagreed = models.ManyToManyField(to=Answer, related_name='disagreedUser')
+    favorites = models.ManyToManyField(to=Answer)
 
-    history = models.ManyToManyField(to=Question, blank=True, related_name='history')
+    history = models.ManyToManyField(to=Question, related_name='history')
+    class Meta:
+        db_table='profile'
 
 
 class Message(models.Model):
@@ -28,6 +30,8 @@ class Message(models.Model):
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE, related_name='question')
     answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE, related_name='answer')
     time = models.DateField(auto_created=True)
+    class Meta:
+        db_table='message'
 
 
 class UserService(object):
@@ -112,4 +116,8 @@ class UserService(object):
                                author=author)
         message.save()
         return True
+
+    @staticmethod
+    def searchByName(name):
+        return User.objects.filter(username__contains=name)
 

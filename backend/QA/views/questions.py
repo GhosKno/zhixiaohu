@@ -1,13 +1,24 @@
+from accounts.models import UserService
 from utils.views import APIView
 from QA.models import QAService
 from QA.serializers.questions import QuestionSerializer
 
 
+# TODO add auth and check params
 class PublishAPI(APIView):
     def post(self, request):
         data = request.data
-        pass
-
+        if not {'title', 'detail','topics'}\
+                .issubset(set(data.keys())):
+            return self.error('bad params')
+        if QAService.existsQuestion(data['title']):
+            return self.error('already exists')
+        ques = QAService.addQuestion(data['title'],
+                              data['detail'],
+                              data['topics'],
+                              request.user)
+        seri = QuestionSerializer(ques)
+        return self.success(seri.data)
 
 
 class QuestionDetailAPI(APIView):
@@ -32,7 +43,32 @@ class QuestionAPI(APIView):
         return self.error('no more data!')
 
 
-class QuestionWathAPI(APIView):
+class QuestionWatchAPI(APIView):
     def post(self, request):
-        pass
+        data = request.data
+        user = UserService.getUserByID(data['user_id'])
+        ques = QAService.getQuestionByID(data['question_id'])
+        if user is None or ques is None:
+            return self.error('no user or question found')
+        user.profile.watchedQuestion.add(ques)
+        return self.success()
+
+
+class CancelWatchAPI(APIView):
+    def post(self, request):
+        data = request.data
+        user = UserService.getUserByID(data['user_id'])
+        ques = QAService.getQuestionByID(data['question_id'])
+        if user is None or ques is None:
+            return self.error('no user or question found')
+        user.profile.watchedQuestion.remove(ques)
+        return self.success()
+
+
+class QuestionSearchAPI(APIView):
+    def get(self, request, info, start, count):
+        data = QAService.searchQuestion(info)
+        data = data[start: start+count]
+        seri = QuestionSerializer(data, many=True)
+        return self.success(seri.data)
 
