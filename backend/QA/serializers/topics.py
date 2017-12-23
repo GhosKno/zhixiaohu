@@ -5,7 +5,7 @@ from QA.models import Topic, Question
 
 
 class TopicListSerializer(serializers.ModelSerializer):
-    questions = Question.objects.count()
+    #questions = Question.objects.count()
 
     class Meta:
         model = Topic

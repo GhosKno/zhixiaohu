@@ -27,9 +27,14 @@ class AnswerPulishAPI(APIView):
         content = data['content']
         answer = QAService.addAnswer(content, user, question)
         # TODO add message in new thread
+<<<<<<< HEAD
         q_users = question.watchedUser.all()
         u_users = user.WatchedBy.all()
 
+=======
+        q_users = question.watched_user.all()
+        u_users = user.been_watched.all()
+>>>>>>> leave some bugs
         users = q_users | u_users # merge
         for rec in users:
             UserService.addMessageForUser(rec, question, answer, user)

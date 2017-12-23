@@ -8,7 +8,6 @@ from QA.serializers.questions import QuestionSerializer
 class PublishAPI(APIView):
     def post(self, request):
         data = request.data
-<<<<<<< HEAD
         if not {'title', 'detail','topics'}\
                 .issubset(set(data.keys())):
             return self.error('bad params')
@@ -20,13 +19,6 @@ class PublishAPI(APIView):
                               request.user)
         seri = QuestionSerializer(ques)
         return self.success(seri.data)
-=======
-        seri = QuestionSerializer(data=data)
-        if seri.is_valid():
-            seri.save()
-            return self.success()
-        return self.error(seri.error_messages)
->>>>>>> finished backend, ready for test
 
 
 class QuestionDetailAPI(APIView):
@@ -58,11 +50,8 @@ class QuestionWatchAPI(APIView):
         ques = QAService.getQuestionByID(data['question_id'])
         if user is None or ques is None:
             return self.error('no user or question found')
-<<<<<<< HEAD
-        user.profile.watchedQuestion.add(ques)
-=======
+
         user.profile.watched_question.add(ques)
->>>>>>> finished backend, ready for test
         return self.success()
 
 
@@ -73,21 +62,15 @@ class CancelWatchAPI(APIView):
         ques = QAService.getQuestionByID(data['question_id'])
         if user is None or ques is None:
             return self.error('no user or question found')
-<<<<<<< HEAD
+
         user.profile.watchedQuestion.remove(ques)
-=======
-        user.profile.watched_question.remove(ques)
->>>>>>> finished backend, ready for test
         return self.success()
 
 
 class QuestionSearchAPI(APIView):
     def get(self, request, info, start, count):
         data = QAService.searchQuestion(info)
-<<<<<<< HEAD
         data = data[start: start+count]
-=======
->>>>>>> finished backend, ready for test
         seri = QuestionSerializer(data, many=True)
         return self.success(seri.data)
 

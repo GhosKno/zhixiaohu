@@ -13,6 +13,7 @@ class Profile(models.Model):
     watchedQuestion = models.ManyToManyField(to=Question, related_name='watchedUser')
     watchedUser = models.ManyToManyField(to='self', related_name='WatchedBy')
 
+
     agreed = models.ManyToManyField(to=Answer, related_name='agreedUser')
     disagreed = models.ManyToManyField(to=Answer, related_name='disagreedUser')
     favorites = models.ManyToManyField(to=Answer)

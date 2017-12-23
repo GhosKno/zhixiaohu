@@ -43,7 +43,7 @@ class Question(models.Model):
     title = models.CharField(u"标题", max_length=100)
     detail = models.TextField(u"描述")
     # watches in accounts
-    topic = models.ManyToManyField(to=Topic, related_name='questions')
+    topics = models.ManyToManyField(to=Topic, related_name='questions')
 
 
 class Answer(models.Model):
@@ -154,6 +154,7 @@ class QAService(object):
                 ques.topics.add(topic)
             ques.save()
         return ques
+
 
 
 
