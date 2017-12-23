@@ -27,7 +27,7 @@ class TopicService(object):
 
     @staticmethod
     def searchTopicBlury(info):
-        topics = Topic.objects.filter(Q(label__icontains=info)|Q(introduction__icontains=info))
+        topics = Topic.objects.filter(Q(label__icontains=info) | Q(introduction__icontains=info))
         return topics
 
     @staticmethod

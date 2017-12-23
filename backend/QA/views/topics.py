@@ -1,11 +1,7 @@
-from django.contrib import auth
-
-from utils.views import APIView
-
 from QA.models import Topic, TopicService
-
-from QA.serializer import TopicSerializer,TopicListSerializer
+from QA.serializers.topics import TopicSerializer, TopicListSerializer
 from utils import paged
+from utils.views import APIView
 
 
 class GetTopicsList(APIView):
@@ -14,13 +10,13 @@ class GetTopicsList(APIView):
         page_handle = paged.page(num, page, counts)
         if not page_handle['valid']:
             return self.success([])
-        topics = Topic.objects.all()[page_handle.start:page_handle.end]
+        topics = Topic.objects.all()[page_handle['start']:page_handle['end']]
         seri = TopicListSerializer(topics, many=True)
         return self.success(seri.data)
 
 
 class GetTopicDetail(APIView):
-    def get(self, id, page, counts):
+    def get(self, req, id, page, counts):
         topic = TopicService.getTopicById(id)
         if not topic:
             return self.error('该话题不存在')
@@ -28,20 +24,20 @@ class GetTopicDetail(APIView):
         page_handle = paged.page(num, page, counts)
         if not page_handle['valid']:
             return self.success([])
-        questions = topic.questions.all()[page_handle.start:page_handle.end]
+        questions = topic.questions.all()[page_handle['start']:page_handle['end']]
         topic['questions'] = questions
         seri = TopicSerializer(topic)
         return self.success(seri.data)
 
 
 class SearchTopic(APIView):
-    def get(self, info, page, counts):
+    def get(self, req, info, page, counts):
         topics = TopicService.searchTopicBlury(info)
-        page_handle = paged(topics.count(), page, counts)
+        page_handle = paged.page(topics.count(), page, counts)
         if not page_handle['valid']:
             return self.success([])
-        result = self.success(topics[page_handle.start:page_handle.end])
-        seri = TopicSerializer(result)
+        result = topics[page_handle['start']:page_handle['end']]
+        seri = TopicSerializer(result, many=True)
         return self.success(seri.data)
 
 
