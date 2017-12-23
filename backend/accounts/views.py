@@ -3,7 +3,7 @@ from django.contrib import auth
 from utils.views import APIView
 
 from accounts.models import UserService, Profile
-from accounts.serializers import ProfileSerializer, MessageSerializer
+from accounts.serializers import ProfileSerializer, MessageSerializer, UserSerializer
 
 
 class RegisterAPI(APIView):
@@ -88,7 +88,7 @@ class UserLikesAPI(APIView):
         if user is None:
             return self.error('not found user')
         profile = user.profile
-        likes = profile.agreed_answer.all()[index:(index + count)]
+        likes = profile.agreed.all()[index:(index + count)]
         if likes.exists():
             return self.success(likes)
         return self.error('no likes found')
@@ -100,7 +100,7 @@ class UserFavoritesAPI(APIView):
         if user is None:
             return self.error('not found user')
         profile = user.profile
-        favorites = profile.favitor_answer.all()[index:(index + count)]
+        favorites = profile.favorites.all()[index:(index + count)]
         if favorites.exists():
             return self.success(favorites)
         return self.error('no favorites found')
@@ -144,4 +144,19 @@ class MessageAckAPI(APIView):
         return self.error('error when process ack')
 
 
-# TODO mo hu search
+class UserSearchAPI(APIView):
+    def get(self, request, info):
+        users = UserService.searchByName(info)
+        seri = UserSerializer(users, many=True)
+        return self.success(seri.data)
+
+
+class WatchUserAPI(APIView):
+    def get(self, request, id):
+        user = UserService.getUserByID(id)
+        if user is None:
+            return self.error('no user found')
+        me = request.user
+        profile = me.profile
+        profile.watchedUser.add(user)
+        return self.success()

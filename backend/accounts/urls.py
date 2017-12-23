@@ -18,5 +18,7 @@ urlpatterns = [
     path('message/<int:pk>/',
          views.UserMessageAPI.as_view()),
     path('message_readed/<int:pk>/<int:msg_id>/',
-         views.MessageAckAPI.as_view())
+         views.MessageAckAPI.as_view()),
+    path('watch/<int:id>/', views.WatchUserAPI.as_view()),
+    path('search/<str:info>/', views.UserSearchAPI.as_view())
 ]

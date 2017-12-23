@@ -51,7 +51,7 @@ class QuestionWatchAPI(APIView):
         if user is None or ques is None:
             return self.error('no user or question found')
 
-        user.profile.watched_question.add(ques)
+        user.profile.watchedQuestion.add(ques)
         return self.success()
 
 
@@ -62,7 +62,6 @@ class CancelWatchAPI(APIView):
         ques = QAService.getQuestionByID(data['question_id'])
         if user is None or ques is None:
             return self.error('no user or question found')
-
         user.profile.watchedQuestion.remove(ques)
         return self.success()
 
