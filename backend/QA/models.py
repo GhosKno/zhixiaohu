@@ -1,11 +1,50 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 
 
 class Topic(models.Model):
     label = models.CharField(max_length=20)
     introduction = models.TextField()
-    head = models.IntegerField(default=0)
+    heat = models.IntegerField(default=0)
+
+
+class TopicService(object):
+    @staticmethod
+    def exists(topic_label):
+        num = Topic.objects.filter(label=topic_label).count()
+        if num == 0:
+            return False
+        return True
+
+    @staticmethod
+    def getTopicById(id):
+        try:
+            topic = Topic.objects.get(id=id)
+            return topic
+        except Topic.DoesNotExist:
+            return None
+
+    @staticmethod
+    def searchTopicBlury(info):
+        topics = Topic.objects.filter(Q(label__icontains=info)|Q(introduction__icontains=info))
+        return topics
+
+    @staticmethod
+    def addTopic(label, introduction, heat):
+        if not TopicService.exists(label):
+            topic = Topic.objects.create(label=label, introduction=introduction, heat=heat)
+            topic.save()
+            return topic
+        return None
+
+    @staticmethod
+    def updateTopic(id, introduction):
+        topic = TopicService.getTopicById(id)
+        if topic:
+            topic.introduction = introduction
+            return True
+        return False
 
 
 class Question(models.Model):
@@ -14,7 +53,7 @@ class Question(models.Model):
     title = models.CharField(u"标题", max_length=100)
     detail = models.TextField(u"描述")
     # watches in accounts
-    topic = models.ManyToManyField(to=Topic, related_name='topic')
+    topic = models.ManyToManyField(to=Topic, related_name='questions')
 
 
 class Answer(models.Model):
