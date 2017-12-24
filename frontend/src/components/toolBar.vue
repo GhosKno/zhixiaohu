@@ -16,6 +16,7 @@ export default {
 <style>
 .toolBar{
     margin-top: 10px;
+    clear: both;
 }
 .voteBtn{
     line-height: 30px;

@@ -52,7 +52,8 @@ export default {
 <style scoped>
 header {
   position: fixed;
-  width: 100vw;
+  min-width: 1260px;
+  width:100%;
   top: 0px;
   left: 0px;
   min-width: 1032px;
@@ -78,7 +79,8 @@ nav {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  width: 1000px;
+  min-width: 1000px;
+  width: 80%;
   height: 52px;
   padding: 0 16px;
   margin: 0 auto;
@@ -172,13 +174,5 @@ nav {
 .rightBtns {
   position: absolute;
   right: 80px;
-}
-@media screen and (max-width: 1060px) {
-  .logo {
-    margin-left: 10px;
-  }
-  .rightBtns {
-    right: 10px;
-  }
 }
 </style>
