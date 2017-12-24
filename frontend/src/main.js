@@ -6,7 +6,7 @@ import router from './router'
 import VueResource from 'vue-resource'
 import vueCookie from 'vue-cookie'
 import iView from 'iview'
-import 'iview/dist/styles/iview.css'
+import '@/zxh-theme/index.less'
 import store from '@/store'
 
 
@@ -15,7 +15,7 @@ Vue.use(VueResource)
 Vue.use(vueCookie)
 Vue.use(iView)
 Vue.use(store)
-  /* eslint-disable no-new */
+
 new Vue({
   el: '#app',
   router,
