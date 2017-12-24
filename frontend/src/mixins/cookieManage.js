@@ -6,13 +6,14 @@ const cookieManage = {
   },
   methods: {
     setCookie(loginState, userId, userName) {
-      this.$cookie.set('isLogin', codeHandle.mulEncode(JSON.stringify(true)), 1)
-      this.$cookie.set('userId', codeHandle.mulEncode(JSON.stringify(userId)), 1)
-      this.$cookie.set('userName', codeHandle.mulEncode(JSON.stringify(userName)), 1)
+      console.log(111)
+      this.$cookie.set('isLogin', codeHandle.multiEncode(JSON.stringify(true)), 1)
+      this.$cookie.set('userId', codeHandle.multiEncode(JSON.stringify(userId)), 1)
+      this.$cookie.set('userName', codeHandle.multiEncode(JSON.stringify(userName)), 1)
     },
     getCookie(key) {
       try {
-        return JSON.parse(codeHandle.mulDecode(this.$cookie.get(key))) || false
+        return JSON.parse(codeHandle.multiDecode(this.$cookie.get(key))) || false
       } catch (e) {
         return false
       }

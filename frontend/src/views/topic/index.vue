@@ -9,8 +9,7 @@
               <div class="topic-list-content">
                 <div class="header">
                   <Icon type="ios-list-outline" style="margin-right:10px"></Icon>
-                  已关注话题动态
-                  <Button class="all-topic-button" type="text">共关注{{watchedTopic.length}}个话题</Button>
+                  热点话题动态
                 </div>
                 <div class="watched-list">
                   <Button 
@@ -18,13 +17,18 @@
                     type="ghost" 
                     size="small"
                     shape="circle"
-                    v-for="(el,index) in watchedTopic" 
+                    v-for="(el,index) in heatedTopoics" 
                     :key="index">{{el.label}}
                   </Button>
                 </div>
               </div>
               <div class="answer-list">
-                    <AnswerListCard v-for="n in number" :key="n"></AnswerListCard>
+                    <AnswerListCard 
+                      v-for="(answer, index) in answerList" 
+                      :key="index"
+                      :answer="answer.detail"
+                      :question="answer.question"
+                      ></AnswerListCard>
               </div>
             </Col>
             <Col span="6" style="padding:0 20px;">
@@ -45,36 +49,24 @@
     name: 'topic',
     data () {
       return {
-        watchedTopic: [ //用户关注的所有话题列表
-          {label: "电影"},
-          {label: "互联网"},
-          {label: "移动互联网"},
-          {label: "学习"},
-          {label: "网页设计"},
-          {label: "前端开发"},
-          {label: "中国历史"},
-          {label: "历史"},
-          {label: "HTML"},
-          {label: "维基百科"},
-          {label: "产品设计"},
-          {label: "程序员"},
-          {label: "JacaScript"},
-          {label: "自然科学"},
-          {label: "知识产权"}
-        ],
-        curTopic: '程序员', // 当前查看话题列表
-        number: 5, //tmp var TODO
+        windowHeight: '',
+        heatedTopoics: [],
+        curPage: 1,
+        topicNumofPage: 8,
+        curTopic: '', // 当前查看话题列表
+        answerList: [],
+        number: 5
       }
     },
     methods: {
       handleReachBottom () {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        this.number = this.number + 5
-                        resolve();
-                    }, 2000);
-                });
-            }
+        return new Promise(resolve => {
+          setTimeout(() => {
+            this.number = this.number + 5
+            resolve();
+          }, 2000);
+        });
+      }
     },
     components: {
       TopBar,
@@ -82,7 +74,18 @@
       AnswerListCard
     },
     mounted () {
-      this.windowHeight = document.body.clientHeight
+      this.$nextTick(() => {
+        this.windowHeight = document.body.clientHeight
+      })
+    },
+    created () {
+      this.$http.get(`/api/topics/heat/${this.curPage}/${this.topicNumofPage}`)
+        .then(res => {
+          if(res.body.success) {
+            this.heatedTopoics = res.body.data
+            this.curTopic = this.heatedTopoics[0].label
+          }
+        })
     }
   }
 </script>

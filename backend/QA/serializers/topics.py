@@ -9,7 +9,7 @@ class TopicListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Topic
-        exclude = ('questions')
+        fields = '__all__'
 
 
 class TopicSerializer(serializers.ModelSerializer):

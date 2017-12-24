@@ -31,6 +31,17 @@ class GetTopicDetail(APIView):
         return self.success(seri.data)
 
 
+class GetHeatedTopicList(APIView):
+    def get(self, req, page, counts):
+        num = Topic.objects.count()
+        page_handle = paged.page(num, page, counts)
+        if not page_handle['valid']:
+            return self.success([])
+        topics = Topic.objects.order_by('heat')[page_handle['start']:page_handle['end']]
+        seri = TopicListSerializer(topics, many=True)
+        return self.success(seri.data)
+
+
 class SearchTopic(APIView):
     def get(self, req, info, page, counts):
         topics = TopicService.searchTopicBlury(info)

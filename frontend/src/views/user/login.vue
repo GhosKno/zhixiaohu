@@ -44,8 +44,12 @@
 
 
 <script>
+import Vue from 'vue'
+import cookieManage from '@/mixins/cookieManage'
+import initInfo from '@/mixins/initInfo'
 export default {
   name: 'login',
+  mixins: [cookieManage, initInfo],
   data () {
     const validatePassCheck = (rule, value, callback) => {
       if (value === '') {
@@ -104,8 +108,8 @@ export default {
           .then(res => {
             if(res.body.success) {
               this.$Message.success('登陆成功')
-              //todo
-              console.log(res.body.data)
+              Vue.http.headers.common['X-CSRF-TOKEN'] = this.$cookie.get('csrftoken')
+              this.setCookie(true, res.body.data.id, res.body.data.user)
             } else {
               this.$Message.error(res.data.msg)
             }
@@ -132,7 +136,11 @@ export default {
         if(valid) submit()
       })
     }
-
+  },
+  created () {
+    if (this.initInfo()) {
+      this.$router.push({name: 'home'})
+    }
   }
 }
 </script>
