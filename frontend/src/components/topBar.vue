@@ -52,7 +52,7 @@ export default {
 <style scoped>
 header {
   position: fixed;
-  width: 1260px;
+  width: 100vw;
   top: 0px;
   left: 0px;
   min-width: 1032px;
