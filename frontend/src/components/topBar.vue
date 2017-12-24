@@ -23,10 +23,10 @@
     </Nav>
 
     <div class="search">
-        <input class="searchInput" maxlength="50" type="text" placeholder="搜索你感兴趣的内容..." required>
+        <input class="searchInput" maxlength="50" type="text" placeholder="搜索你感兴趣的内容..." required @focus="showAskBtn = false" @blur="showAskBtn = true">
         <Button type="text" class="searchBtn"><Icon type="ios-search-strong" class="searchIcon" size=20 ></Icon></Button>  
     </div>
-    <Button type="primary" class="askBtn">提问</Button>
+    <Button type="primary" class="askBtn" v-show='showAskBtn'>提问</Button>
     <div class="rightBtns">
         <Button type="ghost" class="loginBtn">登录</Button>
         <Button type="primary" class="joinBtn">加入知小乎</Button>
@@ -40,8 +40,11 @@ export default {
   name: "topBar",
   data() {
     return {
-      theme1: "light"
+      theme1: "light",
+      showAskBtn: true
     };
+  },
+  methods: {
   }
 };
 </script>
@@ -162,7 +165,10 @@ nav {
   border-bottom-left-radius: 0;
   height: 100%;
 }
-
+.askBtn{
+  transform: translate(0,0);
+  transition:all .2s ease-in 0s;
+}
 .rightBtns {
   position: absolute;
   right: 80px;
