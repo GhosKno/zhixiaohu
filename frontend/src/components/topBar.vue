@@ -98,10 +98,13 @@ nav {
   line-height: 30px;
   color: #8590a6;
 }
+.nav-item:hover{
+  color:#175199;
+}
+
 .nav-item.active {
   color: #333;
 }
-
 .search {
   position: relative;
   margin: 15px;
@@ -166,10 +169,6 @@ nav {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   height: 100%;
-}
-.askBtn{
-  transform: translate(0,0);
-  transition:all .2s ease-in 0s;
 }
 .rightBtns {
   position: absolute;

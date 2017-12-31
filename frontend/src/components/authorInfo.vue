@@ -1,22 +1,33 @@
 <template>
 <div class="author-info">
     <Poptip trigger="hover" placement="right" width="400">
-        <Avatar shape="square"  src="https://cdn.sspai.com/attachment/origin/2016/03/11/315901.jpg?imageMogr2/quality/95/thumbnail/!60x60r/gravity/Center/crop/60x60"  />
+        <Avatar shape="square"  :src="authorAvatar"  />
         <div class="api" slot="content">
-            <Avatar shape="square"  src="https://cdn.sspai.com/attachment/origin/2016/03/11/315901.jpg?imageMogr2/quality/95/thumbnail/!60x60r/gravity/Center/crop/60x60"  />
+            
         </div>
     </Poptip>
     <div class="author-name">
-        MakicLin
+        {{authorName}}
     </div>
     <div class="author-badge-text">
-        ,平面设计，锥纸手机
+        , {{authorBadge}}
     </div>
 </div>
 </template>
 <script>
 export default {
   name: 'authorInfo',
+  props:{
+      authorAvatar: {
+          default: '~assets/avatar.jpg',
+      },
+      authorName: {
+          default: "MakicLin"
+      },
+      authorBadge: {
+          default: ""
+      }
+  }
 }
 </script>
 <style scoped>

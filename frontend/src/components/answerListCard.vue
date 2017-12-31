@@ -11,7 +11,7 @@
         <div class="cover" v-show="coverImg" ><img width="190" :src="coverImg">
         </div>
         <div class="inner">
-        {{answer}}
+        <span class="inner-text">{{answer}}</span>
         <Button type="text" class="read-all">阅读全文 <Icon type="chevron-down"></Icon></Button>
         </div>
         <ToolBar></ToolBar>
@@ -82,15 +82,12 @@ export default {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
-.inner {
+.inner-text {
   font-size: 14px;
   font-weight: normal;
   line-height: 1.67;
   max-height: 100px;
   margin-bottom: -4px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
   overflow: hidden;
 }
 </style>
