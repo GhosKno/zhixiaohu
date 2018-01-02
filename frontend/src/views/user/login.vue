@@ -1,7 +1,7 @@
 <template lang="pug">
   div.login
     Row.login-content(type="flex" justify="center")
-      Col(:sx="18" :sm="12" :md="8" :lg="4")
+      Col(:sx="16" :sm="14" :md="10" :lg="6")
         div.logo
           svg(width="180" height="60")
             text(x="21.84" y="43.658" fill="#3b89e4" font-family="Wawati SC" font-size="42.667") 知小乎
@@ -13,7 +13,7 @@
             <path fill="#eb2a2a" fill-rule="evenodd" d="M61.71 26.983s2.089-2.025 2.542-2.472c.012 1.62-.655 6.232-1.525 7.415-.949-.211 1.422-4.277-1.017-4.943z"/>
         div.slogan
           span 与世界分享你的知识、经验和见解
-        Tabs(value="login")
+        Tabs(:value="defaultPaneName")
           TabPane(name="login" label="登陆") 
             Form(:model="loginForm"
                  ref="loginForm"
@@ -61,6 +61,7 @@ export default {
       }
     }
     return {
+      defaultPaneName: 'login',
       loginForm: {
         username: '',
         password: ''
@@ -141,6 +142,9 @@ export default {
     if (this.initInfo()) {
       this.$router.push({name: 'home'})
     }
+    if(this.$route.params['register']) {
+      this.defaultPaneName = 'reg'
+    }
   }
 }
 </script>
@@ -149,8 +153,10 @@ export default {
 .login {
   height: 100vh;
   width: 100vw;
-  padding-top: 15%;
+  position: fixed;
   .login-content {
+    height: initial;
+    margin-top: 10%;
     .logo {
       text-align: center;
     }
