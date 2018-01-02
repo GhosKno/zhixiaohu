@@ -13,14 +13,14 @@ class Profile(models.Model):
     watchedQuestion = models.ManyToManyField(to=Question, related_name='watchedUser')
     watchedUser = models.ManyToManyField(to='self', related_name='WatchedBy')
 
-
     agreed = models.ManyToManyField(to=Answer, related_name='agreedUser')
     disagreed = models.ManyToManyField(to=Answer, related_name='disagreedUser')
     favorites = models.ManyToManyField(to=Answer)
 
     history = models.ManyToManyField(to=Question, related_name='history')
+
     class Meta:
-        db_table='profile'
+        db_table = 'profile'
 
 
 class Message(models.Model):
@@ -31,8 +31,9 @@ class Message(models.Model):
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE, related_name='question')
     answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE, related_name='answer')
     time = models.DateField(auto_created=True)
+
     class Meta:
-        db_table='message'
+        db_table = 'message'
 
 
 class UserService(object):
@@ -112,13 +113,12 @@ class UserService(object):
     @staticmethod
     def addMessageForUser(rec, question, answer, author):
         message = Message.objects.create(receiver=rec,
-                               question=question,
-                               answer=answer,
-                               author=author)
+                                         question=question,
+                                         answer=answer,
+                                         author=author)
         message.save()
         return True
 
     @staticmethod
     def searchByName(name):
         return User.objects.filter(username__contains=name)
-

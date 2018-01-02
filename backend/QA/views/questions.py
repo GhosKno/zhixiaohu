@@ -7,6 +7,9 @@ from QA.serializers.questions import QuestionSerializer
 # TODO add auth and check params
 class PublishAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
         if not {'title', 'detail','topics'}\
                 .issubset(set(data.keys())):
@@ -45,11 +48,13 @@ class QuestionAPI(APIView):
 
 class QuestionWatchAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        user = UserService.getUserByID(data['user_id'])
         ques = QAService.getQuestionByID(data['question_id'])
-        if user is None or ques is None:
-            return self.error('no user or question found')
+        if ques is None:
+            return self.error('no question found')
 
         user.profile.watchedQuestion.add(ques)
         return self.success()
@@ -57,11 +62,13 @@ class QuestionWatchAPI(APIView):
 
 class CancelWatchAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        user = UserService.getUserByID(data['user_id'])
         ques = QAService.getQuestionByID(data['question_id'])
         if user is None or ques is None:
-            return self.error('no user or question found')
+            return self.error('no question found')
         user.profile.watchedQuestion.remove(ques)
         return self.success()
 

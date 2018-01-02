@@ -16,11 +16,13 @@ class AnswerAPI(APIView):
 # TODO auth
 class AnswerPulishAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        if not {'user_id', 'question_id', 'content'} \
+        if not {'question_id', 'content'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
         question = QAService.getQuestionByID(data['question_id'])
         if user is None or question is None:
             return self.error("cant\'t found user or question")
@@ -39,14 +41,16 @@ class AnswerPulishAPI(APIView):
 
 class AnswerDeleteAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        if not {'user_id', 'answer_id'} \
+        if not {'answer_id'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
         answer = QAService.getAnswerByID(data['answer_id'])
-        if user is None or answer is None:
-            return self.error('no answer or user found')
+        if answer is None:
+            return self.error('no answer found')
         if answer.author is not user:
             return self.error('you have no permssion to do that')
         answer.delete()
@@ -55,13 +59,15 @@ class AnswerDeleteAPI(APIView):
 
 class FavoriteAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        if not {'user_id', 'answer_id'} \
+        if not {'answer_id'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
         answer = QAService.getAnswerByID(data['answer_id'])
-        if user is None or answer is None:
+        if answer is None:
             return self.error('no answer or user found')
         profile = user.profile
         profile.favitor_answer.add(answer)
@@ -70,32 +76,35 @@ class FavoriteAPI(APIView):
 
 class CancelFavorAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        if not {'user_id', 'answer_id'} \
+        if not {'answer_id'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
         answer = QAService.getAnswerByID(data['answer_id'])
-        if user is None or answer is None:
+        if answer is None:
             return self.error('no answer or user found')
         profile = user.profile
-        # TODO yan zheng
         if profile.favitor_answer.filter(answer=answer).exists():
             profile.favitor_answer.remove(answer)
             return self.success()
-        return self.error()
+        return self.error("you are not owner")
 
 
 class AnswerLikeAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        if not {'user_id', 'answer_id'} \
+        if not {'answer_id'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
         answer = QAService.getAnswerByID(data['answer_id'])
-        if user is None or answer is None:
-            return self.error('no answer or user found')
+        if answer is None:
+            return self.error('no answer found')
         profile = user.profile
         profile.agreed_answer.add(answer)
         return self.success()
@@ -103,31 +112,36 @@ class AnswerLikeAPI(APIView):
 
 class CancelLikeAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        if not {'user_id', 'answer_id'} \
+        if not {'answer_id'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
         user = UserService.getUserByID(data['user_id'])
         answer = QAService.getAnswerByID(data['answer_id'])
         if user is None or answer is None:
-            return self.error('no answer or user found')
+            return self.error('no answer found')
         profile = user.profile
         if profile.agreed_answer.filter(answer=answer).exists():
             profile.agreed_answer.remove(answer)
             return self.success()
-        return self.error()
+        return self.error("permission denied")
 
 
 class AnswerDislikeAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
-        if not {'user_id', 'answer_id'} \
+        if not {'answer_id'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
         answer = QAService.getAnswerByID(data['answer_id'])
-        if user is None or answer is None:
-            return self.error('no answer or user found')
+        if answer is None:
+            return self.error('no answer found')
         profile = user.profile
         profile.disagreed.add(answer)
         return self.success()
@@ -135,28 +149,18 @@ class AnswerDislikeAPI(APIView):
 
 class CancelDisLikeAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = request.data
         if not {'user_id', 'answer_id'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
         answer = QAService.getAnswerByID(data['answer_id'])
         if user is None or answer is None:
-            return self.error('no answer or user found')
+            return self.error('no answer found')
         profile = user.profile
         if profile.disagreed.filter(answer=answer).exists():
             profile.disagreed.remove(answer)
             return self.success()
-        return self.error()
-
-
-# TODO use it
-def answerValid(data):
-    if not {'user_id', 'answer_id'} \
-            .issubset(set(data.keys())):
-        return '参数错误'
-    user = UserService.getUserByID(data['user_id'])
-    answer = QAService.getAnswerByID(data['answer_id'])
-    if user is None or answer is None:
-        return 'no answer or user found'
-    return [user, answer]
+        return self.error("no found")

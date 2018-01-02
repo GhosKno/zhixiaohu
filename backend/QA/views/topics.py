@@ -55,6 +55,9 @@ class SearchTopic(APIView):
 
 class AddTopic(APIView):
     def post(self, req):
+        user = req.user
+        if not user.is_authenticated:
+            return self.error("please login first")
         data = req.data
         if not {'label', 'introduction'}.issubset(set(data.keys())):
             return self.error('bad params')

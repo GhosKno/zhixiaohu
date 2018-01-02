@@ -7,8 +7,9 @@ class Topic(models.Model):
     label = models.CharField(max_length=20)
     introduction = models.TextField()
     heat = models.IntegerField(default=0)
+
     class Meta:
-        db_table='topic'
+        db_table = 'topic'
 
 
 class Question(models.Model):
@@ -18,8 +19,9 @@ class Question(models.Model):
     detail = models.TextField(u"描述")
     # watches in accounts
     topics = models.ManyToManyField(to=Topic, related_name='questions')
+
     class Meta:
-        db_table='question'
+        db_table = 'question'
 
 
 class Answer(models.Model):
@@ -33,8 +35,9 @@ class Answer(models.Model):
     against = models.IntegerField(u"反对数", default=0)
     add_time = models.DateTimeField(u"添加时间", auto_now_add=True)
     detail = models.TextField(u"描述")
+
     class Meta:
-        db_table='answer'
+        db_table = 'answer'
 
 
 class TopicService(object):
@@ -102,7 +105,7 @@ class QAService(object):
 
     @staticmethod
     def addAnswer(content, user, question):
-        answer = Answer.objects\
+        answer = Answer.objects \
             .create(author=user, question=question, detail=content)
         answer.save()
         return answer
@@ -124,18 +127,11 @@ class QAService(object):
     @staticmethod
     def addQuestion(title, detail, topics, user):
         ques = Question.objects.create(title=title,
-                                detail=detail,
-                                author=user)
+                                       detail=detail,
+                                       author=user)
         for id in topics:
             topic = TopicService.getTopicById(id=id)
             if topic is not None:
                 ques.topics.add(topic)
             ques.save()
         return ques
-
-
-
-
-
-
-
