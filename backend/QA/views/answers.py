@@ -2,6 +2,7 @@ from QA.models import QAService
 from QA.serializers.answers import AnswerSerializer
 from accounts.models import UserService
 from utils.views import APIView
+import threading
 
 
 class AnswerAPI(APIView):
@@ -13,7 +14,6 @@ class AnswerAPI(APIView):
         return self.success(seri.data)
 
 
-# TODO auth
 class AnswerPulishAPI(APIView):
     def post(self, request):
         user = request.user
@@ -28,13 +28,9 @@ class AnswerPulishAPI(APIView):
             return self.error("cant\'t found user or question")
         content = data['content']
         answer = QAService.addAnswer(content, user, question)
-        # TODO add message in new thread
-        q_users = question.watchedUser.all()
-        u_users = user.WatchedBy.all()
 
-        users = q_users | u_users # merge
-        for rec in users:
-            UserService.addMessageForUser(rec, question, answer, user)
+        threading.Thread(target=meg_thread ,args=(question, user, answer))
+
         seri = AnswerSerializer(answer)
         return self.success(seri.data)
 
@@ -164,3 +160,12 @@ class CancelDisLikeAPI(APIView):
             profile.disagreed.remove(answer)
             return self.success()
         return self.error("no found")
+
+
+def meg_thread(question, user, answer):
+    q_users = question.watchedUser.all()
+    u_users = user.WatchedBy.all()
+
+    users = q_users | u_users  # merge
+    for rec in users:
+        UserService.addMessageForUser(rec, question, answer, user)

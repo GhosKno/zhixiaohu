@@ -4,9 +4,12 @@ from utils.views import APIView
 
 from accounts.models import UserService, Profile
 from accounts.serializers import ProfileSerializer, MessageSerializer, UserSerializer
+from QA.serializers.answers import AnswerSerializer
+from QA.serializers.questions import QuestionSerializer
 
 
 class RegisterAPI(APIView):
+    authentication_classes = []
     def post(self, request):
         data = request.data
         if not {'username', 'password', 'email'}.issubset(set(data.keys())):
@@ -43,12 +46,14 @@ class LoginAPI(APIView):
 
 class ResetPassWordAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login at first")
         data = request.data
-        if not {'user_id', 'old_password', 'new_password'} \
+        if not {'old_password', 'new_password'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
-        if user and user.check_password(data['old_password']):
+        if user.check_password(data['old_password']):
             user.set_password(data['new_password'])
             user.save()
             return self.success()
@@ -57,18 +62,17 @@ class ResetPassWordAPI(APIView):
 
 class RestNickAPI(APIView):
     def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return self.error("please login at first")
         data = request.data
-        if not {'user_id', 'new_nickname'} \
+        if not {'new_nickname'} \
                 .issubset(set(data.keys())):
             return self.error('参数错误')
-        user = UserService.getUserByID(data['user_id'])
-        # TODO add auth
-        if user and user.is_authenticated:
-            profile = user.profile
-            profile.nickname = data['new_nickname']
-            profile.save()
-            return self.success()
-        return self.error('auth failed')
+        profile = user.profile
+        profile.nickname = data['new_nickname']
+        profile.save()
+        return self.success()
 
 
 class ProfileAPI(APIView):
@@ -81,7 +85,6 @@ class ProfileAPI(APIView):
         return self.success(seri.data)
 
 
-# TODO serializer
 class UserLikesAPI(APIView):
     def get(self, request, pk, index, count):
         user = UserService.getUserByID(pk)
@@ -90,7 +93,8 @@ class UserLikesAPI(APIView):
         profile = user.profile
         likes = profile.agreed.all()[index:(index + count)]
         if likes.exists():
-            return self.success(likes)
+            seri = AnswerSerializer(likes, many=True)
+            return self.success(seri.data)
         return self.error('no likes found')
 
 
@@ -102,7 +106,8 @@ class UserFavoritesAPI(APIView):
         profile = user.profile
         favorites = profile.favorites.all()[index:(index + count)]
         if favorites.exists():
-            return self.success(favorites)
+            seri = AnswerSerializer(favorites, many=True)
+            return self.success(seri.data)
         return self.error('no favorites found')
 
 
@@ -112,7 +117,10 @@ class UserAnsweredAPI(APIView):
         if user is None:
             return self.error('not found user')
         answered = user.answered.all()[index, (index+count)]
-        return self.success(answered)
+        if answered.exists():
+            seri = AnswerSerializer(answered, many=True)
+            return self.success(seri.data)
+        return self.error('no answerd found')
 
 
 class UserHistoryAPI(APIView):
@@ -123,7 +131,8 @@ class UserHistoryAPI(APIView):
         profile = user.profile
         history = profile.history.all()[index:(index + count)]
         if history.exists():
-            return self.success(history)
+            seri = QuestionSerializer(history, many=True)
+            return self.success(seri.data)
         return self.error('no history found')
 
 

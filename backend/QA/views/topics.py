@@ -1,6 +1,7 @@
 from QA.models import Topic, TopicService
 
 from QA.serializers.topics import TopicSerializer,TopicListSerializer
+from QA.serializers.questions import QuestionSerializer
 from utils import paged
 from utils.views import APIView
 
@@ -26,9 +27,11 @@ class GetTopicDetail(APIView):
         if not page_handle['valid']:
             return self.success([])
         questions = topic.questions.all()[page_handle['start']:page_handle['end']]
-        topic['questions'] = questions
         seri = TopicSerializer(topic)
-        return self.success(seri.data)
+        response = seri.data
+        ques = QuestionSerializer(questions, many=True)
+        response['questions'] = ques.data
+        return self.success(response)
 
 
 class GetHeatedTopicList(APIView):

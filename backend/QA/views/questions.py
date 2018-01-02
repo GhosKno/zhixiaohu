@@ -1,10 +1,8 @@
-from accounts.models import UserService
 from utils.views import APIView
 from QA.models import QAService
 from QA.serializers.questions import QuestionSerializer
 
 
-# TODO add auth and check params
 class PublishAPI(APIView):
     def post(self, request):
         user = request.user
