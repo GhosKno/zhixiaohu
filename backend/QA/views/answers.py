@@ -1,6 +1,7 @@
 from QA.models import QAService
 from QA.serializers.answers import AnswerSerializer
 from accounts.models import UserService
+from utils.heat import HeatQueue
 from utils.views import APIView
 import threading
 
@@ -29,7 +30,7 @@ class AnswerPulishAPI(APIView):
         content = data['content']
         answer = QAService.addAnswer(content, user, question)
 
-        threading.Thread(target=meg_thread ,args=(question, user, answer))
+        threading.Thread(target=msg_thread, args=(question, user, answer))
 
         seri = AnswerSerializer(answer)
         return self.success(seri.data)
@@ -162,10 +163,13 @@ class CancelDisLikeAPI(APIView):
         return self.error("no found")
 
 
-def meg_thread(question, user, answer):
+def msg_thread(question, user, answer):
     q_users = question.watchedUser.all()
     u_users = user.WatchedBy.all()
 
     users = q_users | u_users  # merge
     for rec in users:
         UserService.addMessageForUser(rec, question, answer, user)
+
+    for topic in question.topics:
+        HeatQueue.put(topic)

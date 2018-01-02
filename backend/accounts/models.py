@@ -7,6 +7,7 @@ from QA.models import Question, Answer
 class Profile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
 
+    avtar = models.ImageField(default='')
     nickname = models.CharField(max_length=30)
     description = models.TextField(max_length=500)
 

@@ -1,3 +1,5 @@
+import string
+
 from django.contrib import auth
 
 from utils.views import APIView
@@ -6,6 +8,8 @@ from accounts.models import UserService, Profile
 from accounts.serializers import ProfileSerializer, MessageSerializer, UserSerializer
 from QA.serializers.answers import AnswerSerializer
 from QA.serializers.questions import QuestionSerializer
+
+import random
 
 
 class RegisterAPI(APIView):
@@ -20,6 +24,8 @@ class RegisterAPI(APIView):
                                    email=data['email'])
         if user is not None:
             profile = Profile(user=user)
+            rand = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+            profile.nickname = 'user' + rand
             profile.save()
             serializer = ProfileSerializer(profile)
             return self.success(serializer.data)
