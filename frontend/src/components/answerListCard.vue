@@ -3,9 +3,10 @@
     <div class="feed-title">
         {{feedTitle}}
     </div>
-    <AuthorInfo></AuthorInfo>
+    <AuthorInfo :authorAvatar="aavatar" :authorName="aname"></AuthorInfo>
     <div class="question">
-        {{question}}
+        <a :href="qlink" class="title">{{question}}</a>
+        
     </div>
     <div class="content">
         <div class="cover" v-show="coverImg" ><img width="190" :src="coverImg">
@@ -34,7 +35,16 @@ export default {
       },
       'answer':{
           default: "泻药.这个答案是一个示例答案."
-      }
+      },
+      'qlink':{
+          default: "/"
+      },
+      'aavatar':{
+          default: ('/static/avatar.jpg'),
+      },
+      'aname':{
+          default: 'hhh'
+      },
   }
 };
 </script>
@@ -89,5 +99,17 @@ export default {
   max-height: 100px;
   margin-bottom: -4px;
   overflow: hidden;
+}
+.title{
+    font-size: 18px;
+    font-weight: 600;
+    font-synthesis: style;
+    line-height: 1.6;
+    color: #1e1e1e;
+    margin-top: -4px;
+    margin-bottom: -4px;
+}
+.title:hover{
+    color:#175199;
 }
 </style>
