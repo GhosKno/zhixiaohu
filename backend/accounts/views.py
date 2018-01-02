@@ -34,6 +34,7 @@ class RegisterAPI(APIView):
 
 
 class LoginAPI(APIView):
+    authentication_classes = []
     def post(self, request):
         data = request.data
         if not {'username', 'password'} \

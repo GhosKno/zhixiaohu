@@ -6,7 +6,6 @@ const cookieManage = {
   },
   methods: {
     setCookie(loginState, userId, userName) {
-      console.log(111)
       this.$cookie.set('isLogin', codeHandle.multiEncode(JSON.stringify(true)), 1)
       this.$cookie.set('userId', codeHandle.multiEncode(JSON.stringify(userId)), 1)
       this.$cookie.set('userName', codeHandle.multiEncode(JSON.stringify(userName)), 1)
@@ -30,6 +29,8 @@ const cookieManage = {
       this.$cookie.delete('isLogin')
       this.$cookie.delete('userId')
       this.$cookie.delete('userName')
+      this.$cookie.delete('csrftoken')
+      this.$cookie.delete('sessionid')
     }
   }
 }

@@ -94,7 +94,6 @@
     },
     methods: {
       handleReachBottom () {
-        console.log(111)
         return new Promise(resolve => {
           setTimeout(() => {
             // this.number = this.number + 5
@@ -134,7 +133,7 @@
     // display:none;
   }
   .content {
-    margin-top: 100px;
+    margin-top: 60px;
     .topic-list-content {
       .header {
         width: 100%;

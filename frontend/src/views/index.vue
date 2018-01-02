@@ -39,10 +39,13 @@
   const TopBar = resolve => require(['@/components/topBar'], resolve)
   const SubMenuBar = resolve => require(['@/components/subMenuBar'], resolve)
   const AnswerListCard = resolve => require(['@/components/answerListCard'], resolve)
-  const SideBar = resolve => require(['@/components/sideBar'], resolve)
-
+	const SideBar = resolve => require(['@/components/sideBar'], resolve)
+	
+	import cookieManage from '@/mixins/cookieManage'
+	import initInfo from '@/mixins/initInfo'
   export default {
-    name: 'IdxPage',
+		name: 'IdxPage',
+		mixins: [cookieManage, initInfo],
 		components: {TopBar,SubMenuBar,AnswerListCard,SideBar},
 		data () {
 			return {
@@ -73,7 +76,12 @@
       this.$nextTick(() => {
         this.windowHeight = document.body.clientHeight
       })
-    },
+		},
+		created () {
+			if (this.initInfo()) {
+				this.$router.push({name: 'home'})
+			}
+		}
   }
 </script>
 

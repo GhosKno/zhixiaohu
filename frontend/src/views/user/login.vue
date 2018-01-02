@@ -36,7 +36,7 @@
               FormItem(prop="password")
                 Input(type="password" v-model="regForm.password" placeholder="密码")
               FormItem(prop="checkPassword")
-                Input(type="text" v-model="regForm.checkPassword" placeholder="再次输入密码")
+                Input(type="password" v-model="regForm.checkPassword" placeholder="再次输入密码")
               FormItem.button-content(style="text-align:center")
                 Button(type="primary" @click="regSubmit()" long size="large") 注册知小乎
                 Button(type="ghost" @click="handleReset('regForm')" long size="large") 重置
@@ -110,7 +110,10 @@ export default {
             if(res.body.success) {
               this.$Message.success('登陆成功')
               Vue.http.headers.common['X-CSRF-TOKEN'] = this.$cookie.get('csrftoken')
-              this.setCookie(true, res.body.data.id, res.body.data.user)
+              this.setCookie(true, res.body.data.id, res.body.data.nickname)
+              this.$store.commit('LOGIN')
+              this.$store.commit('USER', {id: res.body.data.id, name: res.body.data.nickname})
+              this.$router.push({name: 'home'})
             } else {
               this.$Message.error(res.data.msg)
             }
@@ -126,8 +129,11 @@ export default {
           .then(res => {
             if(res.body.success) {
               this.$Message.success('注册成功')
-              //todo
-              console.log(res.body.data)
+              Vue.http.headers.common['X-CSRF-TOKEN'] = this.$cookie.get('csrftoken')
+              this.setCookie(true, res.body.data.id, res.body.data.nickname)
+              this.$store.commit('LOGIN')
+              this.$store.commit('USER', {id: res.body.data.id, name: res.body.data.nickname})
+              this.$router.push({name: 'home'})
             } else {
               this.$Message.error(res.data.msg)
             }
