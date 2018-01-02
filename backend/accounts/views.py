@@ -1,6 +1,8 @@
 import string
 
 from django.contrib import auth
+from django.core.files.storage import FileSystemStorage
+from rest_framework.parsers import FileUploadParser
 
 from utils.views import APIView
 
@@ -175,4 +177,21 @@ class WatchUserAPI(APIView):
         me = request.user
         profile = me.profile
         profile.watchedUser.add(user)
+        return self.success()
+
+
+class AvatarAPI(APIView):
+    parser_classes = (FileUploadParser,)
+
+    def post(self, request, filename):
+        if not request.user.is_authenticated:
+            return self.error("please login at first")
+        file = request.FILES['avatar']
+        fs = FileSystemStorage()
+        rand = ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
+        filename = fs.save(rand, file)
+        file_url = fs.url(filename)
+        prfile = request.user.profile
+        prfile.avtar = file_url
+        prfile.save()
         return self.success()

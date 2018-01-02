@@ -4,6 +4,7 @@
     <Scroll 
       :on-reach-bottom="handleReachBottom" 
       :height="windowHeight">
+      
       <Row type="flex" justify="center" class="content">
         <Col :sx="18" :sm="18" :md="16" :lg="14">
           <Row>
@@ -12,6 +13,9 @@
                 <div class="header">
                   <Icon type="ios-list-outline" style="margin-right:10px"></Icon>
                   热点话题动态
+                  <Upload action="/api/accounts/avtar/">
+        <Button type="ghost" icon="ios-cloud-upload-outline">Upload files</Button>
+      </Upload>
                 </div>
                 <div class="watched-list">
                   <Button 
