@@ -1,6 +1,6 @@
 <template>
 <div class="card sub-menu-bar">
-    <Button type="text" class="sub-menu-btn">
+    <Button type="text" class="sub-menu-btn" @click="showQuestionModal()">
         <svg width="17" height="18" class="icon">
             <g transform="translate(-3 -3)" fill="#8590A6" fill-rule="evenodd">
                     <path d="M3.833 6.356c0-1.66 1.334-3.007 2.993-3.007h9.348c1.653 0 2.993 1.338 2.993 3.006v8.498c0 1.66-1.266 3.467-2.812 4.03l-1.09.396c-2.08.757-5.447.76-7.53 0l-1.09-.396c-1.553-.565-2.812-2.363-2.812-4.03V6.356zm1.643.67v7.492c0 1.1.84 2.314 1.873 2.697l2.277.844c1.035.383 2.712.383 3.746 0l2.278-.845c1.036-.384 1.874-1.59 1.874-2.697V7.026c0-1.1-.897-2.003-2.003-2.003H7.48c-1.118 0-2.004.897-2.004 2.003z"></path>     <path d="M13.012 11.46l-.422.29c-.232.177-.433.53-.433.53s-.08.134-.11.398v.16h-1.63v-.24c.02-.555.11-.86.343-1.13.364-.422 1.168-.935 1.202-.956.114-.086.212-.184.284-.288.17-.23.244-.412.244-.59 0-.25-.074-.478-.22-.682-.143-.197-.41-.296-.798-.296-.385 0-.648.12-.806.368-.162.254-.243.523-.243.796l-.005.23-1.656-.003.003-.23c.043-1.007.406-1.732 1.078-2.155.424-.27 1.113-.396 1.657-.406.873.01 1.39.193 1.923.575.54.387.815.965.815 1.72 0 .422-.135.82-.4 1.18-.14.193-.442.434-.826.73z"></path>
@@ -31,11 +31,24 @@
     <Button type="text" class="sub-menu-btn btn-right">
         草稿
     </Button>
+		<question-modal ref="questionModal"></question-modal>
 </div>
 </template>
 <script>
+import questionModal from '@/components/questionAskModal.vue'
 export default {
-  name: 'subMenuBar'
+  name: 'subMenuBar',
+  data () {
+    return {}
+  },
+  methods: {
+    showQuestionModal() {
+			this.$refs['questionModal'].open()
+		}
+	},
+	components: {
+		questionModal
+	}
 }
 </script>
 
