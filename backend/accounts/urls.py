@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     path('register/', views.RegisterAPI.as_view()),
     path('login/', views.LoginAPI.as_view()),
-    path('avtar/', views.AvatarAPI.as_view()),
+    path('avatar/', views.AvatarUploadAPI.as_view()),
     path('reset_password/', views.ResetPassWordAPI.as_view()),
     path('reset_nickname/', views.RestNickAPI.as_view()),
     path('profile/<int:pk>/', views.ProfileAPI.as_view()),

@@ -13,7 +13,13 @@
                 <div class="header">
                   <Icon type="ios-list-outline" style="margin-right:10px"></Icon>
                   热点话题动态
-                  <Upload action="/api/accounts/avtar/">
+                  <Upload
+                    :headers="{
+                      'X-CSRFTOKEN': this.$cookie.get('csrftoken'),
+                    }"
+                    action="/api/accounts/avatar/"
+                    :before-upload="upload"
+                  >
         <Button type="ghost" icon="ios-cloud-upload-outline">Upload files</Button>
       </Upload>
                 </div>
@@ -64,6 +70,7 @@
     data () {
       return {
         windowHeight: '',
+        filename: '',
         heatedTopoics: [
           {label: "电影"},
           {label: "互联网"},
@@ -105,6 +112,10 @@
             resolve();
           }, 2000);
         });
+      },
+      upload(file) {
+        console.log(file)
+        this.filename = file.name
       }
     },
     components: {

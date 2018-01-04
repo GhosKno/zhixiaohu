@@ -1,13 +1,15 @@
 import string
 
+import os
 from django.contrib import auth
 from django.core.files.storage import FileSystemStorage
 from rest_framework.parsers import FileUploadParser
 
+from backend import settings
 from utils.views import APIView
 
 from accounts.models import UserService, Profile
-from accounts.serializers import ProfileSerializer, MessageSerializer, UserSerializer
+from accounts.serializers import ProfileSerializer, MessageSerializer, UserSerializer, ImageUploadForm
 from QA.serializers.answers import AnswerSerializer
 from QA.serializers.questions import QuestionSerializer
 
@@ -27,7 +29,7 @@ class RegisterAPI(APIView):
         if user is not None:
             profile = Profile(user=user)
             rand = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-            profile.nickname = 'user' + rand
+            profile.nickname = 'user-' + rand
             profile.save()
             serializer = ProfileSerializer(profile)
             return self.success(serializer.data)
@@ -174,24 +176,35 @@ class WatchUserAPI(APIView):
         user = UserService.getUserByID(id)
         if user is None:
             return self.error('no user found')
+
         me = request.user
         profile = me.profile
         profile.watchedUser.add(user)
         return self.success()
 
 
-class AvatarAPI(APIView):
-    parser_classes = (FileUploadParser,)
+class AvatarUploadAPI(APIView):
+    request_parsers = ()
 
-    def post(self, request, filename):
-        if not request.user.is_authenticated:
-            return self.error("please login at first")
-        file = request.FILES['avatar']
-        fs = FileSystemStorage()
-        rand = ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
-        filename = fs.save(rand, file)
-        file_url = fs.url(filename)
-        prfile = request.user.profile
-        prfile.avtar = file_url
-        prfile.save()
-        return self.success()
+    def post(self, request):
+        form = ImageUploadForm(request.POST, files=request.FILES)
+        if form.is_valid():
+            avatar = form.cleaned_data["file"]
+        else:
+            return self.error("Invalid file content")
+        if avatar.size > 2 * 1024 * 1024:
+            return self.error("Picture is too large")
+        suffix = os.path.splitext(avatar.name)[-1].lower()
+        if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
+            return self.error("Unsupported file format")
+
+        rand = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+        name = rand + suffix
+        with open(os.path.join(settings.MEDIA_ROOT, name), "wb") as img:
+            for chunk in avatar:
+                img.write(chunk)
+        user_profile = request.user.profile
+
+        user_profile.avatar = f"{settings.MEDIA_ROOT}/{name}"
+        user_profile.save()
+        return self.success("Succeeded")

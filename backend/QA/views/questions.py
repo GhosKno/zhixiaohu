@@ -27,6 +27,10 @@ class QuestionDetailAPI(APIView):
         question = QAService.getQuestionByID(pk)
         if question is None:
             return self.error('no question found')
+        if request.user.is_authenticated:
+            profile = request.user.profile
+            profile.history.add(question)
+            profile.save()
         seri = QuestionSerializer(question)
         return self.success(seri.data)
 
