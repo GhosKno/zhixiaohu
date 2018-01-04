@@ -1,14 +1,14 @@
 const initHandle = {
-  created () {},
-  data () {},
+  created() {},
+  data() {},
   methods: {
-    initInfo () {
+    initInfo() {
       let loginState = this.getCookie('isLogin')
       if (loginState) {
         this.$store.commit('LOGIN');
-        this.$store.commit('USER',{
+        this.$store.commit('USER', {
           id: this.getCookie('userId') || '',
-          name: this.getCookie('userName') || '' 
+          userName: this.getCookie('userName') || ''
         })
       }
       return loginState

@@ -111,7 +111,7 @@ export default {
               Vue.http.headers.common['X-CSRF-TOKEN'] = this.$cookie.get('csrftoken')
               this.setCookie(true, res.body.data.id, res.body.data.nickname)
               this.$store.commit('LOGIN')
-              this.$store.commit('USER', {id: res.body.data.id, name: res.body.data.nickname})
+              this.$store.commit('USER', {id: res.body.data.id, userName: res.body.data.nickname})
               this.$router.push({name: 'home'})
             } else {
               this.$Message.error(res.data.msg)
@@ -131,7 +131,7 @@ export default {
               Vue.http.headers.common['X-CSRF-TOKEN'] = this.$cookie.get('csrftoken')
               this.setCookie(true, res.body.data.id, res.body.data.nickname)
               this.$store.commit('LOGIN')
-              this.$store.commit('USER', {id: res.body.data.id, name: res.body.data.nickname})
+              this.$store.commit('USER', {id: res.body.data.id, userName: res.body.data.nickname})
               this.$router.push({name: 'home'})
             } else {
               this.$Message.error(res.data.msg)

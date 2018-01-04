@@ -205,6 +205,6 @@ class AvatarUploadAPI(APIView):
                 img.write(chunk)
         user_profile = request.user.profile
 
-        user_profile.avatar = f"{settings.MEDIA_ROOT}/{name}"
+        user_profile.avatar = f"{name}"
         user_profile.save()
         return self.success("Succeeded")

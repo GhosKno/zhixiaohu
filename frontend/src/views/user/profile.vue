@@ -12,8 +12,9 @@
             <div class="profile-header-bottom">
               <Row class="parent-height">
                 <Col span="6" class="parent-height">
-                  <div class="avatar-content">
-
+                  <div class="avatar-content"
+                    :style="`background-image:url(${avatarUrl})`"
+                  >
                   </div>
                 </Col>
                 <Col span="7" class="parent-height">
@@ -25,6 +26,7 @@
                     type="ghost" 
                     size="large"
                     style="bottom: 5px;position: absolute;"
+                    @click="$router.push({name: 'profileEdit'})"
                   >编辑个人资料</Button>
                 </Col>
               </Row>
@@ -279,6 +281,7 @@
         morePaneActiveName: 'watch',
         profilePaneActiveName: 'timeline',
         //user info
+        avatarUrl: '',
         nickName: '',
         description: '',
         watchedUser: [],
@@ -317,6 +320,7 @@
             this.askQuestion = data.askQuestion || []
             this.history = data.history
             this.favorites = data.favorites
+            this.avatarUrl = data.avatar
           }
         })
       }
@@ -351,12 +355,13 @@
       padding: 10px 10px;
       border-radius: 0 0 5px 5px ;
       .avatar-content{
+        background-repeat: no-repeat;
+        background-size: cover;
         height: 170px;
         width: 170px;
         margin: 0 auto;
         top: -40px;
         position: relative;
-        background: #f9f9f9;
         border-radius: 5px;
       }
     }
