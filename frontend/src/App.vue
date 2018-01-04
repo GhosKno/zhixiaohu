@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="home">
+    <TopBar></TopBar>
     <transition name="router-fade" mode="out-in">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive"></router-view>
@@ -12,7 +13,9 @@
 </template>
 
 <script>
+const TopBar = resolve => require(['@/components/topBar'], resolve)
 export default {
-  name: 'app'
+  name: 'app',
+  components: {TopBar}
 }
 </script>

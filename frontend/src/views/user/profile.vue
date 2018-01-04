@@ -1,6 +1,5 @@
 <template>
   <div class="profile">
-    <TopBar></TopBar>
     <Scroll 
       :on-reach-bottom="handleReachBottom" 
       :height="windowHeight">
@@ -343,7 +342,6 @@
     height: 100%;
   }
   .profile-content{
-    margin-top: 60px;
     .profile-header-top{
       height: 110px;
       background: #96a1a9;

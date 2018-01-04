@@ -1,4 +1,5 @@
 <template>
+  <Affix>
   <header>
     <div class="header-inner">
       <Button type="text" @click="$router.push({name: 'home'})">
@@ -28,7 +29,7 @@
         <input class="searchInput" maxlength="50" type="text" placeholder="搜索你感兴趣的内容..." required @focus="showAskBtn = false" @blur="showAskBtn = true">
         <Button type="text" class="searchBtn"><Icon type="ios-search-strong" class="searchIcon" size=20 ></Icon></Button>  
       </div>
-      <Button type="primary" class="askBtn" v-show='showAskBtn' @click="$refs['questionModal'].open()">提问</Button>
+      <Button type="primary" class="askBtn" :class="{'is-active':showAskBtn}" @click="$refs['questionModal'].open()">提问</Button>
       <div class="rightBtns" v-if="!$store.state.isLogin">
         <Button type="ghost" class="loginBtn" @click="$router.push({name: 'login'})">登录</Button>
         <Button type="primary" class="joinBtn" @click="$router.push({name: 'login', params: {register: true}})">加入知小乎</Button>
@@ -51,12 +52,13 @@
     </div>
     <question-modal ref="questionModal"></question-modal>
   </header>
+  </Affix>
 </template>
 
 <script>
-import questionModal from '@/components/questionAskModal.vue'
-import cookieManage from '@/mixins/cookieManage'
-import initInfo from '@/mixins/initInfo'
+import questionModal from "@/components/questionAskModal.vue";
+import cookieManage from "@/mixins/cookieManage";
+import initInfo from "@/mixins/initInfo";
 export default {
   name: "topBar",
   mixins: [cookieManage, initInfo],
@@ -68,9 +70,9 @@ export default {
   },
   methods: {
     logout() {
-      this.cookieLogout()
-      this.$Message.info('已退出')
-      this.$router.push({name: 'login'})
+      this.cookieLogout();
+      this.$Message.info("已退出");
+      this.$router.push({ name: "login" });
     }
   },
   components: {
@@ -81,11 +83,8 @@ export default {
 
 <style scoped>
 header {
-  position: fixed;
   min-width: 1260px;
-  width:100%;
-  top: 0px;
-  left: 0px;
+  width: 100%;
   min-width: 1032px;
   overflow: hidden;
   background: #fff;
@@ -129,8 +128,8 @@ nav {
   line-height: 30px;
   color: #8590a6;
 }
-.nav-item:hover{
-  color:#175199;
+.nav-item:hover {
+  color: #175199;
 }
 
 .nav-item.active {
@@ -162,55 +161,67 @@ nav {
   -webkit-transition: background 0.3s, width 0.3s;
   transition: background 0.3s, width 0.3s;
 }
-.search .searchInput:focus{
+.search .searchInput:focus {
   width: 350px;
   background: #fff;
   border: 1px solid #9fadc7;
 }
-.searchBtn{
+.searchBtn {
   position: absolute;
   right: 0;
   top: 0;
 }
-.searchIcon{
+.askBtn.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+.askBtn {
+  opacity: 0;
+  transform: scale(0);
+  -webkit-transform: scale(0);
+  transition: opacity 0.3s ease, transform 0.3s ease,
+    -webkit-transform 0.3s ease;
+}
+.searchIcon {
   color: #8590a6;
 }
 
 .searchInput::-webkit-input-placeholder {
-    color: #9fadc7;
-    font-weight: 500;
+  color: #9fadc7;
+  font-weight: 500;
 }
 
 .searchInput:-ms-input-placeholder {
-    color: #9fadc7;
-    font-weight: 500;
+  color: #9fadc7;
+  font-weight: 500;
 }
 .searchInput::placeholder {
-    color: #9fadc7;
-    font-weight: 500;
+  color: #9fadc7;
+  font-weight: 500;
 }
-.searchInput:focus + .searchBtn .searchIcon{
+.searchInput:focus + .searchBtn .searchIcon {
   color: #0f88eb;
 }
-.searchInput:valid + .searchBtn .searchIcon{
+.searchInput:valid + .searchBtn .searchIcon {
   color: #fff;
 }
-.searchInput:valid + .searchBtn{
+.searchInput:valid + .searchBtn {
   background: #0f88eb;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   height: 100%;
 }
-.rightBtns, .userInfo{
+.rightBtns,
+.userInfo {
   position: absolute;
   right: 80px;
 }
-.userInfo .messageRing{
+.userInfo .messageRing {
   font-size: 2em;
   color: #9fadc7;
   margin-right: 20px;
 }
-.userMenu button{
+.userMenu button {
   font-size: 1.2em;
 }
 </style>

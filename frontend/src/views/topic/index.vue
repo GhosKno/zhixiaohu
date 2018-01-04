@@ -1,6 +1,5 @@
 <template>
   <div class="topic">
-    <TopBar></TopBar>
     <Scroll 
       :on-reach-bottom="handleReachBottom" 
       :height="windowHeight">
@@ -138,7 +137,6 @@
     // display:none;
   }
   .content {
-    margin-top: 60px;
     .topic-list-content {
       .header {
         width: 100%;

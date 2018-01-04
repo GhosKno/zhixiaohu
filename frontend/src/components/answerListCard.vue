@@ -1,22 +1,23 @@
 <template>
-<div class="card answer">
+<div class="answer card" ref="answerCard">
     <div class="feed-title">
         {{feedTitle}}
     </div>
     <AuthorInfo :authorAvatar="aavatar" :authorName="aname"></AuthorInfo>
     <div class="question">
-        <a :href="qlink" class="title">{{question}}</a>
-        
+        <a :href="'/question/'+pk" class="title">{{question}}</a>
     </div>
     <div class="content">
         <div class="cover" v-show="coverImg" ><img width="190" :src="coverImg">
         </div>
         <div class="inner">
         <span class="inner-text">{{answer}}</span>
-        <Button type="text" class="read-all">阅读全文 <Icon type="chevron-down"></Icon></Button>
+        <Button type="text" class="foldBtn" v-if="fold" @click="toggleRead">
+            阅读全文 <Icon type="chevron-down"></Icon>
+        </Button>
         </div>
-        <ToolBar></ToolBar>
     </div>
+    <ToolBar :fold="fold" @unfold="toggleRead"></ToolBar>
 </div>
 </template>
 <script>
@@ -36,8 +37,8 @@ export default {
       'answer':{
           default: "泻药.这个答案是一个示例答案."
       },
-      'qlink':{
-          default: "/"
+      'pk':{
+          default: "0"
       },
       'aavatar':{
           default: ('/static/avatar.jpg'),
@@ -45,13 +46,42 @@ export default {
       'aname':{
           default: 'hhh'
       },
+  },
+  data() {
+      return {
+          fold: true,
+      }
+  },
+  methods: {
+      toggleRead:function(){
+          if(this.fold){
+             this.$http.get('/api/questions/'+this.pk)
+                .then(res => {
+                    if(res.body.success) {
+                    this.$Message.success('登陆成功')
+                    Vue.http.headers.common['X-CSRF-TOKEN'] = this.$cookie.get('csrftoken')
+                    this.setCookie(true, res.body.data.id, res.body.data.nickname)
+                    this.$store.commit('LOGIN')
+                    this.$store.commit('USER', {id: res.body.data.id, name: res.body.data.nickname})
+                    this.$router.push({name: 'home'})
+                    } else {
+                    this.$Message.error(res.data.msg)
+                    }
+                })
+          }else{
+
+          }
+          this.fold=!this.fold;
+
+      }
   }
 };
 </script>
 
 <style scoped>
-.card{
+.answer{
     padding: 13px 18px;
+    margin-top: 10px;
 }
 .feed-title {
   color: #8590a6;
@@ -71,8 +101,9 @@ export default {
   font-size: 14px;
   line-height: 1.625;
   margin: 0;
+  position: relative;
 }
-.read-all {
+.foldBtn {
   padding: 0;
   margin-left: 4px;
   color: #175199;
@@ -111,5 +142,9 @@ export default {
 }
 .title:hover{
     color:#175199;
+}
+.toolBar{
+    background: #fff;
+    padding: 5px;
 }
 </style>

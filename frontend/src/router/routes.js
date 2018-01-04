@@ -7,8 +7,7 @@ const LoginPage = resolve => require(['@/views/user/login'], resolve)
 const TopicPage = resolve => require(['@/views/topic/index'], resolve)
 const ProfilePage = resolve => require(['@/views/user/profile'], resolve)
 const ProfileEditPage = resolve => require(['@/views/user/profileEdit'], resolve)
-
-
+const QuestionPage = resolve => require(['@/views/question/index'], resolve)
 export default [{
   path: '/',
   name: 'home',
@@ -29,4 +28,8 @@ export default [{
   path: '/profile-edit',
   name: 'profileEdit',
   component: ProfileEditPage
+},{
+  path: '/question/:id',
+  name: 'question',
+  component: QuestionPage,
 }]
