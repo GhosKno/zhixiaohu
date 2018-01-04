@@ -13,6 +13,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "element-ui": "^2.0.10",
     "iview": "^2.8.0-rc.3",
     "pug": "^2.0.0-rc.4",
     "pug-loader": "^2.3.0",
@@ -30,6 +31,7 @@
     "babel-eslint": "^7.1.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-loader": "^7.1.1",
+    "babel-plugin-component": "^1.0.0",
     "babel-plugin-import": "^1.6.3",
     "babel-plugin-istanbul": "^4.1.1",
     "babel-plugin-syntax-jsx": "^6.18.0",

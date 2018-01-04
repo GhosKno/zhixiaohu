@@ -10,6 +10,10 @@ import iView from 'iview'
 import '@/zxh-theme/index.less'
 import store from '@/store'
 
+import { Tabs, TabPane } from 'element-ui'
+
+Vue.component(Tabs.name, Tabs)
+Vue.component(TabPane.name, TabPane)
 
 Vue.config.productionTip = false
 Vue.use(VueResource)

@@ -29,8 +29,7 @@ module.exports = {
     path: config.build.assetsRoot,
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production' ?
-      config.build.assetsPublicPath :
-      config.dev.assetsPublicPath
+      config.build.assetsPublicPath : config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -77,11 +76,18 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       },
+      // {
+      //   test: /(\.css)$/,
+      //   loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
+      // },
       {
-        test: /(\.css)$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
+        test: /\.css$/,
+        include: [
+          /src/,
+          '/node_modules/element-ui/lib/'
+        ],
+        loader: 'style-loader!css-loader'
       }
-
     ]
   },
   node: {

@@ -17,8 +17,8 @@
                   </div>
                 </Col>
                 <Col span="7" class="parent-height">
-                  <div style="font-size:2em;font-weight:bold;">用户昵称</div>
-                  <div style="font-size:1.3em;">用户的简单介绍</div>
+                  <div style="font-size:2em;font-weight:bold;">{{nickName}}</div>
+                  <div style="font-size:1.3em;">{{description}}</div>
                 </Col>
                 <Col span="3" offset="8" class="parent-height">
                   <Button 
@@ -33,13 +33,13 @@
           <Row class="profile-body">
             <Col span="16" class="profile-body-left">
               <div>
-                <Tabs :value="profilePaneActiveName" class="profile-pane">
-                  <TabPane label="动态" name="timeline">
+                <el-tabs 
+                  :value="profilePaneActiveName" 
+                  class="profile-pane">
+                  <el-tab-pane label="动态" name="timeline">
                     <div class="profile-pane-header">我的动态</div>
                     <div class="profile-pane-body">
-                      <AnswerListCard avatar="h" name="ccc" qlink="" feed-title="热门内容,来自: 历史" question="历史上外交时有哪些尴尬场面？" answer="南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."></AnswerListCard>
-                      <AnswerListCard qlink="" question="Mac 上的每个菜单命令，都能自定义快捷键吗?" cover-img="https://ss0.baidu.com/73F1bjeh1BF3odCf/it/u=3420588888,2752900295&fm=85&s=03809E4D4422EB430E34E03103008043" answer = "通常情况下，一个应用在 Mac 菜单栏显示的菜单命令，可以囊括了这个应用的大部分功能。同时也会为常用的菜单设置快捷键，比如最常见的「新建」功能，默认都是 Command + N。 为什么要自定义快捷键,许多开发者有自己的习惯,或..."></AnswerListCard>
-                      <AnswerListCard feed-title="你可能感兴趣: 生活"></AnswerListCard>
+                      <!-- //todo -->
                       <AnswerListCard
                         v-for="(item, index) in answerList"
                         :key="index"
@@ -52,13 +52,16 @@
                       >
                       </AnswerListCard>
                     </div>
-                  </TabPane>
-                  <TabPane label="回答" name="answer">
+                  </el-tab-pane>
+                  <el-tab-pane label="回答" name="answer">
                     <div class="profile-pane-header">我的回答</div>
                     <div class="profile-pane-body">
-                      <AnswerListCard avatar="h" name="ccc" qlink="" feed-title="热门内容,来自: 历史" question="历史上外交时有哪些尴尬场面？" answer="南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."></AnswerListCard>
-                      <AnswerListCard qlink="" question="Mac 上的每个菜单命令，都能自定义快捷键吗?" cover-img="https://ss0.baidu.com/73F1bjeh1BF3odCf/it/u=3420588888,2752900295&fm=85&s=03809E4D4422EB430E34E03103008043" answer = "通常情况下，一个应用在 Mac 菜单栏显示的菜单命令，可以囊括了这个应用的大部分功能。同时也会为常用的菜单设置快捷键，比如最常见的「新建」功能，默认都是 Command + N。 为什么要自定义快捷键,许多开发者有自己的习惯,或..."></AnswerListCard>
-                      <AnswerListCard feed-title="你可能感兴趣: 生活"></AnswerListCard>
+                      <div
+                        class="no-data-content" 
+                        v-if="answerList.length == 0"
+                      >
+                        还没有回答
+                      </div>
                       <AnswerListCard
                         v-for="(item, index) in answerList"
                         :key="index"
@@ -71,75 +74,85 @@
                       >
                       </AnswerListCard>
                     </div>
-                  </TabPane>
-                  <TabPane label="提问" name="question">
+                  </el-tab-pane>
+                  <el-tab-pane label="提问" name="question">
                     <div class="profile-pane-header">我的提问</div>
                     <div class="profile-pane-body">
-                      <AnswerListCard avatar="h" name="ccc" qlink="" feed-title="热门内容,来自: 历史" question="历史上外交时有哪些尴尬场面？" answer="南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."></AnswerListCard>
-                      <AnswerListCard qlink="" question="Mac 上的每个菜单命令，都能自定义快捷键吗?" cover-img="https://ss0.baidu.com/73F1bjeh1BF3odCf/it/u=3420588888,2752900295&fm=85&s=03809E4D4422EB430E34E03103008043" answer = "通常情况下，一个应用在 Mac 菜单栏显示的菜单命令，可以囊括了这个应用的大部分功能。同时也会为常用的菜单设置快捷键，比如最常见的「新建」功能，默认都是 Command + N。 为什么要自定义快捷键,许多开发者有自己的习惯,或..."></AnswerListCard>
-                      <AnswerListCard feed-title="你可能感兴趣: 生活"></AnswerListCard>
-                      <AnswerListCard
-                        v-for="(item, index) in answerList"
-                        :key="index"
-                        :avatar="item.avatar"
-                        :name="item.name" 
-                        :qlink="item.qlink" 
-                        :feed-title="item.feedTitle" 
-                        :question="item.question" 
-                        :answer="item.answer"
+                      <div 
+                        class="no-data-content" 
+                        v-if="askQuestion.length == 0"
                       >
-                      </AnswerListCard>
+                        还没有问题
+                      </div>
+                      <question-card
+                        v-for="(item, index) in askQuestion"
+                        :key="index"
+                        :title="item.title"
+                        :time="item.time"
+                        :answers="item.answer"
+                        :watchers="item.watch"
+                      ></question-card>
                     </div>
-                  </TabPane>
-                  <TabPane label="更多" name="more">
-                    <Tabs :value="morePaneActiveName" class="morePane">
-                      <TabPane label="我关注的人" name="watch">
+                  </el-tab-pane>
+                  <el-tab-pane label="更多" name="more">
+                    <el-tabs :value="morePaneActiveName" class="morePane">
+                      <el-tab-pane label="我关注的人" name="watch">
+                        <div
+                          class="no-data-content" 
+                          v-if="watchedUser.length == 0"
+                        >
+                          还没有关注用户
+                        </div>
                         <user-card
-                          userName="vczh"
-                          description="专业造轮子，拉黑抢前排。http://gaclib.net"
-                          :answer="17758"
-                          :watched="647935"
+                          v-for="(user, index) in watchedUser"
+                          :key="index"
+                          :userName="user.nickName"
+                          :description="user,description"
+                          :answer="user.answers"
+                          :watched="user.watchedBy"
                         ></user-card>
+                      </el-tab-pane>
+                      <el-tab-pane label="关注我的人" name="watched">
+                        <div 
+                          class="no-data-content" 
+                          v-if="watchedBy.length == 0"
+                        >
+                          还没有关注用户
+                        </div>
                         <user-card
-                          userName="vczh"
-                          description="专业造轮子，拉黑抢前排。http://gaclib.net"
-                          :answer="17758"
-                          :watched="647935"
+                          v-for="(user, index) in watchedBy"
+                          :key="index"
+                          :userName="user.nickName"
+                          :description="user,description"
+                          :answer="user.answers"
+                          :watched="user.watchedBy"
                         ></user-card>
-                        <user-card
-                          userName="vczh"
-                          description="专业造轮子，拉黑抢前排。http://gaclib.net"
-                          :answer="17758"
-                          :watched="647935"
-                        ></user-card>
-                        <user-card
-                          userName="vczh"
-                          description="专业造轮子，拉黑抢前排。http://gaclib.net"
-                          :answer="17758"
-                          :watched="647935"
-                        ></user-card>
-                      </TabPane>
-                      <TabPane label="关注我的人" name="watched">
-                        <user-card
-                          userName="vczh"
-                          description="专业造轮子，拉黑抢前排。http://gaclib.net"
-                          :answer="17758"
-                          :watched="647935"
-                        ></user-card>
-                        <user-card
-                          userName="vczh"
-                          description="专业造轮子，拉黑抢前排。http://gaclib.net"
-                          :answer="17758"
-                          :watched="647935"
-                        ></user-card>
-                      </TabPane>
-                      <TabPane label="关注的问题" name="watchQuestion"></TabPane>
-                      <TabPane label="收藏的回答" name="collectedAnswer">
-                        <AnswerListCard avatar="h" name="ccc" qlink="" feed-title="热门内容,来自: 历史" question="历史上外交时有哪些尴尬场面？" answer="南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."></AnswerListCard>
-                        <AnswerListCard qlink="" question="Mac 上的每个菜单命令，都能自定义快捷键吗?" cover-img="https://ss0.baidu.com/73F1bjeh1BF3odCf/it/u=3420588888,2752900295&fm=85&s=03809E4D4422EB430E34E03103008043" answer = "通常情况下，一个应用在 Mac 菜单栏显示的菜单命令，可以囊括了这个应用的大部分功能。同时也会为常用的菜单设置快捷键，比如最常见的「新建」功能，默认都是 Command + N。 为什么要自定义快捷键,许多开发者有自己的习惯,或..."></AnswerListCard>
-                        <AnswerListCard feed-title="你可能感兴趣: 生活"></AnswerListCard>
+                      </el-tab-pane>
+                      <el-tab-pane label="关注的问题" name="watchQuestion">
+                        <div 
+                          class="no-data-content"  
+                          v-if="watchedQuestion.length == 0"
+                        >
+                          还没有问题
+                        </div>
+                        <question-card
+                          v-for="(item, index) in watchedQuestion"
+                          :key="index"
+                          :title="item.title"
+                          :time="item.time"
+                          :answers="item.answer"
+                          :watchers="item.watch"
+                        ></question-card>
+                      </el-tab-pane>
+                      <el-tab-pane label="收藏的回答" name="collectedAnswer">
+                        <div 
+                          class="no-data-content"  
+                          v-if="favorites.length == 0"
+                        >
+                          还没有收藏的回答
+                        </div>
                         <AnswerListCard
-                          v-for="(item, index) in answerList"
+                          v-for="(item, index) in favorites"
                           :key="index"
                           :avatar="item.avatar"
                           :name="item.name" 
@@ -149,11 +162,26 @@
                           :answer="item.answer"
                         >
                         </AnswerListCard>
-                      </TabPane>
-                      <TabPane label="围观历史" name="history"></TabPane>
-                    </Tabs>
-                  </TabPane>
-                </Tabs>
+                      </el-tab-pane>
+                      <el-tab-pane label="围观历史" name="history">
+                        <div 
+                          class="no-data-content" 
+                          v-if="history.length == 0"
+                        >
+                          还没有围观历史
+                        </div>
+                        <question-card
+                          v-for="(item, index) in history"
+                          :key="index"
+                          :title="item.title"
+                          :time="item.time"
+                          :answers="item.answer"
+                          :watchers="item.watch"
+                        ></question-card>
+                      </el-tab-pane>
+                    </el-tabs>
+                  </el-tab-pane>
+                </el-tabs >
               </div>
             </Col>
             <Col span="8" class="profile-body-right">
@@ -161,11 +189,11 @@
                 <div class="watch-bar">
                   <div class="watch-people" @click="morePaneActiveName = 'watch';profilePaneActiveName = 'more';">
                     <div>关注了</div>
-                    <div>8</div>
+                    <div>{{watchedUser.length}}</div>
                   </div>
                   <div class="watched-people" @click="morePaneActiveName = 'watched';profilePaneActiveName = 'more';">
                     <div>关注者</div>
-                    <div>5</div>
+                    <div>{{watchedBy.length}}</div>
                   </div>
                 </div>
                 <div class="profile-lightItem" @click="morePaneActiveName = 'watchQuestion';profilePaneActiveName = 'more';">
@@ -173,7 +201,7 @@
                     关注的问题
                   </span>
                   <span>
-                    20
+                    {{watchedQuestion.length}}
                   </span>
                 </div>
                 <div class="profile-lightItem" @click="morePaneActiveName = 'collectedAnswer';profilePaneActiveName = 'more';">
@@ -181,7 +209,7 @@
                     收藏的回答
                   </span>
                   <span>
-                    20
+                    {{favorites.length}}
                   </span>
                 </div>
                 <div class="profile-lightItem" @click="morePaneActiveName = 'history';profilePaneActiveName = 'more';">
@@ -189,7 +217,7 @@
                     围观历史
                   </span>
                   <span>
-                    20
+                    {{history.length}}
                   </span>
                 </div>
               </div>
@@ -205,6 +233,8 @@
   const TopBar = resolve => require(['@/components/topBar'], resolve)
   const AnswerListCard = resolve => require(['@/components/answerListCard'], resolve)
   const userCard = resolve => require(['@/components/userCard'], resolve)
+  const questionCard = resolve => require(['@/components/questionCard'], resolve)
+
   import cookieManage from '@/mixins/cookieManage'
   import initInfo from '@/mixins/initInfo'
   export default {
@@ -213,7 +243,8 @@
     components: {
       TopBar,
       AnswerListCard,
-      userCard
+      userCard,
+      questionCard
     },
     data() {
       return {
@@ -246,7 +277,16 @@
 					}
 				],
         morePaneActiveName: 'watch',
-        profilePaneActiveName: 'timeline'
+        profilePaneActiveName: 'timeline',
+        //user info
+        nickName: '',
+        description: '',
+        watchedUser: [],
+        watchedBy: [],
+        watchedQuestion: [],
+        askQuestion: [],
+        history: [],
+        favorites: []
       }
     },
     methods: {
@@ -258,16 +298,9 @@
           }, 2000);
         });
       },
-      showWatchedQuestion() {
-        this.morePaneActiveName = 'watchQuestion'
-        this.profilePaneActiveName = 'more'
-      },
-      showCollectedAnswer() {
-        this.morePaneActiveName = 'watchQuestion'
-        this.profilePaneActiveName = 'more'
-      },
-      showHistory() {
-        console.log(3)
+      changePane(name) {
+        console.log(111)
+        this.profilePaneActiveName = name;
       }
     },
     created () {
@@ -275,7 +308,15 @@
         this.$http.get(`/api/accounts/profile/${this.$store.state.userid}/`)
         .then(res => {
           if(res.body.success) {
-            console.log(res.body.data)
+            let data = res.body.data
+            this.nickName = data.nickname
+            this.description = data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description
+            this.watchedUser = data.watchedUser
+            this.watchedBy = data.watchedBy || []
+            this.watchedQuestion = data.watchedQuestion
+            this.askQuestion = data.askQuestion || []
+            this.history = data.history
+            this.favorites = data.favorites
           }
         })
       }
@@ -327,16 +368,24 @@
       .profile-body-left{
         padding-right: 10px;
         .profile-pane{
+          padding: 0 20px;
           .profile-pane-header{
             font-size: 1.2em;
             font-weight: bold;
             border-bottom: 1px solid #dddee1;
-            padding-left: 5px;
-            margin: 0 15px;
+            padding: 0 0 5px 5px;
+            // margin: 0 15px;
           }
           .morePane {
-            width: 95%;
+            // width: 95%;
             margin: 0 auto;
+          }
+          .no-data-content {
+            height: 200px;
+            font-size: 15px;
+            color: #8590a6;
+            text-align: center;
+            padding-top: 100px;
           }
         }
       }
