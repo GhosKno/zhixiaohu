@@ -2,14 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
-import { LOGIN, LOGOUT, USER } from './mutation-types'
+import { LOGIN, LOGOUT, USER, AVATAR } from './mutation-types'
 import * as actions from './actions'
 
 const store = new Vuex.Store({
   state: {
     isLogin: false,
     userid: '',
-    userName: ''
+    userName: '',
+    avatarUrl: ''
   },
   actions,
   mutations: {
@@ -24,6 +25,9 @@ const store = new Vuex.Store({
     [USER](state, userInfo = { id: '', userName: '' }) {
       state.userid = userInfo.id
       state.userName = userInfo.userName
+    },
+    [AVATAR](state, url = '') {
+      state.avatarUrl = url
     }
   }
 })

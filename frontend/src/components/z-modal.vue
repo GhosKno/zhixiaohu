@@ -19,8 +19,8 @@ export default {
       required: true
     },
     width: {
-      type: String,
-      default: '60'
+      type: Number,
+      default: 60
     },
     onSuccess: {
       type: Function,
@@ -55,7 +55,7 @@ export default {
     },
     submitModal () {
       if (!this.validated) {
-        this.$Message.warning('please input form correctly')
+        this.$Message.warning('请完整填写所有内容')
         setTimeout(() => {
           this.loading = false;
           this.$nextTick(() => {

@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <TopBar></TopBar>
+  <div>
+    <TopBar v-if="$route.name!=='login'" class="top-bar"></TopBar>
     <transition name="router-fade" mode="out-in">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive"></router-view>

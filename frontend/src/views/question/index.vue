@@ -1,44 +1,44 @@
 <template>
   <div>
-        <div class="header">
-            <div class="content">
-            <div class="description">
-                <div class="topics">
-                <a href="/" class="Tag" v-for="topic in question.topics" :key="topic">{{topic}}</a>
-                </div>
-                <h1 class="title">
-                    {{question.title}}
-                </h1>
-                <div class="summary">
-                    {{question.summary}}
-                    <Button type="text" class="read-all">显示全部 <Icon type="chevron-down"></Icon></Button>
-                </div>
+    <div class="header">
+        <div class="content">
+        <div class="description">
+            <div class="topics">
+            <a href="/" class="Tag" v-for="topic in question.topics" :key="topic">{{topic}}</a>
             </div>
-            <div class="countBoard">
-                <a type="text" class="countItem">
-                    <div class="countName">
-                        关注者
-                    </div>
-                    <div class="countNum">
-                        123
-                    </div>
-                </a>
-
-                <div class="countItem">
-                    <div class="countName">
-                        浏览量
-                    </div>
-                    <div class="countNum">
-                        398,231
-                    </div>
-                </div>
-            </div>
-            
-            </div>
-            <div class="footer">
-            <ToolBar :question="true"></ToolBar>
+            <h1 class="title">
+                {{question.title}}
+            </h1>
+            <div class="summary">
+                {{question.summary}}
+                <Button type="text" class="read-all">显示全部 <Icon type="chevron-down"></Icon></Button>
             </div>
         </div>
+        <div class="countBoard">
+            <a type="text" class="countItem">
+                <div class="countName">
+                    关注者
+                </div>
+                <div class="countNum">
+                    123
+                </div>
+            </a>
+
+            <div class="countItem">
+                <div class="countName">
+                    浏览量
+                </div>
+                <div class="countNum">
+                    398,231
+                </div>
+            </div>
+        </div>
+        
+        </div>
+        <div class="footer">
+        <ToolBar :question="true"></ToolBar>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -91,7 +91,7 @@ export default {
     }
   },
   created() {
-    if (this.initInfo()) {
+    if (!this.initInfo()) {
       this.$router.push({ name: "home" });
     }
   }

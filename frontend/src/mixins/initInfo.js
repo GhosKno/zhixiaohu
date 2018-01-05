@@ -10,6 +10,12 @@ const initHandle = {
           id: this.getCookie('userId') || '',
           userName: this.getCookie('userName') || ''
         })
+        this.$http.get(`/api/accounts/profile/${this.$store.state.userid}/`)
+          .then(res => {
+            if (res.body.success) {
+              this.$store.commit('AVATAR', res.body.data.avatar)
+            }
+          })
       }
       return loginState
     }

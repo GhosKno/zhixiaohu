@@ -22,11 +22,19 @@
                 </Col>
                 <Col span="3" offset="8" class="parent-height">
                   <Button 
+                    v-if="$route.params.id == $store.state.userid"
                     type="ghost" 
                     size="large"
                     style="bottom: 5px;position: absolute;"
                     @click="$router.push({name: 'profileEdit'})"
                   >编辑个人资料</Button>
+                  <Button 
+                    v-else
+                    type="primary" 
+                    size="large"
+                    style="bottom: 5px;position: absolute;"
+                    @click="$router.push({name: 'profileEdit'})"
+                  >关注Ta</Button>
                 </Col>
               </Row>
             </div>
@@ -38,7 +46,7 @@
                   :value="profilePaneActiveName" 
                   class="profile-pane">
                   <el-tab-pane label="动态" name="timeline">
-                    <div class="profile-pane-header">我的动态</div>
+                    <div class="profile-pane-header">{{$route.params.id == $store.state.userid ? '我' : 'Ta'}}的动态</div>
                     <div class="profile-pane-body">
                       <!-- //todo -->
                       <AnswerListCard
@@ -55,7 +63,7 @@
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="回答" name="answer">
-                    <div class="profile-pane-header">我的回答</div>
+                    <div class="profile-pane-header">{{$route.params.id == $store.state.userid ? '我' : 'Ta'}}的回答</div>
                     <div class="profile-pane-body">
                       <div
                         class="no-data-content" 
@@ -77,7 +85,7 @@
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="提问" name="question">
-                    <div class="profile-pane-header">我的提问</div>
+                    <div class="profile-pane-header">{{$route.params.id == $store.state.userid ? '我' : 'Ta'}}的提问</div>
                     <div class="profile-pane-body">
                       <div 
                         class="no-data-content" 
@@ -97,7 +105,7 @@
                   </el-tab-pane>
                   <el-tab-pane label="更多" name="more">
                     <el-tabs :value="morePaneActiveName" class="morePane">
-                      <el-tab-pane label="我关注的人" name="watch">
+                      <el-tab-pane :label="`${$route.params.id == $store.state.userid ? '我' : 'Ta'}关注的人`" name="watch">
                         <div
                           class="no-data-content" 
                           v-if="watchedUser.length == 0"
@@ -113,7 +121,7 @@
                           :watched="user.watchedBy"
                         ></user-card>
                       </el-tab-pane>
-                      <el-tab-pane label="关注我的人" name="watched">
+                      <el-tab-pane :label="`关注${$route.params.id == $store.state.userid ? '我' : 'Ta'}的人`" name="watched">
                         <div 
                           class="no-data-content" 
                           v-if="watchedBy.length == 0"
@@ -231,7 +239,6 @@
 </template>
 
 <script>
-  const TopBar = resolve => require(['@/components/topBar'], resolve)
   const AnswerListCard = resolve => require(['@/components/answerListCard'], resolve)
   const userCard = resolve => require(['@/components/userCard'], resolve)
   const questionCard = resolve => require(['@/components/questionCard'], resolve)
@@ -242,7 +249,6 @@
     name: 'profile',
     mixins: [cookieManage, initInfo],
     components: {
-      TopBar,
       AnswerListCard,
       userCard,
       questionCard
@@ -307,7 +313,7 @@
     },
     created () {
       if(this.initInfo()){
-        this.$http.get(`/api/accounts/profile/${this.$store.state.userid}/`)
+        this.$http.get(`/api/accounts/profile/${this.$route.params.id}/`)
         .then(res => {
           if(res.body.success) {
             let data = res.body.data
