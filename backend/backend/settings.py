@@ -15,16 +15,18 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i!rr(n5go7g60cxqca_ayc4gq_7e&9tnu7my9)e*(m84ie2yq1'
+SECRET_KEY = '25ql3sgp^gjufkuu8b#f-2z6(!w0@7rcduf*srie*qyo3+oh(w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 
@@ -36,8 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'QA',
-    'accounts'
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -79,6 +81,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -98,6 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -111,10 +115,19 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'api.User'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
+}
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = 'media/'

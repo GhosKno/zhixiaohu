@@ -11,5 +11,7 @@ class HeatQueue(object):
         if cls.queue.full():
             old = cls.queue.get()
             old.heat -= 1
+            old.save()
         cls.queue.put(topic)
         topic.heat += 1
+        topic.save()
