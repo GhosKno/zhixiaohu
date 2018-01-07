@@ -69,6 +69,7 @@ class AnswerViewSet(GenericViewSet,
         answer.approve += 1
         answer.save()
         profile.agreed.add(answer)
+        #Activity.objects.create()
         profile.save()
         return success()
 

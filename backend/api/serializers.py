@@ -30,22 +30,26 @@ class AvatarSerializer(serializers.Serializer):
     file = serializers.ImageField(default='', )
 
 
-class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    is_watch = serializers.BooleanField(default=False)
     class Meta:
         model = Profile
-        fields = ('url', 'avatar', 'nickname')
+        fields = ('id', 'url', 'avatar', 'nickname', 'description')
 
+
+class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
+    answer_count = serializers.IntegerField()
+    watch_count = serializers.IntegerField()
+
+    class Meta:
+        model = Question
+        fields = ('url', 'add_time', 'title', 'answer_count', 'watch_count')
 
 # all url
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    #watchedBy = serializers.(many=True)
-    class Meta:
-        model = Profile
-        fields = (
-            'avatar', 'nickname', 'description', 'id',#'watchedBy',
-            'watchedQuestion', 'watchedUser',
-            'agreed', 'disagreed', 'favorites', 'history',
-        )
+# class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Profile
+#         fields = ('avatar', 'nickname', 'description', 'id')
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
@@ -80,15 +84,6 @@ class TopicListSerializer(serializers.ModelSerializer):
         fields = ('id', 'label', 'introduction')
 
 
-class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
-    answer_count = serializers.IntegerField()
-    watch_count = serializers.IntegerField()
-
-    class Meta:
-        model = Question
-        fields = ('url', 'add_time', 'title', 'detail', 'answer_count', 'watch_count')
-
-
 # # question will be send with detail
 # class TopicDetailSerializer(serializers.HyperlinkedModelSerializer):
 #     summaries = QuestionListSerializer(many=True)
@@ -105,7 +100,7 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
-    userSummary = AuthorSummarySerializer()
+    userSummary = ProfileSerializer()
     comment_count = serializers.IntegerField(default=0)
 
     class Meta:
@@ -130,7 +125,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    userSummary = AuthorSummarySerializer()
+    userSummary = ProfileSerializer()
 
     class Meta:
         model = Comment

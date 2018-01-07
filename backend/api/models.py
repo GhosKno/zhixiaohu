@@ -138,3 +138,28 @@ class Message(models.Model):
 
     class Meta:
         db_table = 'message'
+        ordering = ('-time',)
+
+
+# class Activity(models.Model):
+#     type = models.CharField(max_length=50)
+#     user = models.ForeignKey(to=Profile,
+#                              on_delete=models.CASCADE,
+#                              related_name='activities'
+#                              )
+#
+#     answer = models.ForeignKey(to=Answer,
+#                                on_delete=models.CASCADE,
+#                                null=True)
+#     question = models.ForeignKey(to=Question,
+#                                  on_delete=models.CASCADE,
+#                                  null=True)
+#     watch = models.ForeignKey(to=Profile,
+#                              on_delete=models.CASCADE,
+#                              related_name='activities',
+#                              null=True)
+#     time = models.DateField(auto_now_add=True)
+#
+#     class Meta:
+#         db_table = 'activity'
+#         ordering = ('-time',)
