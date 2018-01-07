@@ -19,4 +19,5 @@ class ImageAPIView(APIView):
         token = q.upload_token(settings.bucket_name,
                                file_name,
                                3600)
-        return success({'token': token})
+        return success({'token': token,
+                        'name': file_name})

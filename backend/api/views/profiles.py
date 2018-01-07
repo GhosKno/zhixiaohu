@@ -90,7 +90,7 @@ class ProfileViewSet(GenericViewSet,
         profile = self.get_object()
         if profile is None:
             return error('no profile found')
-        questions = profile.watchedQuestion.all()
+        questions = profile.user.published.all()
         page = self.paginate_queryset(questions)
         if page is not None:
             for question in page:
@@ -106,7 +106,7 @@ class ProfileViewSet(GenericViewSet,
         profile = self.get_object()
         if profile is None:
             return error('no profile found')
-        answers = profile.agreed.all()
+        answers = profile.user.answered.all()
         page = self.paginate_queryset(answers)
         if page is not None:
             for answer in page:
@@ -172,7 +172,8 @@ class ProfileViewSet(GenericViewSet,
             for question in page:
                 question.answer_count = question.answers.count()
                 question.watch_count = question.watchedUser.count()
-            serializer = QuestionListSerializer(page, many=True)
+            serializer = QuestionListSerializer(page, many=True,
+                                                context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
@@ -189,7 +190,8 @@ class ProfileViewSet(GenericViewSet,
             profiles.append(user.profile)
         page = self.paginate_queryset(profiles)
         if page is not None:
-            serializer = ProfileSerializer(page, many=True, context={'request': request})
+            serializer = ProfileSerializer(page, many=True,
+                                           context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
@@ -204,8 +206,9 @@ class ProfileViewSet(GenericViewSet,
         if page is not None:
             for profile in page:
                 profile.is_watch = request.user.profile\
-                    .watchedUser.filter(profile=profile).exist()
-            serializer = ProfileSerializer(page, many=True, context={'request': request})
+                    .watchedUser.filter(profile=profile).exists()
+            serializer = ProfileSerializer(page, many=True,
+                                           context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
