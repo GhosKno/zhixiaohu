@@ -1,13 +1,14 @@
 <template>
   <div>
     <quill-editor
-      ref="newEditor"
-      :options="newOption"
+      ref="quillEditor"
+      :options="editorOption"
       style="height: 200px; margin-bottom: 10px"
       v-model="editorContent"
-      @change="editorChange">
+      @change="editorChange"
+    >
     </quill-editor>
-    <form 
+    <!-- <form 
       action="" 
       method="post" 
       enctype="multipart/form-data" 
@@ -21,10 +22,24 @@
         multiple 
         accept="image/jpg,image/jpeg,image/png,image/gif" 
         @change="uploadImg('uploadFormMulti')">
-    </form>
+    </form> -->
+    <Upload 
+      action="//upload.qiniu.com"
+      :before-upload="beforeUpload"
+      :data="uploadData"
+      :on-success="upScuccess"
+      ref="upload"
+      style="display: none;">
+        <Button 
+          type="ghost" 
+          icon="ios-cloud-upload-outline"
+          id="uploadInput"
+        >Upload files</Button>
+    </Upload>
   </div>
 </template>
 <script>
+  const STATICDOMAIN = ''
   import { quillEditor } from 'vue-quill-editor'
   import Quill from 'quill'
   import { ImageImport } from './modules/ImageImport.js'
@@ -36,12 +51,10 @@
     components: {quillEditor},
     data(){
       return {
-        editorContent: '',
-        htmlContent: '',
-        uniqueId: '',
-        imgPercent: 0,
-        imageLoading: false,
-        newOption: {
+        editorContent: '', //文章内容
+        htmlContent: '',  //html内容
+        uploadData:{},
+        editorOption: {
           placeholder: this.placeholder,
           modules: {
             toolbar: [
@@ -56,7 +69,7 @@
           },
           strict: false,
         },
-        addImgRange: 0,
+        addRange: {},
       }
     },
     methods: {
@@ -66,54 +79,47 @@
       getHtmlContent() {
         return this.htmlContent
       },
-      async uploadImg(id) {
-        this.imageLoading = true
-        let formData = new FormData(document.getElementById(id)[0])
-        try {
-          const url = await this.uploadImgReq(formData)
-          if (url != null && url.length > 0) {
-            let value = url
-            let index = this.addImgRange.hasOwnProperty('index') ? this.addImgRange.index : 0 // 获取插入时的位置索引，如果获取失败，则插入到最前面
-            this.$refs.newEditor.quill.insertEmbed(index , 'image', value, Quill.sources.USER)
-            let img = new Image()
-            img.src = value
-            img.onload = () => {
-              this.$refs.newEditor.quill.formatText(index, index + 1, 'width', 400 + 'px');
-            }
-          } else {
-          }
-          document.getElementById(this.uniqueId).value=''
-        } catch ({message: msg}) {
-          document.getElementById(this.uniqueId).value=''
-        }
-        this.imageLoading = false
+      beforeUpload(file) {
+        return this.upload(file)
       },
-      async uploadImgReq (formData) {
-        // todo upload image
-        return new Promise((resolve, reject) => {
-          if (true) {
-            resolve("http://ock1p2k5t.bkt.clouddn.com/canvas-star%E4%B8%8B%E8%BD%BD%20%281%29.png")
-          } else {
-            reject({message: '图片上传失败'})
-          }
+      upload(file) {
+        const suffix = file.name.split('.')
+        const ext = suffix.splice(suffix.length-1,1)[0]
+          return this.$http.get('/api/images').then(res => {
+            this.uploadData = {
+              key: `image/${suffix.join('.')}_${new Date().getTime()}.${ext}`,
+              token: res.data
+            }
         })
       },
-    },
-    created: function () {
-      this.imgPercent = 0
-      this.editorContent = this.text
-      this.uniqueId = this.editorId?this.editorId:'inputImg'
-    },
-    watch:{
-      text: function () {
-        this.editorContent = this.text
+      upScuccess(e, file, fileList) {
+        console.log(e)
+        let url = ''
+        url = STATICDOMAIN + e.key
+        url = 'http://ock1p2k5t.bkt.clouddn.com/canvas-star%E4%B8%8B%E8%BD%BD%20%281%29.png'
+        if (url != null && url.length > 0) { // 将文件上传后的URL地址插入到编辑器文本中
+          let value = url
+          for(var i = 0;i<=100;i++) {
+            this.addRange = this.$refs.quillEditor.quill.getSelection()
+            if(this.addRange) {
+              break
+            }
+          }
+          value = value.indexOf('http') !== -1 ? value : 'http:' + value
+          this.$refs.quillEditor.quill.insertEmbed(this.addRange && this.addRange.hasOwnProperty('index') ? this.addRange.index : 0, 'image', value, Quill.sources.USER)
+        } else {
+          this.$message.error(`图片插入失败`)
+        }
+        this.$refs['upload'].clearFiles()
       }
     },
+    created: function () {
+    },
     mounted() {
-      this.$refs.newEditor.quill.getModule("toolbar").addHandler("image", async (image) => {
-        this.addImgRange = this.$refs.newEditor.quill.getSelection()
+      this.$refs.quillEditor.quill.getModule("toolbar").addHandler("image", async (image) => {
+        this.addRange = this.$refs.quillEditor.quill.getSelection()
         if (image) {
-          let fileInput = document.getElementById(this.uniqueId)
+          let fileInput = document.getElementById('uploadInput')
           fileInput.click()
         }
       })

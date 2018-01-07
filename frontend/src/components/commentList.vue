@@ -4,7 +4,7 @@
         <div class="title">
             {{numOfComment}} 条评论
         </div>
-        <Select v-model="model1" style="float: right;width:100px" placeholder="默认排序">
+        <Select style="float: right;width:100px" placeholder="默认排序">
           <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
     </div>

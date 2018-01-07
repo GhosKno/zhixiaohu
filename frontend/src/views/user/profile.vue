@@ -443,7 +443,7 @@
               // this.askQuestion = data.askQuestion || []
               // this.history = data.history || []
               // this.favorites = data.favorites || []
-              this.avatarUrl = data.avatar || ''
+              this.avatarUrl = data.avatar || '/static/avatar.jpg'
             }
           })
       }

@@ -15,7 +15,7 @@ const initHandle = {
         this.$http.get(`/api/profiles/${this.$store.state.userid}/`)
           .then(res => {
             if (res.body.success) {
-              this.$store.commit('AVATAR', res.body.data.avatar)
+              this.$store.commit('AVATAR', res.body.data.avatar || '/static/avatar.jpg')
             }
           })
       }
