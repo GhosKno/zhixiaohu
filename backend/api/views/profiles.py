@@ -31,6 +31,8 @@ class ProfileViewSet(GenericViewSet,
     def retrieve(self, request, *args, **kwargs):
         profile = self.get_object()
         if profile:
+            #watched = profile.user.watchedBy.all()
+            #profile.watchedBy = watched
             seri = self.get_serializer(profile)
             return success(seri.data)
         return error("no profile found")

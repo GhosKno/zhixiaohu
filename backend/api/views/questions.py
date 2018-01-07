@@ -1,11 +1,10 @@
+from rest_framework import mixins
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
-from rest_framework import mixins
 
-from api.models import Question, Answer
+from api.models import Question
 from api.serializers import QuestionCreateSerializer, QuestionDetailSerializer, AnswerSerializer
-
 from utils.views import GenericViewSet, error, success
 
 

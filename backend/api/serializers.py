@@ -38,10 +38,11 @@ class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
 
 # all url
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    #watchedBy = serializers.(many=True)
     class Meta:
         model = Profile
         fields = (
-            'avatar', 'nickname', 'description',
+            'avatar', 'nickname', 'description', 'id',#'watchedBy',
             'watchedQuestion', 'watchedUser',
             'agreed', 'disagreed', 'favorites', 'history',
         )

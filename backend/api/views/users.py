@@ -28,7 +28,8 @@ class UserViewSet(viewsets.GenericViewSet,
             return user.messages.all()
         return User.objects.all()
 
-    @list_route(methods=['POST'])
+    @list_route(methods=['POST'],
+                permission_classes=[])
     def login(self, request):
         data = request.data
         seri = self.get_serializer(data=data)
@@ -50,7 +51,8 @@ class UserViewSet(viewsets.GenericViewSet,
         auth.logout(request)
         return success()
 
-    @list_route(methods=['POST'])
+    @list_route(methods=['POST'],
+                permission_classes=[])
     def register(self, request, *args, **kwargs):
         data = request.data
         seri = self.get_serializer(data=data)
