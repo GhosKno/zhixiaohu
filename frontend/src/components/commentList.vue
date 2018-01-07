@@ -4,6 +4,9 @@
         <div class="title">
             {{numOfComment}} 条评论
         </div>
+        <Select v-model="model1" style="float: right;width:100px" placeholder="默认排序">
+          <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
     </div>
     <div class="list">
         <div class="item" 
@@ -52,6 +55,16 @@ export default {
       ],
       showCommentBtn: false,
       commentVal: '',
+      answerSort: [
+          {
+              value: 'default',
+              label: '默认排序'
+          },
+          {
+              value: 'time',
+              label: '按时间排序'
+          }
+      ],
     };
   },
   methods: {

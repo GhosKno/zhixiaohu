@@ -4,8 +4,8 @@
 			:on-reach-bottom="handleReachBottom"
 			:height="1200"
 		>
-				<Row>
-					<Col :offset="3" :span="12" class="container">
+				<div class="container">
+					<div class="main">
 						<SubMenuBar></SubMenuBar>
 					 	<div class="feed-flow">
 								<AnswerListCard avatar="h" name="ccc" pk="1" feed-title="热门内容,来自: 历史" question="历史上外交时有哪些尴尬场面？" answer="南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."></AnswerListCard>
@@ -23,11 +23,9 @@
 								>
 								</AnswerListCard>
 						</div>
-					</Col>
-					<Col :offset="1" :span="5" class="sidebar">
-						<SideBar></SideBar>
-					</Col>
-				</Row>
+					</div>
+					<SideBar class="sidebar"></SideBar>
+				</div>	
 		</Scroll>
   </div>
 </template>
@@ -50,7 +48,7 @@
 					{
 						avatar:"h",
 						name:"ccc",
-						qlink:"",
+						pk:"3",
 						feedTitle:"热门内容,来自: 历史",
 						question:"历史上外交时有哪些尴尬场面？",
 						answer:"南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."
@@ -78,10 +76,22 @@
 
 <style scoped>
     .container{
-        min-width: 200px;
-        margin-top: 10px;
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+			-webkit-box-align: start;
+			-ms-flex-align: start;
+			align-items: flex-start;
+			position: relative;
+			width: 1000px;
+			margin-top: 10px;
+			margin: 10px auto;
     }
+		.main{
+			width: 679px;
+		}
     .sidebar{
-        margin-top: 10px;
+			width: 296px;
+			padding: 0 16px;
     }
 </style>

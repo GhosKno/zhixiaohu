@@ -40,29 +40,30 @@
         </div>
     </div>
     <div class="main">
-      <div class="answer-flow  card">
+      <div class="answer-flow card">
         <div class="topbar">
             <div class="title">
                 {{numOfAnswer}} 个回答
             </div>
-            <Select v-model="model1" style="float: right;width:200px" value="default">
+            <Select v-model="model1" style="float: right;width:100px" placeholder="默认排序">
                 <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
         </div>
-      <AnswerCard class="answer">
-      </AnswerCard>
-      <AnswerCard class="answer card"
-        v-for="(item, index) in answerList"
-        :key="index"
-        :avatar="item.avatar"
-        :name="item.name" 
-        :pk="item.pk" 
-        :feed-title="item.feedTitle" 
-        :question="item.question" 
-        :answer="item.answer">
+        <AnswerCard>
+        </AnswerCard>
+        <AnswerCard>
+          v-for="(item, index) in answerList"
+          :key="index"
+          :avatar="item.avatar"
+          :name="item.name" 
+          :pk="item.pk" 
+          :feed-title="item.feedTitle" 
+          :question="item.question" 
+          :answer="item.answer">
 
-      </AnswerCard>
+        </AnswerCard>
       </div>
+      <SideBar class="sidebar"></SideBar>
     </div>
   </div>
 </template>
@@ -71,12 +72,13 @@
 const AnswerCard = resolve =>
   require(["@/components/answerCard"], resolve);
 const ToolBar = resolve => require(["@/components/toolBar"], resolve);
+const SideBar = resolve => require(["@/components/sideBar"], resolve);
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
 export default {
   name: "QuestionPage",
   mixins: [cookieManage, initInfo],
-  components: { AnswerCard, ToolBar },
+  components: { AnswerCard, ToolBar, SideBar },
   data() {
     return {
       windowHeight: "",
@@ -107,7 +109,7 @@ export default {
       answerSort: [
           {
               value: 'default',
-              label: '按默认排序'
+              label: '默认排序'
           },
           {
               value: 'time',
@@ -164,7 +166,7 @@ export default {
   -webkit-box-shadow: 0 1px 3px 0 rgba(0, 37, 55, 0.1);
   box-shadow: 0 1px 3px 0 rgba(0, 37, 55, 0.1);
 }
-.content {
+.content,.main {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -176,6 +178,12 @@ export default {
   padding: 0 16px;
   margin: 0 auto;
 }
+.answer-flow{
+  width: 696px;
+}
+.sidebar{
+  width:257px;
+}
 .title {
   margin-top: 12px;
   margin-bottom: 4px;
@@ -186,17 +194,7 @@ export default {
   color: #1e1e1e;
 }
 .footer {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
   width: 1000px;
-  height: 100%;
   padding: 0 16px;
   margin: 0 auto;
 }
@@ -255,7 +253,7 @@ export default {
     border-radius: 100px;
 }
 .main{
-      display: -webkit-box;
+    display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: justify;
@@ -270,7 +268,19 @@ export default {
     min-height: 100vh;
 }
 .answer{
-      width: 694px;
-    padding-bottom: 20px;
+  position: relative;
+  padding: 5px 18px;
+  margin-top: 10px;
+  width: 694px;
+}
+.answer+.answer:after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin: 0 20px;
+    display: block;
+    border-bottom: 1px solid #f0f2f7;
+    content: "";
 }
 </style>

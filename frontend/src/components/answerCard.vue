@@ -89,11 +89,6 @@ export default {
 </script>
 
 <style scoped>
-
-.answer{
-    padding: 13px 18px;
-    margin-top: 10px;
-}
 .feed-title {
   color: #8590a6;
   line-height: 1;
