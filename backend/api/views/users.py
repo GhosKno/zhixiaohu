@@ -100,7 +100,10 @@ class UserViewSet(viewsets.GenericViewSet):
             return error('user not exists')
         profile = request.user.profile
         profile.watchedUser.add(user)
+        profile.watchCount += 1
         profile.save()
+        user.profile.beWatchCount += 1
+        user.profile.save()
         if request.user.is_authenticated:
             Activity.watchUser(request.user.profile, profile)
         return success()
@@ -113,5 +116,9 @@ class UserViewSet(viewsets.GenericViewSet):
             return error('user not exists')
         profile = request.user.profile
         profile.watchedUser.remove(user)
+        profile.watchCount -= 1
         profile.save()
+
+        user.profile.beWatchCount -= 1
+        user.profile.save()
         return success()

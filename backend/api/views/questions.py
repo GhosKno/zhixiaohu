@@ -2,6 +2,8 @@ from rest_framework import mixins
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 
 from api.models import Question, Activity
 from api.serializers import QuestionCreateSerializer, QuestionDetailSerializer, AnswerSerializer
@@ -13,6 +15,7 @@ class QuestionViewSet(GenericViewSet,
                       mixins.CreateModelMixin,
                       mixins.RetrieveModelMixin):
 
+    permission_classes = (IsAuthenticatedOrReadOnly, )
     filter_backends = (SearchFilter,)
     search_fields = ('title', 'detail')
 
@@ -40,7 +43,7 @@ class QuestionViewSet(GenericViewSet,
             question.is_watch = False
         seri = self.get_serializer(question)
         question.visit_count+=1
-        return Response(seri.data)
+        return success(seri.data)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

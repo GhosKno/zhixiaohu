@@ -1,5 +1,6 @@
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.models import Topic, Question
 from api.serializers import TopicListSerializer, QuestionListSerializer
@@ -15,6 +16,7 @@ class TopicViewSet(GenericViewSet,
 
     filter_backends = (SearchFilter, )
     search_fields =('label', 'introduction')
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self, pk=None):
         return Topic.objects.all()

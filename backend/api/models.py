@@ -112,6 +112,10 @@ class Profile(models.Model):
     nickname = models.CharField(max_length=30)
     description = models.TextField(max_length=500)
 
+    watchCount = models.IntegerField(default=0)
+    beWatchCount = models.IntegerField(default=0)
+    answerCount = models.IntegerField(default=0)
+
     watchedQuestion = models.ManyToManyField(to=Question, related_name='watchedUser')
     watchedUser = models.ManyToManyField(to=User, related_name='watchedBy')
 

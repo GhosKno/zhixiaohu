@@ -6,7 +6,7 @@ from rest_framework.parsers import MultiPartParser
 
 from api.models import Profile
 from api.serializers import ProfileSerializer, ProfileUpdateSerializer, AvatarSerializer, AnswerSerializer, \
-    QuestionListSerializer, ProfileSummarySerializer, ActivitySerializer
+    QuestionListSerializer, ActivitySerializer
 
 from utils.views import GenericViewSet, success, error
 from utils import mixins
@@ -38,7 +38,7 @@ class ProfileViewSet(GenericViewSet,
                 profile.is_watch = count
             else:
                 profile.is_watch = False
-            seri = self.get_serializer(profile)
+            seri = self.get_serializer(profile, context={'request':request})
             return success(seri.data)
         return error("no profile found")
 
@@ -186,10 +186,11 @@ class ProfileViewSet(GenericViewSet,
         users = profile.watchedUser.all()
         profiles = []
         for user in users:
+            user.profile.is_watch = True
             profiles.append(user.profile)
         page = self.paginate_queryset(profiles)
         if page is not None:
-            serializer = ProfileSummarySerializer(page, many=True)
+            serializer = ProfileSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
@@ -202,7 +203,10 @@ class ProfileViewSet(GenericViewSet,
         profiles = profile.user.watchedBy.all()
         page = self.paginate_queryset(profiles)
         if page is not None:
-            serializer = ProfileSummarySerializer(page, many=True)
+            for profile in page:
+                profile.is_watch = request.user.profile\
+                    .watchedUser.filter(profile=profile).exist()
+            serializer = ProfileSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')

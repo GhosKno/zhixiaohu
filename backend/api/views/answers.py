@@ -2,6 +2,7 @@ from threading import Thread
 
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.models import Answer, Message, Activity
 from api.serializers import AnswerSerializer, CommentSerializer, AnswerCreateSerializer
@@ -15,6 +16,7 @@ class AnswerViewSet(GenericViewSet,
                     mixins.RetrieveModelMixin):
     filter_backends = (SearchFilter,)
     search_fields = ('detail',)
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     queryset = Answer.objects.all()
 
@@ -54,6 +56,8 @@ class AnswerViewSet(GenericViewSet,
 
     def perform_create(self, serializer):
         user = self.request.user
+        user.profile.answerCount += 1
+        user.profile.save()
         question = serializer.validated_data['question']
         answer = serializer.save(author=user)
         thread = Thread(target=msg_thread, args=(question, user, answer))
