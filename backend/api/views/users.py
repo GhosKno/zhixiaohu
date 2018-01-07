@@ -1,4 +1,6 @@
 from django.contrib import auth
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
@@ -28,8 +30,8 @@ class UserViewSet(viewsets.GenericViewSet,
             return user.messages.all()
         return User.objects.all()
 
-    @list_route(methods=['POST'],
-                permission_classes=[])
+    @list_route(methods=['POST'])
+    @method_decorator(csrf_exempt)
     def login(self, request):
         data = request.data
         seri = self.get_serializer(data=data)
@@ -51,8 +53,8 @@ class UserViewSet(viewsets.GenericViewSet,
         auth.logout(request)
         return success()
 
-    @list_route(methods=['POST'],
-                permission_classes=[])
+    @list_route(methods=['POST'])
+    @method_decorator(csrf_exempt)
     def register(self, request, *args, **kwargs):
         data = request.data
         seri = self.get_serializer(data=data)
