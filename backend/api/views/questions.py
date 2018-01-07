@@ -3,7 +3,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 
-from api.models import Question
+from api.models import Question, Activity
 from api.serializers import QuestionCreateSerializer, QuestionDetailSerializer, AnswerSerializer
 from utils.views import GenericViewSet, error, success
 
@@ -71,6 +71,8 @@ class QuestionViewSet(GenericViewSet,
         profile = request.user.profile
         profile.watchedQuestion.add(question)
         profile.save()
+        if request.user.is_authenticated:
+            Activity.watchQuestion(request.user.profile, question)
         return success()
 
     @detail_route(methods=['GET'])

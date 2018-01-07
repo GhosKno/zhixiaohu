@@ -3,7 +3,7 @@ from threading import Thread
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
 
-from api.models import Answer, Message
+from api.models import Answer, Message, Activity
 from api.serializers import AnswerSerializer, CommentSerializer, AnswerCreateSerializer
 from utils.heat import HeatQueue
 from utils.views import error, success, GenericViewSet
@@ -69,8 +69,9 @@ class AnswerViewSet(GenericViewSet,
         answer.approve += 1
         answer.save()
         profile.agreed.add(answer)
-        #Activity.objects.create()
         profile.save()
+        if request.user.is_authenticated:
+            Activity.agreeAnswer(request.user.profile, answer)
         return success()
 
     @detail_route(methods=['GET'])

@@ -6,7 +6,7 @@ from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from api.models import User, Message
+from api.models import User, Message, Activity
 from api.serializers import LoginSerializer, RegisterSerializer, ResetPasswordSerializer, ProfileSerializer, \
     MessageSerializer
 from utils.views import success, error
@@ -65,7 +65,7 @@ class UserViewSet(viewsets.GenericViewSet,
         user = User.objects.get(username=username)
         auth.login(request, user)
         profile = user.profile
-        seri = ProfileSerializer(profile)
+        seri = ProfileSerializer(profile, context={'request':request})
         return success(seri.data)
 
     def update(self, request, *args, **kwargs):
@@ -98,6 +98,8 @@ class UserViewSet(viewsets.GenericViewSet,
         profile = request.user.profile
         profile.watchedUser.add(user)
         profile.save()
+        if request.user.is_authenticated:
+            Activity.watchUser(request.user.profile, profile)
         return success()
 
     @detail_route(methods=['GET'])

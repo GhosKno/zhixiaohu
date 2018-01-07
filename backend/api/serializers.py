@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models import User, Profile, Topic, Question, Answer, Comment, Message
+from api.models import User, Profile, Topic, Question, Answer, Comment, Message, Activity
 
 
 class LoginSerializer(serializers.Serializer):
@@ -32,9 +32,10 @@ class AvatarSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     is_watch = serializers.BooleanField(default=False)
+
     class Meta:
         model = Profile
-        fields = ('id', 'url', 'avatar','is_watch', 'nickname', 'description')
+        fields = ('id', 'url', 'avatar', 'is_watch', 'nickname', 'description')
 
 
 class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,6 +45,7 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Question
         fields = ('url', 'add_time', 'title', 'answer_count', 'watch_count')
+
 
 # all url
 # class ProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -145,7 +147,7 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username'
-     )
+    )
     question = serializers.SlugRelatedField(
         read_only=True,
         slug_field='title'
@@ -154,3 +156,14 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Message
         fields = ('id', 'has_read', 'time', 'question', 'answer', 'author')
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    answer = AnswerSerializer(allow_null=True)
+    question = QuestionListSerializer(allow_null=True)
+    watch = ProfileSerializer(allow_null=True)
+
+    class Meta:
+        model = Activity
+        fields = ('answer', 'question', 'user',
+                  'type', 'watch')

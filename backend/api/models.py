@@ -142,25 +142,43 @@ class Message(models.Model):
         ordering = ('-time',)
 
 
-# class Activity(models.Model):
-#     type = models.CharField(max_length=50)
-#     user = models.ForeignKey(to=Profile,
-#                              on_delete=models.CASCADE,
-#                              related_name='activities'
-#                              )
-#
-#     answer = models.ForeignKey(to=Answer,
-#                                on_delete=models.CASCADE,
-#                                null=True)
-#     question = models.ForeignKey(to=Question,
-#                                  on_delete=models.CASCADE,
-#                                  null=True)
-#     watch = models.ForeignKey(to=Profile,
-#                              on_delete=models.CASCADE,
-#                              related_name='activities',
-#                              null=True)
-#     time = models.DateField(auto_now_add=True)
-#
-#     class Meta:
-#         db_table = 'activity'
-#         ordering = ('-time',)
+class Activity(models.Model):
+    type = models.CharField(max_length=50)
+    user = models.ForeignKey(to=Profile,
+                             on_delete=models.CASCADE,
+                             related_name='activities'
+                             )
+    # agree
+    answer = models.ForeignKey(to=Answer,
+                               on_delete=models.CASCADE,
+                               null=True)
+    # watch
+    question = models.ForeignKey(to=Question,
+                                 on_delete=models.CASCADE,
+                                 null=True)
+    # watch user
+    watch = models.ForeignKey(to=Profile,
+                             on_delete=models.CASCADE,
+                             null=True)
+    time = models.DateField(auto_now_add=True)
+
+    @classmethod
+    def watchQuestion(cls, user, question):
+        cls.objects.create(type='QUES_WATCH',
+                           question=question,
+                           user=user).save()
+
+    @classmethod
+    def agreeAnswer(cls, user, answer):
+        cls.objects.create(type='ANS_AGREE',
+                           answer=answer,
+                           user=user).save()
+
+    @classmethod
+    def watchUser(cls, user, watch):
+        cls.objects.create(type='USER_WATCH',
+                           watch=watch,
+                           user=user).save()
+    class Meta:
+        db_table = 'activity'
+        ordering = ('-time',)
