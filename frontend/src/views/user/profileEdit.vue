@@ -12,7 +12,9 @@
                   :headers="{
                     'X-CSRFTOKEN': this.$cookie.get('csrftoken'),
                   }"
-                  action="/api/users/avatar/"
+                  action="/api/profiles/avatar/"
+                  :show-upload-list=false
+                  :on-success="getProfile"
                 >
                   <div style="padding-top: 40px;text-align: center;width: 160px;height: 160px;background: rgba(0, 0, 0, 0.5);">
                     <Icon type="camera" size="45"></Icon>
@@ -26,7 +28,7 @@
                 <span>
                   {{nickName}}
                 </span>
-                <Button type="text" @click="$router.push({name: 'profile'})">
+                <Button type="text" @click="$router.push({path: `/profile/${$store.state.userid}`})">
                   返回我的主页&nbsp;&nbsp;
                   <Icon type="chevron-right"></Icon>
                 </Button>
@@ -137,10 +139,9 @@ export default {
     },
     updateEmail() {
 
-    }
-  },
-  created () {
-    if(this.initInfo()){
+    },
+    getProfile() {
+      console.log(111)
       this.$http.get(`/api/profiles/${this.$store.state.userid}/`)
       .then(res => {
         if(res.body.success) {
@@ -151,9 +152,15 @@ export default {
           this.newNickName = this.nickName
           this.newDescription = this.description
           this.newEmail = this.email
-          this.avatarUrl = data.avatar || 'media/1.png'
+          this.avatarUrl = data.avatar
+          this.initInfo()
         }
       })
+    }
+  },
+  created () {
+    if(this.initInfo()){
+      this.getProfile()
     }
   }
 }

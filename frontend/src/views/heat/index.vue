@@ -56,23 +56,7 @@
       return {
         windowHeight: '',
         filename: '',
-        heatedTopoics: [
-          {label: "电影"},
-          {label: "互联网"},
-          {label: "移动互联网"},
-          {label: "学习"},
-          {label: "网页设计"},
-          {label: "前端开发"},
-          {label: "中国历史"},
-          {label: "历史"},
-          {label: "HTML"},
-          {label: "维基百科"},
-          {label: "产品设计"},
-          {label: "程序员"},
-          {label: "JacaScript"},
-          {label: "自然科学"},
-          {label: "知识产权"}
-        ],
+        heatedTopoics: [],
         curTopic: '', // 当前查看话题列表
         answerList: [
 					{
@@ -99,6 +83,12 @@
       upload(file) {
         console.log(file)
         this.filename = file.name
+      },
+      getHotTopics() {
+        this.$http.get('/api/topics/hot')
+          .then(res => {
+            this.heatedTopoics = res.body.data
+          })
       }
     },
     components: {
@@ -111,6 +101,7 @@
       })
     },
     created () {
+      this.getHotTopics()
     }
   }
 </script>

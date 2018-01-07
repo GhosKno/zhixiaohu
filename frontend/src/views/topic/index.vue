@@ -10,7 +10,7 @@
               <div class="content-header">
                 <Icon size="20" type="grid"></Icon>
                 <span>话题广场</span>
-                <span>共998个话题</span>
+                <span>共{{topicsCount}}个话题</span>
                 <Button 
                   type="text" 
                   style="font-size:13px;"
@@ -19,6 +19,11 @@
               </div>
               <div class="content-body">
                 <Row class="topics-content">
+                  <div
+                    v-if="topicsList.length == 0" 
+                    class="no-topic">
+                    还没有话题，快去添加话题吧
+                  </div>
                   <Col 
                     v-for="(topic, index) in topicsList"
                     :key="index"
@@ -40,12 +45,12 @@
       </Row>
     </Scroll>
     <z-modal
-      action="/"
-      :onSuccess="addTopicHandle()"
+      action="/api/topics/"
+      :onSuccess="addTopicHandle"
       :params="topicForm"
       successMsg="成功添加话题"
       title="添加话题"
-      :validated='topicForm.label.length > 0 && topicForm.length > 0'
+      :validated='topicForm.label.length > 0 && topicForm.introduction.length > 0'
       ref="addTopic"
     >
       <div slot="body" class="topic-form">
@@ -65,23 +70,9 @@
     data () {
       return {
         windowHeight: '',
-        topicsList: [
-          {label: "电影", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "互联网", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "移动互联网", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "学习", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "网页设计", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "前端开发", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "中国历史", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "历史", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "HTML", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "维基百科", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "产品设计", introduction: '游戏 是一种在特定时间、空间范围内遵循某种特定规则的，追求精神…'},
-          {label: "程序员"},
-          {label: "JacaScript"},
-          {label: "自然科学"},
-          {label: "知识产权"}
-        ],
+        topicsList: [],
+        topicsCount: '',
+        nextPageUrl: '',
         topicForm: {
           label: '',
           introduction: ''
@@ -90,16 +81,38 @@
     },
     methods: {
       handleReachBottom () {
+        let re = /(\w+):\/\/([^\:|\/]+)(\:\d*)?(.*\/)([^#|\?|\n]+)?(#.*)?(\?.*)?/i;
         return new Promise(resolve => {
-          setTimeout(() => {
-            // this.number = this.number + 5
-            // this.answerList.push(...this.answerList)
-            resolve();
-          }, 2000);
+          if(!this.nextPageUrl){
+            this.$Message.info('没有下一页了')
+            resolve()
+            return
+          }
+          this.$http.get(this.nextPageUrl.match(re).slice(4).join(''))
+            .then(res => {
+              this.nextPageUrl = res.body.data.next
+              this.topicsCount = res.body.data.count
+              setTimeout(() => {
+                resolve();
+                this.topicsList.push(...(res.body.data.results))
+              }, 500);
+            })
         });
       },
-      addTopicHandle () {
-        
+      addTopicHandle (res) {
+        if(res.body.success) {
+          this.getTopics()
+        }
+      },
+      getTopics() {
+        this.$http.get('/api/topics/')
+          .then(res => {
+            this.topicsList = res.body.data.results
+            this.topicsCount = res.body.data.count
+            if(res.body.data.next) {
+              this.nextPageUrl = res.body.data.next
+            }
+          })
       }
     },
     components: {
@@ -113,6 +126,7 @@
       })
     },
     created () {
+      this.getTopics()
     }
   }
 </script>
@@ -146,6 +160,14 @@
       }
     }
     .content-body {
+      min-height: 300px;
+      .no-topic {
+        height: 200px;
+        font-size: 15px;
+        color: #8590a6;
+        text-align: center;
+        padding-top: 100px;
+      }
       .topics-content {
         .topic-content-body {
           height: 100px;

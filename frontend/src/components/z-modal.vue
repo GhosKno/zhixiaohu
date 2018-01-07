@@ -71,10 +71,10 @@ export default {
             if (!res.body.success) {
               this.$Message.error(res.body.msg)
             } else {
-              if (this.onSuccess && typeof this.onSuccess === Function) {
-                this.onSuccess()
+              if (this.onSuccess && typeof this.onSuccess == 'function') {
+                this.onSuccess(res)
               }
-              if (this.successMsg && typeof this.successMsg === String) {
+              if (this.successMsg && typeof this.successMsg == 'string') {
                 this.$Message.success(this.successMsg)
               }
               this.showModal = false

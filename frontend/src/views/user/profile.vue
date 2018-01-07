@@ -33,8 +33,8 @@
                     type="primary" 
                     size="large"
                     style="bottom: 5px;position: absolute;"
-                    @click="$router.push({name: 'profileEdit'})"
-                  >关注Ta</Button>
+                    @click="watchUserHandle()"
+                  >{{!isWatched ? '关注Ta' : '取消关注Ta'}}</Button>
                 </Col>
               </Row>
             </div>
@@ -46,7 +46,7 @@
                   :value="profilePaneActiveName" 
                   @tab-click="tabClick"
                   class="profile-pane">
-                  <el-tab-pane label="动态" name="timeline">
+                  <el-tab-pane label="动态" name="activities">
                     <div class="profile-pane-header">{{$route.params.id == $store.state.userid ? '我' : 'Ta'}}的动态</div>
                     <div class="profile-pane-body">
                       <!-- //todo -->
@@ -105,7 +105,10 @@
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="更多" name="more">
-                    <el-tabs :value="morePaneActiveName" class="morePane">
+                    <el-tabs 
+                      :value="morePaneActiveName"
+                      @tab-click="tabClick"
+                      class="morePane">
                       <el-tab-pane :label="`${$route.params.id == $store.state.userid ? '我' : 'Ta'}关注的人`" name="watch">
                         <div
                           class="no-data-content" 
@@ -116,7 +119,9 @@
                         <user-card
                           v-for="(user, index) in watchedUser"
                           :key="index"
-                          :userName="user.nickName"
+                          :userid="user.id || '1'"
+                          :userName="user.nickname"
+                          :isWatched="true"
                           :description="user,description"
                           :answer="user.answers"
                           :watched="user.watchedBy"
@@ -132,7 +137,9 @@
                         <user-card
                           v-for="(user, index) in watchedBy"
                           :key="index"
-                          :userName="user.nickName"
+                          :userid="user.id || '1'"
+                          :userName="user.nickname"
+                          :isWatched="true"
                           :description="user,description"
                           :answer="user.answers"
                           :watched="user.watchedBy"
@@ -197,16 +204,16 @@
             <Col span="8" class="profile-body-right">
               <div>
                 <div class="watch-bar">
-                  <div class="watch-people" @click="profilePaneActiveName = 'more';morePaneActiveName = 'watch';">
+                  <div class="watch-people" @click="tabClick({name: 'watch'});">
                     <div>关注了</div>
-                    <div>{{watchedUser.length}}</div>
+                    <div>{{watchedUserCount}}</div>
                   </div>
-                  <div class="watched-people" @click="morePaneActiveName = 'watched';profilePaneActiveName = 'more';">
+                  <div class="watched-people" @click="tabClick({name: 'watched'});">
                     <div>关注者</div>
-                    <div>{{watchedBy.length}}</div>
+                    <div>{{watchbyUserCount}}</div>
                   </div>
                 </div>
-                <div class="profile-lightItem" @click="morePaneActiveName = 'watchQuestion';profilePaneActiveName = 'more';">
+                <div class="profile-lightItem" @click="tabClick({name: 'watchQuestion'});">
                   <span>
                     关注的问题
                   </span>
@@ -214,7 +221,7 @@
                     {{watchedQuestion.length}}
                   </span>
                 </div>
-                <div class="profile-lightItem" @click="morePaneActiveName = 'collectedAnswer';profilePaneActiveName = 'more';">
+                <div class="profile-lightItem" @click="tabClick({name: 'collectedAnswer'});">
                   <span>
                     收藏的回答
                   </span>
@@ -222,7 +229,7 @@
                     {{favorites.length}}
                   </span>
                 </div>
-                <div class="profile-lightItem" @click="morePaneActiveName = 'history';profilePaneActiveName = 'more';">
+                <div class="profile-lightItem" @click="tabClick({name: 'history'});">
                   <span>
                     围观历史
                   </span>
@@ -285,11 +292,15 @@
 					}
 				],
         morePaneActiveName: 'watch',
-        profilePaneActiveName: 'timeline',
+        profilePaneActiveName: 'activities',
         //user info
+        isWatched: false,
+        watchedUserCount: 0,  //关注的人数
+        watchbyUserCount: 0,  //被关注的人数
         avatarUrl: '',
         nickName: '',
         description: '',
+        activities: [],
         watchedUser: [],
         watchedBy: [],
         watchedQuestion: [],
@@ -308,27 +319,142 @@
         });
       },
       tabClick(pane) {
-        this.profilePaneActiveName = pane.name;
+        if(['activities','answer','question','more'].indexOf(pane.name) != -1)
+          this.profilePaneActiveName = pane.name;
+        if(['watch','watched','watchQuestion','collectedAnswer','history'].indexOf(pane.name) != -1){
+          this.profilePaneActiveName = 'more'
+          this.morePaneActiveName = pane.name
+        }
+        switch(pane.name) {
+          case 'activities':
+            this.getActivities()
+            break
+          case 'answer':
+            this.getAnswers()
+            break
+          case 'question':
+            this.getQuestions()
+            break
+          case 'more':
+            this.morePaneActiveName = 'watch'
+          case 'watch':
+          case 'watched':
+            this.getWatchUser()
+            break
+          case 'watchQuestion':
+            this.getWatchQuestions()
+            break
+          case 'collectedAnswer':
+            this.getCollectAnswer()
+            break;
+          case 'history':
+            this.getHistory()
+            break
+          default:
+            break
+        }
+      },
+      watchUserHandle() {
+        // 关注用户/取消关注用户处理函数
+        this.$http.get(`/api/users/${this.$route.params.id}/${!this.isWatched ? 'watch' : 'cancel_watch'}`)
+          .then(res => {
+            if(!res.body.success) {
+              this.$Message.error('操作失败')
+            } else {
+              this.getProfile()
+            }
+          })
+      },
+      getWatchUser() {
+        //获取关注/被关注的用户
+        this.$http.get(`/api/profiles/${this.$route.params.id}/watched_users/`)
+          .then(res => {
+            this.watchedUserCount = res.body.data.count
+            this.watchedUser = res.body.data.results
+          })
+        this.$http.get(`/api/profiles/${this.$route.params.id}/be_watched/`)
+          .then(res => {
+            this.watchbyUserCount = res.body.data.count
+            this.watchedBy = res.body.data.results
+          })
+      },
+      getActivities() {
+        //获取动态
+        this.$http.get(`/api/profiles/${this.$route.params.id}/activities`)
+          .then(res => {
+            if(res.body.success) {
+              let result = res.body.data.results
+              // console.log(result)
+            }
+          })
+      },
+      getAnswers() {
+        //获取用户回答
+        this.$http.get(`/api/profiles/${this.$route.params.id}/answers`)
+          .then(res => {
+            let results = res.body.data.results
+            this.answerList = results
+          })
+      },
+      getQuestions() {
+        //获取用户的提问
+        this.$http.get(`/api/profiles/${this.$route.params.id}/questions`)
+          .then(res => {
+            let results = res.body.data.results
+            this.askQuestion = results
+          })
+      },
+      getWatchQuestions() {
+        //获取用户关注的问题
+        this.$http.get(`/api/profiles/${this.$route.params.id}/watched_questions`)
+          .then(res => {
+            let results = res.body.data.results
+            this.watchedQuestion = results
+          })
+      },
+      getCollectAnswer() {
+        //获取用户收藏的回答
+        this.$http.get(`/api/profiles/${this.$route.params.id}/favorites`)
+          .then(res => {
+            let results = res.body.data.results
+            this.favorites = results
+          })
+      },
+      getHistory() {
+        //获取用户收藏的回答
+        this.$http.get(`/api/profiles/${this.$route.params.id}/favorites`)
+          .then(res => {
+            let results = res.body.data.results
+            this.history = results
+          })
+      },
+      getProfile() {
+        //获取用户信息
+        this.$http.get(`/api/profiles/${this.$route.params.id}/`)
+          .then(res => {
+            if(res.body.success) {
+              let data = res.body.data
+              this.nickName = data.nickname
+              this.isWatched = data.is_watch
+              this.description = data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description
+              // this.watchedUser = data.watchedUser || []
+              // this.watchedBy = data.watchedBy || []
+              // this.watchedQuestion = data.watchedQuestion || []
+              // this.askQuestion = data.askQuestion || []
+              // this.history = data.history || []
+              // this.favorites = data.favorites || []
+              this.avatarUrl = data.avatar || ''
+            }
+          })
       }
     },
     created () {
       if(this.initInfo()){
-        this.$http.get(`/api/profiles/${this.$route.params.id}/`)
-        .then(res => {
-          if(res.body.success) {
-            let data = res.body.data
-            this.nickName = data.nickname
-            this.description = data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description
-            this.watchedUser = data.watchedUser || []
-            this.watchedBy = data.watchedBy || []
-            this.watchedQuestion = data.watchedQuestion || []
-            this.askQuestion = data.askQuestion || []
-            this.history = data.history || []
-            this.favorites = data.favorites || []
-            this.avatarUrl = data.avatar || ''
-          }
-        })
+        this.getProfile()
       }
+      this.getActivities()
+      this.getWatchUser()
+      // this.getAnswers()
     },
     mounted () {
       this.$nextTick(() => {

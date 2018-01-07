@@ -1,3 +1,4 @@
+import Vue from 'vue'
 const initHandle = {
   created() {},
   data() {},
@@ -5,6 +6,7 @@ const initHandle = {
     initInfo() {
       let loginState = this.getCookie('isLogin')
       if (loginState) {
+        Vue.http.headers.common['X-CSRFTOKEN'] = this.$cookie.get('csrftoken')
         this.$store.commit('LOGIN');
         this.$store.commit('USER', {
           id: this.getCookie('userId') || '',

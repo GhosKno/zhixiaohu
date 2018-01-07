@@ -16,10 +16,10 @@
       <Button 
         size="large" 
         class="watch-button"
-        @click="cancelWatchPeople()"
+        @click="watchPeopleHandle()"
       >
-        <span>已关注</span>
-        <span style="display:none;">取消关注</span>
+        <span>{{isWatched ? '已关注' : '关注'}}</span>
+        <span style="display:none;">{{isWatched ? '取消关注' : '关注'}}</span>
       </Button>
     </Col>
     </Row>
@@ -34,6 +34,10 @@
       return {}
     },
     props: {
+      userid: {
+        type: String,
+        required: true
+      },
       userName: {
         type: String,
         required: true
@@ -42,6 +46,10 @@
         type: String,
         required: true
       },
+      isWatched: {
+        type: Boolean,
+        required: true
+      }
       // answer: {
       //   type: Number,
       //   required: true
@@ -52,8 +60,13 @@
       // }
     },
     methods: {
-      cancelWatchPeople() {
-
+      watchPeopleHandle(id) {
+        this.$http.get(`/api/users/${id}/${!this.isWatched ? 'watch' : 'cancel_watch'}`)
+          .then(res => {
+            if(!res.body.success) {
+              this.$Message.error('操作失败')
+            }
+          })
       }
     }
   }
