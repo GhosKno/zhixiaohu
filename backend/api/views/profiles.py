@@ -13,8 +13,7 @@ from utils import mixins
 
 
 class ProfileViewSet(GenericViewSet,
-                     mixins.RetrieveModelMixin,
-                     mixins.UpdateModelMixin):
+                     mixins.RetrieveModelMixin):
     filter_backends = (SearchFilter,)
     search_fields = ('nickname',)
 
@@ -44,8 +43,10 @@ class ProfileViewSet(GenericViewSet,
         return error("no profile found")
 
     # update nickname or description
-    def partial_update(self, request, *args, **kwargs):
-        profile = self.get_object()
+    @list_route(methods=['POST'],
+                permission_classes=(IsAuthenticated, ))
+    def update_info(self, request, *args, **kwargs):
+        profile = self.request.user
         if profile is None:
             return error("no profile found")
         data = request.data
@@ -73,7 +74,7 @@ class ProfileViewSet(GenericViewSet,
         profile = self.get_object()
         if profile is None:
             return error('no profile found')
-        answers = profile.favorites
+        answers = profile.favorites.all()
         page = self.paginate_queryset(answers)
         if page is not None:
             for answer in page:
@@ -89,13 +90,13 @@ class ProfileViewSet(GenericViewSet,
         profile = self.get_object()
         if profile is None:
             return error('no profile found')
-        questions = profile.watchedQestion.all()
+        questions = profile.watchedQuestion.all()
         page = self.paginate_queryset(questions)
         if page is not None:
-            for answer in page:
-                profile = answer.author.profile
-                answer.userSummary = profile
-            serializer = AnswerSerializer(page, many=True)
+            for question in page:
+                question.answer_count = question.answers.count()
+                question.watch_count = question.watchedUser.count()
+            serializer = QuestionListSerializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
@@ -117,6 +118,23 @@ class ProfileViewSet(GenericViewSet,
         return error('no more data')
 
     @detail_route(methods=['GET'])
+    def history(self, request, pk=None):
+        profile = self.get_object()
+        if profile is None:
+            return error("no profile found")
+        questions = profile.history.all()
+        page = self.paginate_queryset(questions)
+        if page is not None:
+            for question in page:
+                question.answer_count = question.answers.count()
+                question.watch_count = question.watchedUser.count()
+            serializer = QuestionListSerializer(page, many=True, context={'request': request})
+            temp = self.get_paginated_response(serializer.data)
+            return success(temp.data)
+        return error('no more data')
+
+
+    @detail_route(methods=['GET'])
     def activities(self, request, pk=None):
         profile = self.get_object()
         if profile is None:
@@ -128,6 +146,7 @@ class ProfileViewSet(GenericViewSet,
             for activity in page:
                 if activity.watch:
                     activity.watch.is_watch=True
+                    # TODO add count
                 elif activity.question:
                     activity.question.answer_count = \
                         activity.question.answers.count()

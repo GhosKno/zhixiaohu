@@ -12,8 +12,7 @@ from api.serializers import LoginSerializer, RegisterSerializer, ResetPasswordSe
 from utils.views import success, error
 
 
-class UserViewSet(viewsets.GenericViewSet,
-                  mixins.UpdateModelMixin):
+class UserViewSet(viewsets.GenericViewSet):
 
     def get_serializer_class(self):
         if self.action == 'login':
@@ -68,7 +67,9 @@ class UserViewSet(viewsets.GenericViewSet,
         seri = ProfileSerializer(profile, context={'request':request})
         return success(seri.data)
 
-    def update(self, request, *args, **kwargs):
+    @list_route(methods=['POST'],
+                permission_classes=(IsAuthenticated,))
+    def reset_password(self, request, *args, **kwargs):
         seri = self.get_serializer(data=request.data)
         if not seri.is_valid():
             return Response({'status', False})
@@ -80,7 +81,8 @@ class UserViewSet(viewsets.GenericViewSet,
             return Response({'status', True})
         return Response({'status', False})
 
-    @list_route(methods=['GET'])
+    @list_route(methods=['GET'],
+                permission_classes=(IsAuthenticated,))
     def messages(self, request):
         queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
@@ -90,7 +92,8 @@ class UserViewSet(viewsets.GenericViewSet,
             return success(temp.data)
         return error('no more message')
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=(IsAuthenticated,))
     def watch(self, request, pk=None):
         user = self.get_object()
         if user is None:
@@ -102,7 +105,8 @@ class UserViewSet(viewsets.GenericViewSet,
             Activity.watchUser(request.user.profile, profile)
         return success()
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=(IsAuthenticated,))
     def cancel_watch(self, request, pk=None):
         user = self.get_object()
         if user is None:

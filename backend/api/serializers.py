@@ -67,7 +67,6 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-#
 class ProfileSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
