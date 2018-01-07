@@ -31,8 +31,12 @@ class ProfileViewSet(GenericViewSet,
     def retrieve(self, request, *args, **kwargs):
         profile = self.get_object()
         if profile:
-            #watched = profile.user.watchedBy.all()
-            #profile.watchedBy = watched
+            if request.user.is_authenticated:
+                count = request.user.profile\
+                    .watchedUser.filter(profile=profile)
+                profile.is_watch = count
+            else:
+                profile.is_watch = False
             seri = self.get_serializer(profile)
             return success(seri.data)
         return error("no profile found")
@@ -136,9 +140,9 @@ class ProfileViewSet(GenericViewSet,
         if profile is None:
             return error('no profile found')
         users = profile.watchedUser.all()
-        profiles = users.first()
-        for user in users[1:]:
-            profiles |= user.profile
+        profiles = []
+        for user in users:
+            profiles.append(user.profile)
         page = self.paginate_queryset(profiles)
         if page is not None:
             serializer = ProfileSummarySerializer(page, many=True)

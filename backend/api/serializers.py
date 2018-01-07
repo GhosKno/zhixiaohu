@@ -34,7 +34,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     is_watch = serializers.BooleanField(default=False)
     class Meta:
         model = Profile
-        fields = ('id', 'url', 'avatar', 'nickname', 'description')
+        fields = ('id', 'url', 'avatar','is_watch', 'nickname', 'description')
 
 
 class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
@@ -118,10 +118,13 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
     topics = TopicListSerializer(many=True)
+    is_watch = serializers.BooleanField(default=False)
 
     class Meta:
         model = Question
-        fields = ('author', 'id', 'add_time', 'title', 'detail', 'topics')
+        fields = ('author', 'id', 'add_time',
+                  'title', 'detail', 'topics',
+                  'visit_count', 'is_watch')
 
 
 class CommentSerializer(serializers.ModelSerializer):

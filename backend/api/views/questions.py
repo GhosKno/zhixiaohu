@@ -31,7 +31,15 @@ class QuestionViewSet(GenericViewSet,
         question = self.get_object()
         if question is None:
             return error('no question found')
+        if request.user.is_authenticated:
+            count = request.user.profile \
+                .watchedQuestion\
+                .filter(title=question).count()
+            question.is_watch = count
+        else:
+            question.is_watch = False
         seri = self.get_serializer(question)
+        question.visit_count+=1
         return Response(seri.data)
 
     def perform_create(self, serializer):

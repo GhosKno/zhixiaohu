@@ -42,11 +42,6 @@ class TopicViewSet(GenericViewSet,
             return success(temp.data)
         return error('no more data')
 
-    # TODO
-    @detail_route(methods=['GET'])
-    def get_answers(self, request, pk=None):
-        pass
-
     @list_route(methods=['GET'])
     def hot(self, request):
         topics = Topic.objects.order_by('-heat')[0:20]
