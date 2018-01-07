@@ -96,7 +96,7 @@ class ProfileViewSet(GenericViewSet,
             for question in page:
                 question.answer_count = question.answers.count()
                 question.watch_count = question.watchedUser.count()
-            serializer = QuestionListSerializer(page, many=True)
+            serializer = QuestionListSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')

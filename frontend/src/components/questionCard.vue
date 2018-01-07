@@ -4,7 +4,7 @@
       <span @click="toQuestionDetail()">{{title}}</span>
     </div>
     <div class="info">
-      <span>{{time}}</span>
+      <span>{{(new Date(time)).toLocaleDateString()}}</span>
       <span>{{answers}}个回答</span>
       <span>{{watchers}}个关注</span>
     </div>
@@ -51,7 +51,7 @@ export default {
 <style lang="less" scoped>
 .questionCard{ 
   border-bottom: 1px #dddee1 solid;
-  padding: 15px 5px;
+  padding: 15px 30px;
   .header {
     font-size: 1.3em;
     font-weight: bold;

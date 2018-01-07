@@ -6,11 +6,11 @@
     </Col>
     <Col span="14" class="info">
       <div class="user-name">{{userName}}</div>
-      <div class="description">{{description}}</div>
-      <!-- <div class="detail">
-        <span>{{answer}}*回答</span>
-        <span>{{watched}}*关注者</span>
-      </div> -->
+      <div class="description">{{description.length > 0 ? description : '这个用户很懒，什么都没留下'}}</div>
+      <div class="detail">
+        <span>{{answer}}回答</span>
+        <span>{{watched}}关注者</span>
+      </div>
     </Col>
     <Col span="5" class="button-handle">
       <Button 
@@ -35,7 +35,7 @@
     },
     props: {
       userid: {
-        type: String,
+        type: Number,
         required: true
       },
       userName: {
@@ -49,23 +49,32 @@
       isWatched: {
         type: Boolean,
         required: true
+      },
+      answer: {
+        type: Number,
+        required: true
+      },
+      watched: {
+        type: Number,
+        required: true
+      },
+      avatar: {
+        type: String,
+        default: '/static/avatar.jpg'
+      },
+      watchHandle: {
+        type: Function,
+        required: true
       }
-      // answer: {
-      //   type: Number,
-      //   required: true
-      // },
-      // watched: {
-      //   type: Number,
-      //   required: true
-      // }
     },
     methods: {
-      watchPeopleHandle(id) {
-        this.$http.get(`/api/users/${id}/${!this.isWatched ? 'watch' : 'cancel_watch'}`)
+      watchPeopleHandle() {
+        this.$http.get(`/api/users/${this.userid}/${!this.isWatched ? 'watch' : 'cancel_watch'}`)
           .then(res => {
             if(!res.body.success) {
               this.$Message.error('操作失败')
             }
+            this.watchHandle()
           })
       }
     }
@@ -111,7 +120,11 @@
       font-size: 14px; 
       span{
         margin: 0 5px;
-      } 
+      }
+      span:not(:first-child):before {
+        margin: 0 5px;
+        content: "\B7";
+      }
     }
   }
   .button-handle {

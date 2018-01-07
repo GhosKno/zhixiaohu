@@ -9,7 +9,7 @@
    <!-- 点赞 -->
    <div class="btn-group" v-else>
       <Button class="voteBtn"><Icon type="arrow-up-b" class="voteIcon" size=16></Icon>
-        <span class="voteNum">1.7k</span>
+        <span class="voteNum">{{agreeCount}}</span>
       </Button>
       <Button class="voteBtn"><Icon type="arrow-down-b" class="voteIcon" size=16></Icon></Button>
    </div>
@@ -75,6 +75,10 @@ export default {
     };
   },
   props: {
+    agreeCount: {
+      type: Number,
+      default: 0
+    },
     "question": {
       type: Boolean,
       default:false,

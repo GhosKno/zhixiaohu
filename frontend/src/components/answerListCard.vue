@@ -14,7 +14,7 @@
         {{authorName}}
     </div>
     <div class="badge-text">
-        , {{authorBadge}}
+        {{authorBadge}}
     </div>
 </div>
     <div class="question">
@@ -39,26 +39,35 @@ export default {
   name: "answerListCard",
   components: { ToolBar },
   props:{
-      'feedTitle':{},
+      'feedTitle':{
+        type: String,
+        default: ''
+      },
       'question':{
+          type: String,
           default: "作为一个示例问题是怎样的体验?"
       },
       'coverImg':{
           default: false
       },
       'answer':{
+          type: String,
           default: "泻药.这个答案是一个示例答案."
       },
       'pk':{
-          default: "0"
+          type: Number,          
+          required: true
       },
       'authorAvatar':{
-          default: ('/static/avatar.jpg'),
+          type: String,
+          default: '/static/avatar.jpg'
       },
       'authorName':{
+          type: String,
           default: 'hhh'
       },
       'authorBadge':{
+          type: String,
           default: "已婚人士/专业数星星团队成员/编程狂热者/不只是Python/并行框架/DL爱好者"
       },
   },

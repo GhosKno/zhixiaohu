@@ -49,18 +49,53 @@
                   <el-tab-pane label="动态" name="activities">
                     <div class="profile-pane-header">{{$route.params.id == $store.state.userid ? '我' : 'Ta'}}的动态</div>
                     <div class="profile-pane-body">
-                      <!-- //todo -->
-                      <AnswerListCard
-                        v-for="(item, index) in answerList"
-                        :key="index"
-                        :avatar="item.avatar"
-                        :name="item.name" 
-                        :qlink="item.qlink" 
-                        :feed-title="item.feedTitle" 
-                        :question="item.question" 
-                        :answer="item.answer"
-                      >
-                      </AnswerListCard>
+                      <div class="activities-content"
+                        v-for="(item, index) in activities"
+                        :key="index">
+                        <template
+                          v-if="item.type == 'USER_WATCH'">
+                          <div class="activities-header">
+                            关注了用户
+                          </div>
+                          <user-card
+                            :userid="item.watch.id"
+                            :userName="item.watch.nickname"
+                            :isWatched="item.watch.is_watch"
+                            :avatar="item.watch.url"
+                            :description="item.watch.description"
+                            :answer="item.watch.answerCount"
+                            :watched="item.watch.beWatchCount"
+                            :watchHandle="getWatchUser"
+                          ></user-card>
+                        </template>
+                        <template
+                          v-if="item.type == 'QUES_WATCH'">
+                          <div class="activities-header">
+                            关注了问题
+                          </div>
+                          <question-card                        
+                            :title="item.question.title"
+                            :time="item.question.add_time"
+                            :answers="item.question.answer_count"
+                            :watchers="item.question.watch_count"
+                          ></question-card>
+                        </template>
+                        <template
+                          v-if="item.type == 'ANS_AGREE'">
+                          <div class="activities-header">
+                            赞同了回答
+                          </div>
+                          <AnswerListCard
+                            :pk="item.answer.userSummary.id"
+                            :authorBadge="item.answer.userSummary.description"
+                            :authorAvatar="item.answer.userSummary.avatar"
+                            :question="item.answer.question.title" 
+                            :answer="item.answer.detail"
+                            :authorName="item.answer.userSummary.nickname"
+                          >
+                          </AnswerListCard>
+                        </template>
+                      </div>
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="回答" name="answer">
@@ -74,13 +109,13 @@
                       </div>
                       <AnswerListCard
                         v-for="(item, index) in answerList"
+                        :pk="item.userSummary.id"
                         :key="index"
-                        :avatar="item.avatar"
-                        :name="item.name" 
-                        :qlink="item.qlink" 
-                        :feed-title="item.feedTitle" 
-                        :question="item.question" 
-                        :answer="item.answer"
+                        :authorBadge="item.userSummary.description"
+                        :authorAvatar="item.userSummary.avatar"
+                        :question="item.question.title" 
+                        :answer="item.detail"
+                        :authorName="item.userSummary.nickname"
                       >
                       </AnswerListCard>
                     </div>
@@ -98,9 +133,9 @@
                         v-for="(item, index) in askQuestion"
                         :key="index"
                         :title="item.title"
-                        :time="item.time"
-                        :answers="item.answer"
-                        :watchers="item.watch"
+                        :time="item.add_time"
+                        :answers="item.answer_count"
+                        :watchers="item.watch_count"
                       ></question-card>
                     </div>
                   </el-tab-pane>
@@ -122,9 +157,11 @@
                           :userid="user.id || '1'"
                           :userName="user.nickname"
                           :isWatched="true"
-                          :description="user,description"
-                          :answer="user.answers"
-                          :watched="user.watchedBy"
+                          :avatar="user.url"
+                          :description="user.description"
+                          :answer="user.answerCount"
+                          :watched="user.beWatchCount"
+                          :watchHandle="getWatchUser"
                         ></user-card>
                       </el-tab-pane>
                       <el-tab-pane :label="`关注${$route.params.id == $store.state.userid ? '我' : 'Ta'}的人`" name="watched">
@@ -141,8 +178,9 @@
                           :userName="user.nickname"
                           :isWatched="true"
                           :description="user,description"
-                          :answer="user.answers"
-                          :watched="user.watchedBy"
+                          :answer="user.answerCount"
+                          :watched="user.beWatchCount"
+                          :watchHandle="getWatchUser"
                         ></user-card>
                       </el-tab-pane>
                       <el-tab-pane label="关注的问题" name="watchQuestion">
@@ -156,9 +194,9 @@
                           v-for="(item, index) in watchedQuestion"
                           :key="index"
                           :title="item.title"
-                          :time="item.time"
-                          :answers="item.answer"
-                          :watchers="item.watch"
+                          :time="item.add_time"
+                          :answers="item.answer_count"
+                          :watchers="item.watch_count"
                         ></question-card>
                       </el-tab-pane>
                       <el-tab-pane label="收藏的回答" name="collectedAnswer">
@@ -169,14 +207,14 @@
                           还没有收藏的回答
                         </div>
                         <AnswerListCard
-                          v-for="(item, index) in favorites"
+                          v-for="(item, index) in answerList"
+                          :pk="item.userSummary.id"
                           :key="index"
-                          :avatar="item.avatar"
-                          :name="item.name" 
-                          :qlink="item.qlink" 
-                          :feed-title="item.feedTitle" 
-                          :question="item.question" 
-                          :answer="item.answer"
+                          :authorBadge="item.userSummary.description"
+                          :authorAvatar="item.userSummary.avatar"
+                          :question="item.question.title" 
+                          :answer="item.detail"
+                          :authorName="item.userSummary.nickname"
                         >
                         </AnswerListCard>
                       </el-tab-pane>
@@ -191,9 +229,9 @@
                           v-for="(item, index) in history"
                           :key="index"
                           :title="item.title"
-                          :time="item.time"
-                          :answers="item.answer"
-                          :watchers="item.watch"
+                          :time="item.add_time"
+                          :answers="item.answer_count"
+                          :watchers="item.watch_count"
                         ></question-card>
                       </el-tab-pane>
                     </el-tabs>
@@ -264,33 +302,8 @@
     data() {
       return {
         windowHeight: '',
-        heatedTopoics: [
-          {label: "电影"},
-          {label: "互联网"},
-          {label: "移动互联网"},
-          {label: "学习"},
-          {label: "网页设计"},
-          {label: "前端开发"},
-          {label: "中国历史"},
-          {label: "历史"},
-          {label: "HTML"},
-          {label: "维基百科"},
-          {label: "产品设计"},
-          {label: "程序员"},
-          {label: "JacaScript"},
-          {label: "自然科学"},
-          {label: "知识产权"}
-        ],
-        answerList: [
-					{
-						avatar:"h",
-						name:"ccc",
-						qlink:"",
-						feedTitle:"热门内容,来自: 历史",
-						question:"历史上外交时有哪些尴尬场面？",
-						answer:"南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."
-					}
-				],
+        heatedTopoics: [],
+        answerList: [],
         morePaneActiveName: 'watch',
         profilePaneActiveName: 'activities',
         //user info
@@ -312,6 +325,51 @@
     methods: {
       handleReachBottom () {
         return new Promise(resolve => {
+          let listName = ''
+          let url = ''
+          if(this.profilePaneActiveName !== 'more') {
+            switch (this.profilePaneActiveName) {
+              case 'activities': 
+                this.url = 'activities'
+                this.listName = 'activities'
+                break
+              case 'answer': 
+                this.url = 'answers'
+                this.listName = 'answerList'
+                break
+              case 'question': 
+                this.url = 'questions'
+                this.listName = 'askQuestion'
+                break
+            }
+          } else {
+            switch (this.morePaneActiveName) {
+              case 'watch': 
+                this.url = 'watched_users'
+                this.listName = 'watchedUser'
+                break
+              case 'watched': 
+                this.url = 'be_watched'
+                this.listName = 'watchBy'
+                break
+              case 'watchQuestion': 
+                this.url = 'watched_questions'
+                this.listName = 'watchedQuestion'
+                break
+              case 'collectedAnswer': 
+                this.url = 'favorites'
+                this.listName = 'favorites'
+                break
+              case 'history': 
+                this.url = 'history'
+                this.listName = 'history'
+                break
+            }
+          }
+          this.$http.get(`/api/profiles/${this.$route.params.id}/${url}/`)
+            .then(res => {
+              this[listName] = res.body.data.results
+            })
           setTimeout(() => {
             this.answerList.push(...this.answerList)
             resolve();
@@ -383,8 +441,7 @@
         this.$http.get(`/api/profiles/${this.$route.params.id}/activities`)
           .then(res => {
             if(res.body.success) {
-              let result = res.body.data.results
-              // console.log(result)
+              this.activities = res.body.data.results
             }
           })
       },
@@ -392,40 +449,35 @@
         //获取用户回答
         this.$http.get(`/api/profiles/${this.$route.params.id}/answers`)
           .then(res => {
-            let results = res.body.data.results
-            this.answerList = results
+            this.answerList = res.body.data.results
           })
       },
       getQuestions() {
         //获取用户的提问
         this.$http.get(`/api/profiles/${this.$route.params.id}/questions`)
           .then(res => {
-            let results = res.body.data.results
-            this.askQuestion = results
+            this.askQuestion = res.body.data.results
           })
       },
       getWatchQuestions() {
         //获取用户关注的问题
         this.$http.get(`/api/profiles/${this.$route.params.id}/watched_questions`)
           .then(res => {
-            let results = res.body.data.results
-            this.watchedQuestion = results
+            this.watchedQuestion = res.body.data.results
           })
       },
       getCollectAnswer() {
         //获取用户收藏的回答
         this.$http.get(`/api/profiles/${this.$route.params.id}/favorites`)
           .then(res => {
-            let results = res.body.data.results
-            this.favorites = results
+            this.favorites = res.body.data.results
           })
       },
       getHistory() {
         //获取用户收藏的回答
-        this.$http.get(`/api/profiles/${this.$route.params.id}/favorites`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/history`)
           .then(res => {
-            let results = res.body.data.results
-            this.history = results
+            this.history = res.body.data.results
           })
       },
       getProfile() {
@@ -437,12 +489,8 @@
               this.nickName = data.nickname
               this.isWatched = data.is_watch
               this.description = data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description
-              // this.watchedUser = data.watchedUser || []
-              // this.watchedBy = data.watchedBy || []
-              // this.watchedQuestion = data.watchedQuestion || []
-              // this.askQuestion = data.askQuestion || []
-              // this.history = data.history || []
-              // this.favorites = data.favorites || []
+              this.watchbyUserCount = data.beWatchCount
+              this.watchedUserCount = data.watchCount
               this.avatarUrl = data.avatar || '/static/avatar.jpg'
             }
           })
@@ -454,7 +502,9 @@
       }
       this.getActivities()
       this.getWatchUser()
-      // this.getAnswers()
+      this.getWatchQuestions()
+      this.getCollectAnswer()
+      this.getHistory()
     },
     mounted () {
       this.$nextTick(() => {
@@ -511,8 +561,18 @@
             padding: 0 0 5px 5px;
             // margin: 0 15px;
           }
+          .profile-pane-body {
+            min-height: 300px;
+            .activities-content {
+              .activities-header {
+                color: #8590a6;
+                margin: 10px 0 -5px 10px;
+              }              
+            }
+          }
           .morePane {
             // width: 95%;
+            min-height: 300px;
             margin: 0 auto;
           }
           .no-data-content {
