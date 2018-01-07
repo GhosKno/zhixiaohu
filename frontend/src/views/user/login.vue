@@ -104,7 +104,7 @@ export default {
     },
     loginSubmit() {
       const submit  = () => {
-        this.$http.post('/api/accounts/login/', this.loginForm)
+        this.$http.post('/api/users/login/', this.loginForm)
           .then(res => {
             if(res.body.success) {
               this.$Message.success('登陆成功')
@@ -125,8 +125,9 @@ export default {
     },
     regSubmit() {
        const submit  = () => {
-        this.$http.post('/api/accounts/register/', this.regForm)
+        this.$http.post('/api/users/register/', this.regForm)
           .then(res => {
+            console.log(res)
             if(res.body.success) {
               this.$Message.success('注册成功')
               Vue.http.headers.common['X-CSRF-TOKEN'] = this.$cookie.get('csrftoken')

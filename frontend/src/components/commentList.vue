@@ -57,7 +57,7 @@ export default {
   methods: {
     getComments() {
       const submit = () => {
-        this.$http.post("/api/accounts/register/", this.regForm).then(res => {
+        this.$http.post("/api/users/register/", this.regForm).then(res => {
           if (res.body.success) {
             this.$Message.success("注册成功");
             Vue.http.headers.common["X-CSRF-TOKEN"] = this.$cookie.get(

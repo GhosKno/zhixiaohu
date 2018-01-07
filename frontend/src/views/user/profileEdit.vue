@@ -12,7 +12,7 @@
                   :headers="{
                     'X-CSRFTOKEN': this.$cookie.get('csrftoken'),
                   }"
-                  action="/api/accounts/avatar/"
+                  action="/api/users/avatar/"
                 >
                   <div style="padding-top: 40px;text-align: center;width: 160px;height: 160px;background: rgba(0, 0, 0, 0.5);">
                     <Icon type="camera" size="45"></Icon>
@@ -141,7 +141,7 @@ export default {
   },
   created () {
     if(this.initInfo()){
-      this.$http.get(`/api/accounts/profile/${this.$store.state.userid}/`)
+      this.$http.get(`/api/profiles/${this.$store.state.userid}/`)
       .then(res => {
         if(res.body.success) {
           let data = res.body.data

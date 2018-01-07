@@ -33,14 +33,21 @@
           </Option>
         </Select>
         <span class="editor-label">问题描述（可选）：</span>
-        <quill-editor
+        <!-- <quill-editor
           :options="editorOption"
           ref="quillEditor"
           @blur="onEditorBlur($event)" 
           @focus="onEditorFocus($event)"
           @change="onEditorChange($event)"
           @ready="onEditorReady($event)"
-        ></quill-editor>
+        ></quill-editor> -->
+        <common-editor
+          uploadImgUrl="/action"
+          :text="content"
+          ref="quillEditor"
+          @editorChange="editorChange"
+          placeholder="问题背景、条件等详细信息"
+        ></common-editor>
       </div>
       <div slot="footer" style="text-align:center;">
         <Button 
@@ -57,31 +64,33 @@
 <script>
 import {quillEditor} from 'vue-quill-editor'
 import Quill from 'quill'
+import commonEditor from '@/components/commonEditor'
 export default {
   name: 'questionAskModal',
   props: {
   },
   data () {
     return {
+      content: '',
       questionForm: {
         title: '',
         topic: '',
         content: ''
       },
       showQuestionForm: false,
-      editorOption: {
-        modules: {
-          toolbar: [
-            ['bold','italic','underline', 'strike'],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            ['clean']
-          ]
-        },
-        placeholder: '问题背景、条件等详细信息',
-        theme: 'snow'
-      },
+      // editorOption: {
+      //   modules: {
+      //     toolbar: [
+      //       ['bold','italic','underline', 'strike'],
+      //       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      //       [{ 'color': [] }, { 'background': [] }],
+      //       [{ 'size': ['small', false, 'large', 'huge'] }],
+      //       ['clean']
+      //     ]
+      //   },
+      //   placeholder: '问题背景、条件等详细信息',
+      //   theme: 'snow'
+      // },
       topicLoading: false,
       topicOption: [],
     }
@@ -95,34 +104,26 @@ export default {
     open () {
       this.showQuestionForm = true
     },
-    onEditorChange({editor, html, text}) {
-      this.questionForm.content=html;
-      // console.log(html)
-    },
-    onEditorFocus() {
-      return
-    },
-    onEditorReady() {
-      return
-    },
-    onEditorBlur() {
-      return
-    },
     submitQuestion () {
       //TODO submit question
+      console.log(this.$refs['quillEditor'].getHtmlContent())
       console.log(this.questionForm.content)
     },
     filterRemoteTopic (query) {
       if (query !== '') {
         this.topicLoading = true;
         //TODO get remote topic Option
-    } else {
-      this.topicOption = [];
+      } else {
+        this.topicOption = [];
+      }
+    },
+    editorChange: function(html) {
+      this.content = html
     }
   },
-  },
   components: {
-    quillEditor
+    quillEditor,
+    commonEditor
   }
 }
 </script>

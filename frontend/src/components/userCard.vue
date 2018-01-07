@@ -7,10 +7,10 @@
     <Col span="14" class="info">
       <div class="user-name">{{userName}}</div>
       <div class="description">{{description}}</div>
-      <div class="detail">
+      <!-- <div class="detail">
         <span>{{answer}}*回答</span>
         <span>{{watched}}*关注者</span>
-      </div>
+      </div> -->
     </Col>
     <Col span="5" class="button-handle">
       <Button 
@@ -42,14 +42,14 @@
         type: String,
         required: true
       },
-      answer: {
-        type: Number,
-        required: true
-      },
-      watched: {
-        type: Number,
-        required: true
-      }
+      // answer: {
+      //   type: Number,
+      //   required: true
+      // },
+      // watched: {
+      //   type: Number,
+      //   required: true
+      // }
     },
     methods: {
       cancelWatchPeople() {
