@@ -3,7 +3,20 @@
     <div class="feed-title">
         {{feedTitle}}
     </div>
-    <AuthorInfo :authorAvatar="aavatar" :authorName="aname"></AuthorInfo>
+<div class="info">
+    <Poptip trigger="hover" placement="right" width="400">
+        <Avatar class="avatar" shape="square" size="small"  :src="authorAvatar"  />
+        <div class="api" slot="content">
+            
+        </div>
+    </Poptip>
+    <div class="name">
+        {{authorName}}
+    </div>
+    <div class="badge-text">
+        , {{authorBadge}}
+    </div>
+</div>
     <div class="question">
         <a :href="'/question/'+pk" class="title">{{question}}</a>
     </div>
@@ -21,11 +34,10 @@
 </div>
 </template>
 <script>
-const AuthorInfo = resolve => require(["@/components/authorInfo"], resolve);
 const ToolBar = resolve => require(["@/components/toolBar"], resolve);
 export default {
   name: "answerListCard",
-  components: { AuthorInfo, ToolBar },
+  components: { ToolBar },
   props:{
       'feedTitle':{},
       'question':{
@@ -40,11 +52,14 @@ export default {
       'pk':{
           default: "0"
       },
-      'aavatar':{
+      'authorAvatar':{
           default: ('/static/avatar.jpg'),
       },
-      'aname':{
+      'authorName':{
           default: 'hhh'
+      },
+      'authorBadge':{
+          default: "已婚人士/专业数星星团队成员/编程狂热者/不只是Python/并行框架/DL爱好者"
       },
   },
   data() {
@@ -145,6 +160,24 @@ export default {
 }
 .toolBar{
     background: #fff;
-    padding: 5px;
+    padding: 5px 0;
+}
+.name{
+    margin-left: 5px;
+    display: inline;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 24px;
+}
+.badge-text{
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 24px;
+}
+.avatar{
+    vertical-align: top;
 }
 </style>

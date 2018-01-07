@@ -2,56 +2,81 @@
   <div>
     <div class="header">
         <div class="content">
-        <div class="description">
-            <div class="topics">
-            <a href="/" class="Tag" v-for="topic in question.topics" :key="topic">{{topic}}</a>
-            </div>
-            <h1 class="title">
-                {{question.title}}
-            </h1>
-            <div class="summary">
-                {{question.summary}}
-                <Button type="text" class="read-all">显示全部 <Icon type="chevron-down"></Icon></Button>
-            </div>
-        </div>
-        <div class="countBoard">
-            <a type="text" class="countItem">
-                <div class="countName">
-                    关注者
-                </div>
-                <div class="countNum">
-                    123
-                </div>
-            </a>
+          <div class="description">
+              <div class="topics">
+              <a href="/" class="Tag" v-for="topic in question.topics" :key="topic">{{topic}}</a>
+              </div>
+              <h1 class="title">
+                  {{question.title}}
+              </h1>
+              <div class="summary">
+                  {{question.summary}}
+                  <Button type="text" class="read-all">显示全部 <Icon type="chevron-down"></Icon></Button>
+              </div>
+          </div>
+          <div class="countBoard">
+              <a type="text" class="countItem">
+                  <div class="countName">
+                      关注者
+                  </div>
+                  <div class="countNum">
+                      123
+                  </div>
+              </a>
 
-            <div class="countItem">
-                <div class="countName">
-                    浏览量
-                </div>
-                <div class="countNum">
-                    398,231
-                </div>
-            </div>
-        </div>
-        
+              <div class="countItem">
+                  <div class="countName">
+                      浏览量
+                  </div>
+                  <div class="countNum">
+                      398,231
+                  </div>
+              </div>
+          </div>
+
         </div>
         <div class="footer">
         <ToolBar :question="true"></ToolBar>
         </div>
     </div>
+    <div class="main">
+      <div class="answer-flow  card">
+        <div class="topbar">
+            <div class="title">
+                {{numOfAnswer}} 个回答
+            </div>
+            <Select v-model="model1" style="float: right;width:200px" value="default">
+                <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+        </div>
+      <AnswerCard class="answer">
+      </AnswerCard>
+      <AnswerCard class="answer card"
+        v-for="(item, index) in answerList"
+        :key="index"
+        :avatar="item.avatar"
+        :name="item.name" 
+        :pk="item.pk" 
+        :feed-title="item.feedTitle" 
+        :question="item.question" 
+        :answer="item.answer">
+
+      </AnswerCard>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-const AnswerListCard = resolve =>
-  require(["@/components/answerListCard"], resolve);
+const AnswerCard = resolve =>
+  require(["@/components/answerCard"], resolve);
 const ToolBar = resolve => require(["@/components/toolBar"], resolve);
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
 export default {
   name: "QuestionPage",
   mixins: [cookieManage, initInfo],
-  components: { AnswerListCard, ToolBar },
+  components: { AnswerCard, ToolBar },
   data() {
     return {
       windowHeight: "",
@@ -77,7 +102,18 @@ export default {
         summary:
           "已开源，源码URL请往下翻，剧情要反转了！ 不明真相的群众，请看帖子详细编辑过程。 野生的程序员们，这次我斗胆站出来，为你们呐喊。 是否像我这样迷惘过？ 没…",
         topics: ['IT','程序员','C(编程语言)','C++'],
-      }
+      },
+      numOfAnswer: 12,
+      answerSort: [
+          {
+              value: 'default',
+              label: '按默认排序'
+          },
+          {
+              value: 'time',
+              label: '按时间排序'
+          }
+      ],
     };
   },
   methods: {
@@ -91,14 +127,34 @@ export default {
     }
   },
   created() {
-    if (!this.initInfo()) {
-      this.$router.push({ name: "home" });
-    }
+
   }
 };
 </script>
 
 <style scoped>
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #f0f2f7;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 50px;
+  padding: 0 20px;
+}
+.topbar .title {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 600;
+  font-synthesis: style;
+  color: #1e1e1e;
+}
 .header {
   padding: 16px 0;
   position: relative;
@@ -197,5 +253,24 @@ export default {
     vertical-align: top;
     background: #eef4fa;
     border-radius: 100px;
+}
+.main{
+      display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    margin: 10px auto;
+    padding: 0 16px;
+    width: 1000px;
+    min-height: 100vh;
+}
+.answer{
+      width: 694px;
+    padding-bottom: 20px;
 }
 </style>
