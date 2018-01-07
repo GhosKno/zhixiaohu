@@ -47,6 +47,7 @@ class Topic(models.Model):
 
     class Meta:
         db_table = 'topic'
+        ordering = ('-heat', )
 
 
 class Question(models.Model):

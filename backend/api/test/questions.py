@@ -7,7 +7,7 @@ from . import createTestUser
 
 
 class QuestionTestCase(APITestCase):
-
+    client = APIClient()
     def test_retrieve(self):
         self.test_create()
         url = '/api/questions/1/'
@@ -27,6 +27,7 @@ class QuestionTestCase(APITestCase):
                 'detail': 'test detail',
                 'topics': [1]}
         res = self.client.post(url, data)
+        #print(res.data)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
         self.client.login(username='test-user', password='123456')
@@ -49,7 +50,17 @@ class QuestionTestCase(APITestCase):
 
 
     def test_watch(self):
-        pass
+        self.test_create()
+        url = '/api/questions/1/watch/'
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['success'], True)
+
 
     def test_cancel_watch(self):
-        pass
+        self.test_watch()
+        url = '/api/questions/1/cancel_watch/'
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['success'], True)
+

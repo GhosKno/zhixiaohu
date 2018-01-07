@@ -51,13 +51,12 @@ class QuestionViewSet(GenericViewSet,
     @detail_route(methods=['GET'])
     def get_answers(self, request, pk):
         question = self.get_object()
+        if question is None:
+            return error("no topic found")
         if request.user.is_authenticated:
             profile = request.user.profile
             profile.history.add(question)
             profile.save()
-        if question is None:
-            return error("no topic found")
-
         queryset = self.filter_queryset(question.answers.all())
 
         page = self.paginate_queryset(queryset)
