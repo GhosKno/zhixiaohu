@@ -86,6 +86,7 @@ class Answer(models.Model):
 
     class Meta:
         db_table = 'answer'
+        ordering = ('-add_time', )
 
 
 class Comment(models.Model):

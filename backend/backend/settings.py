@@ -130,3 +130,9 @@ REST_FRAMEWORK = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR, "media")
+
+# qiniu
+
+access_key = 'C48iYaYcyL1pJX68sCmhMUAZgOMPh_yA7pw8xpcW'
+secret_key = 'uOTFfTq9XOZQXme6fccrjZNsQzHFoqCANySFGjMn'
+bucket_name = 'zhixiaohu'

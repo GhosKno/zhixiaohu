@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, \
-    APIRequestFactory, force_authenticate
+    APIRequestFactory
 
 from api.models import User
 from api.serializers import ProfileSerializer

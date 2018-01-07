@@ -110,7 +110,7 @@ class QuestionSummarySerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     userSummary = ProfileSummarySerializer()
     comment_count = serializers.IntegerField(default=0)
-    #question = serializers.
+    question = QuestionSummarySerializer()
     class Meta:
         model = Answer
         fields = ('userSummary', 'approve', 'question',

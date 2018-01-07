@@ -146,7 +146,6 @@ class ProfileViewSet(GenericViewSet,
             for activity in page:
                 if activity.watch:
                     activity.watch.is_watch=True
-                    # TODO add count
                 elif activity.question:
                     activity.question.answer_count = \
                         activity.question.answers.count()

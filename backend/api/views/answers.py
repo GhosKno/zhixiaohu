@@ -2,7 +2,7 @@ from threading import Thread
 
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from api.models import Answer, Message, Activity
 from api.serializers import AnswerSerializer, CommentSerializer, AnswerCreateSerializer
@@ -13,6 +13,7 @@ from utils import mixins
 
 class AnswerViewSet(GenericViewSet,
                     mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
                     mixins.RetrieveModelMixin):
     filter_backends = (SearchFilter,)
     search_fields = ('detail',)
@@ -26,6 +27,20 @@ class AnswerViewSet(GenericViewSet,
         if self.action == 'get_comments':
             return CommentSerializer
         return AnswerSerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            for instance in page:
+                instance.userSummary = self.request.user.profile
+                instance.comment_count = instance.comments.count()
+            serializer = self.get_serializer(page, many=True)
+            temp = self.get_paginated_response(serializer.data)
+            return success(temp.data)
+        return error('no more data')
+
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -63,8 +78,8 @@ class AnswerViewSet(GenericViewSet,
         thread = Thread(target=msg_thread, args=(question, user, answer))
         thread.start()
 
-    # TODO add auth
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=[IsAuthenticated])
     def agree(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()
@@ -78,7 +93,8 @@ class AnswerViewSet(GenericViewSet,
             Activity.agreeAnswer(request.user.profile, answer)
         return success()
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=[IsAuthenticated])
     def cancel_agree(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()
@@ -90,7 +106,8 @@ class AnswerViewSet(GenericViewSet,
         profile.save()
         return success()
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=[IsAuthenticated])
     def disagree(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()
@@ -102,7 +119,8 @@ class AnswerViewSet(GenericViewSet,
         profile.save()
         return success()
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=[IsAuthenticated])
     def cancel_disagree(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()
@@ -114,7 +132,7 @@ class AnswerViewSet(GenericViewSet,
         profile.save()
         return success()
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()
@@ -124,7 +142,7 @@ class AnswerViewSet(GenericViewSet,
         profile.save()
         return success()
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],permission_classes=[IsAuthenticated])
     def cancel_favorite(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()

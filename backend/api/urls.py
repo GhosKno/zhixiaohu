@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
-from api.views import users, profiles, questions, topics, answers, comments, messages
+from api.views import users, profiles, questions, topics, answers, comments, messages, images
 
 route = DefaultRouter()
 route.register('users', users.UserViewSet, base_name='user')
@@ -13,5 +13,6 @@ route.register('comments', comments.CommentsViewSet, base_name='comment')
 route.register('messages', messages.MessageViewSet, base_name='message')
 
 urlpatterns = [
+    path('images/', images.ImageAPIView.as_view()),
     path('', include(route.urls))
 ]
