@@ -130,7 +130,7 @@ export default {
   },
   methods: {
     updateNickName() {
-      // this.$http.post()
+      // this.$http.patch()
     },
     updatedescription() {
       //todo update description
@@ -141,7 +141,7 @@ export default {
   },
   created () {
     if(this.initInfo()){
-      this.$http.get(`/api/accounts/profile/${this.$store.state.userid}/`)
+      this.$http.get(`/api/profiles/${this.$store.state.userid}/`)
       .then(res => {
         if(res.body.success) {
           let data = res.body.data

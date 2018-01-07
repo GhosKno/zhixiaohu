@@ -313,18 +313,18 @@
     },
     created () {
       if(this.initInfo()){
-        this.$http.get(`/api/accounts/profile/${this.$route.params.id}/`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/`)
         .then(res => {
           if(res.body.success) {
             let data = res.body.data
             this.nickName = data.nickname
             this.description = data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description
-            this.watchedUser = data.watchedUser
-            this.watchedBy = data.watchedBy || []
-            this.watchedQuestion = data.watchedQuestion
-            this.askQuestion = data.askQuestion || []
-            this.history = data.history
-            this.favorites = data.favorites
+            // this.watchedUser = data.watchedUser
+            // this.watchedBy = data.watchedBy || []
+            // this.watchedQuestion = data.watchedQuestion
+            // this.askQuestion = data.askQuestion || []
+            // this.history = data.history
+            // this.favorites = data.favorites 
             this.avatarUrl = data.avatar
           }
         })

@@ -70,7 +70,7 @@ export default {
   methods: {
       toggleRead:function(){
           if(this.fold){
-             this.$http.get('/api/answers/'+this.pk)
+             this.$http.get(`/api/answers/${this.pk}`)
                 .then(res => {
                     if(res.body.success) {
                         this.fullAnswer=res.body.detail
