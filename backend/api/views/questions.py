@@ -38,6 +38,8 @@ class QuestionViewSet(GenericViewSet,
                 .watchedQuestion\
                 .filter(title=question).count()
             question.is_watch = count
+            question.answer_count = question.answers.count()
+            question.watch_count = question.watchedUser.count()
         else:
             question.is_watch = False
         seri = self.get_serializer(question)

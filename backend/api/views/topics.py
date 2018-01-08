@@ -11,6 +11,7 @@ from utils import mixins
 
 # create topic | list topic(search) | list question assocated with topic
 class TopicViewSet(GenericViewSet,
+                   mixins.RetrieveModelMixin,
                    mixins.ListModelMixin,
                    mixins.CreateModelMixin):
 

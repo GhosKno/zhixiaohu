@@ -13,7 +13,9 @@ class TopicTestCase(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['success'], True)
 
-# TODO fix test error
+    def test_retrive(self):
+        self.test_create()
+
     def test_create(self):
         url = '/api/topics/'
         data = {'label':'test',
