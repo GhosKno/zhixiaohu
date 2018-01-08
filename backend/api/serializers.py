@@ -120,8 +120,8 @@ class AnswerSerializer(serializers.ModelSerializer):
 class AnswerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ('author', 'detail', 'question')
-        read_only_fields = ('author',)
+        fields = ('author', 'detail', 'question', 'id')
+        read_only_fields = ('author', 'id')
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):

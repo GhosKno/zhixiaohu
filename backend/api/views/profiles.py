@@ -53,8 +53,8 @@ class ProfileViewSet(GenericViewSet,
         seri = self.get_serializer(data=data, partial=True)
         if seri.is_valid():
             seri.save(profile)
-            return Response({'status': True})
-        return Response(seri.errors)
+            return success()
+        return error(seri.errors)
 
     # upload avatar
     @list_route(methods=['POST'],
@@ -66,8 +66,8 @@ class ProfileViewSet(GenericViewSet,
             profile = request.user.profile
             profile.avatar = avatar
             profile.save()
-            return Response({'success': True})
-        return Response({'success': False, 'msg': seri.errors})
+            return success()
+        return error(seri.errors)
 
     @detail_route(methods=['GET'])
     def favorites(self, request, pk=None):

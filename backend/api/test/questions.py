@@ -9,25 +9,34 @@ from . import createTestUser
 class QuestionTestCase(APITestCase):
     client = APIClient()
     def test_retrieve(self):
-        self.test_create()
-        url = '/api/questions/1/'
+        id = self.test_create()
+        url = f'/api/questions/{id}/'
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['success'], True)
 
-        url = '/api/questions/2/'
+        url = f'/api/questions/{id+5}/'
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['success'], False)
 
     def test_create(self):
-        TopicTestCase().test_create()
+        url = '/api/topics/'
+        data = {'label': 'test',
+                'introduction': 'test introduction'}
+        createTestUser()
+        self.client.login(username='test-user', password='123456')
+        res = self.client.post(url, data, format='json')
+        id = res.data['data']['id']
+
         url = '/api/questions/'
         data = {'title': 'test title',
                 'detail': 'test detail',
-                'topics': [1]}
+                'topics': [id]}
+
+        self.client.logout()
+
         res = self.client.post(url, data)
-        #print(res.data)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
         self.client.login(username='test-user', password='123456')
@@ -37,29 +46,30 @@ class QuestionTestCase(APITestCase):
         res = self.client.post(url, data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
+        return id
+
     def test_get_answers(self):
-        self.test_create()
-        url = '/api/questions/1/get_answers/'
+        id = self.test_create()
+        url = f'/api/questions/{id}/get_answers/'
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['success'], True)
-        url = '/api/questions/2/get_answers/'
+        url = f'/api/questions/{id+5}/get_answers/'
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['success'], False)
 
-
     def test_watch(self):
-        self.test_create()
-        url = '/api/questions/1/watch/'
+        id = self.test_create()
+        url = f'/api/questions/{id}/watch/'
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['success'], True)
-
+        return id
 
     def test_cancel_watch(self):
-        self.test_watch()
-        url = '/api/questions/1/cancel_watch/'
+        id = self.test_watch()
+        url = f'/api/questions/{id}/cancel_watch/'
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['success'], True)
