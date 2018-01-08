@@ -4,9 +4,10 @@
       <span @click="toQuestionDetail()">{{title}}</span>
     </div>
     <div class="info">
-      <span>{{(new Date(time)).toLocaleDateString()}}</span>
+      <span>{{(new Date(time)).toISOString().split('T')[0]}}</span>
       <span>{{answers}}个回答</span>
       <span>{{watchers}}个关注</span>
+      <Button type="ghost">去写回答</Button>
     </div>
   </div>
 </template>
@@ -53,7 +54,7 @@ export default {
   border-bottom: 1px #dddee1 solid;
   padding: 15px 30px;
   .header {
-    font-size: 1.3em;
+    font-size: 1.5em;
     font-weight: bold;
     span {
       cursor: pointer;
@@ -64,13 +65,17 @@ export default {
   }
 
   .info {
-    margin-top: 5px;
+    // margin-top: 5px;
     span {
       color: #8590a6
     }
     span:not(:first-child):before {
       margin: 0 5px;
       content: "\B7";
+    }
+    button {
+      padding: 0;
+      margin-left: 20px;
     }
   }
 }

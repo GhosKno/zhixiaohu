@@ -6,6 +6,7 @@ const IdxPage = resolve => require(['@/views/index'], resolve)
 const LoginPage = resolve => require(['@/views/user/login'], resolve)
 const TopicPage = resolve => require(['@/views/topic/index'], resolve)
 const HeatPage = resolve => require(['@/views/heat/index'], resolve)
+const TopicDetailPage = resolve => require(['@/views/topic/topicDetail'], resolve)
 const ProfilePage = resolve => require(['@/views/user/profile'], resolve)
 const ProfileEditPage = resolve => require(['@/views/user/profileEdit'], resolve)
 const QuestionPage = resolve => require(['@/views/question/index'], resolve)
@@ -23,6 +24,10 @@ export default [{
   path: '/topics',
   name: 'topics',
   component: TopicPage
+}, {
+  path: '/topic/:id',
+  name: 'topic',
+  component: TopicDetailPage
 }, {
   path: '/profile/:id',
   name: 'profile',

@@ -1,13 +1,16 @@
 <template>
   <div>
-    <quill-editor
+    <!-- <quill-editor
       ref="quillEditor"
       :options="editorOption"
-      style="height: 180px; margin-bottom: 10px"
+      style="height: 180px; margin-bottom: 10px;display: none;"
       v-model="editorContent"
       @change="editorChange"
     >
-    </quill-editor>
+    </quill-editor> -->
+    <div id="quillEditor">
+
+    </div>
     <Upload 
       action="//up-z1.qiniu.com"
       :before-upload="beforeUpload"
@@ -36,6 +39,8 @@
     components: {quillEditor},
     data(){
       return {
+        quillEditorRoot: {},
+        /**** */
         editorContent: '', //文章内容
         htmlContent: '',  //html内容
         uploadData:{},
@@ -53,6 +58,7 @@
             imageImport: true
           },
           strict: false,
+          theme: 'snow'
         },
         addRange: {},
       }
@@ -62,7 +68,7 @@
         this.htmlContent = html
       },
       getHtmlContent() {
-        return this.htmlContent
+        return this.quillEditorRoot.container.firstChild.innerHTML
       },
       beforeUpload(file) {
         return this.upload(file)
@@ -72,8 +78,6 @@
         const ext = suffix.splice(suffix.length-1,1)[0]
           return this.$http.get('/api/images').then(res => {
             this.uploadData = {
-              // key: `image/${suffix.join('.')}_${new Date().getTime()}.${ext}`,
-              // token: res.data
               key: res.body.data.name,
               token: res.body.data.token
             }
@@ -82,19 +86,29 @@
       upScuccess(e, file, fileList) {
         let url = ''
         url = STATICDOMAIN + e.key
-        // url = 'http://ock1p2k5t.bkt.clouddn.com/canvas-star%E4%B8%8B%E8%BD%BD%20%281%29.png'
-        if (url != null && url.length > 0) { // 将文件上传后的URL地址插入到编辑器文本中
-          let value = url
+        if (url != null && url.length > 0) {
+          let value = url + '-zhixiaohu'
           for(var i = 0;i<=100;i++) {
-            this.addRange = this.$refs.quillEditor.quill.getSelection()
+            this.addRange = this.quillEditorRoot.getSelection()
             if(this.addRange) {
               break
             }
           }
           value = value.indexOf('http') !== -1 ? value : 'http:' + value
-          this.$refs.quillEditor.quill.insertEmbed(this.addRange && this.addRange.hasOwnProperty('index') ? this.addRange.index : 0, 'image', value, Quill.sources.USER)
+          if(!this.quillEditorRoot.getSelection()){
+            this.$Message.error(`图片插入失败`)
+            return
+          }
+          this.quillEditorRoot.focus()
+          var range = this.quillEditorRoot.getSelection()
+          let index = 0
+          if (range) {
+            index = range.index
+          }
+          this.quillEditorRoot.insertEmbed(index, 'image', value, Quill.sources.API)
+          this.quillEditorRoot.formatText(index, index + 1, 'width', 400 + 'px');
         } else {
-          this.$message.error(`图片插入失败`)
+          this.$Message.error(`图片插入失败`)
         }
         this.$refs['upload'].clearFiles()
       }
@@ -102,8 +116,9 @@
     created: function () {
     },
     mounted() {
-      this.$refs.quillEditor.quill.getModule("toolbar").addHandler("image", async (image) => {
-        this.addRange = this.$refs.quillEditor.quill.getSelection()
+      this.quillEditorRoot = new Quill('#quillEditor', this.editorOption)
+      this.quillEditorRoot.getModule("toolbar").addHandler("image", async (image) => {
+        this.addRange = this.quillEditorRoot.getSelection()
         if (image) {
           let fileInput = document.getElementById('uploadInput')
           fileInput.click()

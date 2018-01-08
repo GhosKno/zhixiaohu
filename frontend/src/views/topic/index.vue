@@ -31,7 +31,7 @@
                     span="12"
                     class="topic-content-body"
                   >
-                  <div class="topic-header" @click="$router.push({path: `question/${1}`})">
+                  <div class="topic-header" @click="$router.push({path: `topic/${1}`})">
                     {{topic.label}}
                   </div>
                   <div class="topic-introduction">

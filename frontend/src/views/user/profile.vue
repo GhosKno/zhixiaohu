@@ -49,6 +49,12 @@
                   <el-tab-pane label="动态" name="activities">
                     <div class="profile-pane-header">{{$route.params.id == $store.state.userid ? '我' : 'Ta'}}的动态</div>
                     <div class="profile-pane-body">
+                      <div
+                        class="no-data-content" 
+                        v-if="activities.length == 0"
+                      >
+                        还没有动态
+                      </div>
                       <div class="activities-content"
                         v-for="(item, index) in activities"
                         :key="index">
