@@ -330,39 +330,39 @@
           if(this.profilePaneActiveName !== 'more') {
             switch (this.profilePaneActiveName) {
               case 'activities': 
-                this.url = 'activities'
-                this.listName = 'activities'
+                url = 'activities'
+                listName = 'activities'
                 break
               case 'answer': 
-                this.url = 'answers'
-                this.listName = 'answerList'
+                url = 'answers'
+                listName = 'answerList'
                 break
               case 'question': 
-                this.url = 'questions'
-                this.listName = 'askQuestion'
+                url = 'questions'
+                listName = 'askQuestion'
                 break
             }
           } else {
             switch (this.morePaneActiveName) {
               case 'watch': 
-                this.url = 'watched_users'
-                this.listName = 'watchedUser'
+                url = 'watched_users'
+                listName = 'watchedUser'
                 break
               case 'watched': 
-                this.url = 'be_watched'
-                this.listName = 'watchBy'
+                url = 'be_watched'
+                listName = 'watchBy'
                 break
               case 'watchQuestion': 
-                this.url = 'watched_questions'
-                this.listName = 'watchedQuestion'
+                url = 'watched_questions'
+                listName = 'watchedQuestion'
                 break
               case 'collectedAnswer': 
-                this.url = 'favorites'
-                this.listName = 'favorites'
+                url = 'favorites'
+                listName = 'favorites'
                 break
               case 'history': 
-                this.url = 'history'
-                this.listName = 'history'
+                url = 'history'
+                listName = 'history'
                 break
             }
           }

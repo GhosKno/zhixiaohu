@@ -17,9 +17,10 @@
         </Input>
         <Select
           class="question-input"
-          v-model="questionForm.topic"
+          v-model="selectTopics"
           filterable
           remote
+          multiple
           :remote-method="filterRemoteTopic"
           :loading="topicLoading"
           placeholder="添加话题"
@@ -27,25 +28,14 @@
           <Option
             v-for="(option, index) in topicOption"
             :key="index"
-            :value="option.value"
+            :value="option.id"
           >
           {{option.label}}
           </Option>
         </Select>
         <span class="editor-label">问题描述（可选）：</span>
-        <!-- <quill-editor
-          :options="editorOption"
-          ref="quillEditor"
-          @blur="onEditorBlur($event)" 
-          @focus="onEditorFocus($event)"
-          @change="onEditorChange($event)"
-          @ready="onEditorReady($event)"
-        ></quill-editor> -->
         <common-editor
-          uploadImgUrl="/action"
-          :text="content"
           ref="quillEditor"
-          @editorChange="editorChange"
           placeholder="问题背景、条件等详细信息"
         ></common-editor>
       </div>
@@ -62,8 +52,6 @@
 </template>
 
 <script>
-import {quillEditor} from 'vue-quill-editor'
-import Quill from 'quill'
 import commonEditor from '@/components/commonEditor'
 export default {
   name: 'questionAskModal',
@@ -71,26 +59,13 @@ export default {
   },
   data () {
     return {
-      content: '',
+      selectTopics:[],
       questionForm: {
         title: '',
-        topic: '',
-        content: ''
+        topics: [],
+        detail: ''
       },
       showQuestionForm: false,
-      // editorOption: {
-      //   modules: {
-      //     toolbar: [
-      //       ['bold','italic','underline', 'strike'],
-      //       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      //       [{ 'color': [] }, { 'background': [] }],
-      //       [{ 'size': ['small', false, 'large', 'huge'] }],
-      //       ['clean']
-      //     ]
-      //   },
-      //   placeholder: '问题背景、条件等详细信息',
-      //   theme: 'snow'
-      // },
       topicLoading: false,
       topicOption: [],
     }
@@ -105,31 +80,41 @@ export default {
       this.showQuestionForm = true
     },
     submitQuestion () {
-      //TODO submit question
-      console.log(this.$refs['quillEditor'].getHtmlContent())
-      console.log(this.questionForm.content)
+      this.questionForm.detail = this.$refs['quillEditor'].getHtmlContent()
+      this.questionForm.topics = this.selectTopics
+      this.$http.post('/api/questions/', this.questionForm)
+        .then(res => {
+          if(res.body.success) {
+            this.$Message.success('添加问题成功')
+            this.showQuestionForm = false
+          } else {
+            this.$Message.info(`添加问题失败：(`)
+          }
+        }, err => {
+          this.$Message.info(`添加问题失败：(`)
+        })
     },
     filterRemoteTopic (query) {
       if (query !== '') {
-        this.topicLoading = true;
-        //TODO get remote topic Option
+        this.topicLoading = true
+        this.$http.get(`/api/topics?search=${query}`)
+          .then(res => {
+            this.topicOption = res.body.data.results
+            this.topicLoading = false
+          })
       } else {
         this.topicOption = [];
       }
-    },
-    editorChange: function(html) {
-      this.content = html
     }
   },
   components: {
-    quillEditor,
     commonEditor
   }
 }
 </script>
 
 <style lang="less">
-@import 'quill/dist/quill.core.css';
+@import 'quill/dist/quill.core.css';                                                                                                                 
 @import 'quill/dist/quill.snow.css';
 .question-body {
   .question-input {

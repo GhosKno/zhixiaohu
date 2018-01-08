@@ -55,8 +55,8 @@ export default {
           default: "泻药.这个答案是一个示例答案."
       },
       'pk':{
-          type: Number,          
-          required: true
+          type: Number | String,          
+          default: 0
       },
       'authorAvatar':{
           type: String,
