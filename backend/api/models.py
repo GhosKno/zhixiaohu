@@ -134,6 +134,7 @@ class Profile(models.Model):
 
     class Meta:
         db_table = 'profile'
+        ordering = ('-beWatchCount',)
 
 
 class Message(models.Model):

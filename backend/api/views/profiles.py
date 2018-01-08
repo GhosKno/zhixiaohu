@@ -18,7 +18,6 @@ class ProfileViewSet(GenericViewSet,
     search_fields = ('nickname',)
 
     queryset = Profile.objects.all()
-    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -46,13 +45,13 @@ class ProfileViewSet(GenericViewSet,
     @list_route(methods=['POST'],
                 permission_classes=(IsAuthenticated, ))
     def update_info(self, request, *args, **kwargs):
-        profile = self.request.user
+        profile = request.user.profile
         if profile is None:
             return error("no profile found")
         data = request.data
-        seri = self.get_serializer(data=data, partial=True)
+        seri = self.get_serializer(profile, data=data, partial=True)
         if seri.is_valid():
-            seri.save(profile)
+            seri.save()
             return success()
         return error(seri.errors)
 

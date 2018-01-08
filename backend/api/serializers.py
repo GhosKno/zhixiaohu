@@ -58,10 +58,9 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('avatar', 'nickname', 'description')
+        fields = ('nickname', 'description')
 
     def update(self, instance, validated_data):
-        instance.avatar = validated_data.get('avatar', instance.avatar)
         instance.nickname = validated_data.get('nickname', instance.nickname)
         instance.description = validated_data.get('description', instance.description)
         instance.save()
@@ -72,7 +71,6 @@ class ProfileSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('id', 'avatar', 'nickname', 'description')
-
 
 # class TopicCreateSerializer(serializers.HyperlinkedModelSerializer):
 #     class Meta:

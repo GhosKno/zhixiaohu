@@ -50,6 +50,7 @@ class QuestionTestCase(APITestCase):
 
     def test_get_answers(self):
         id = self.test_create()
+        self.client.logout()
         url = f'/api/questions/{id}/get_answers/'
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
