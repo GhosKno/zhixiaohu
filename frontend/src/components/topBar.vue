@@ -27,11 +27,14 @@
           <Button type="primary" class="joinBtn" @click="$router.push({name: 'login', params: {register: true}})">加入知小乎</Button>
         </div>
         <div class="userInfo" v-else>
-          <Button type="text" class="messageRing">
-            <Badge count="5" overflow-count="999">
-              <Icon type="ios-bell"></Icon>
-            </Badge>
-          </Button>
+          <Poptip placement="bottom" width="400">
+            <Button type="text" class="messageRing" @click="$refs['message'].open()">
+              <Badge :count="unreadMsgsCount" overflow-count="999">
+                <Icon type="ios-bell"></Icon>
+              </Badge>
+            </Button>
+            <message ref="message" slot="content"></message>
+          </Poptip>
           <Dropdown trigger="click">
             <Avatar :src="$store.state.avatarUrl" />
             <DropdownMenu slot="list" class="userMenu">
@@ -54,14 +57,15 @@ import initInfo from "@/mixins/initInfo";
 const questionModal = resolve => require(['@/components/questionAskModal.vue'], resolve)
 const updatePwdModal = resolve => require(['@/components/updatePasswordModal.vue'], resolve)
 const Logo = resolve => require(['@/components/logo.vue'], resolve)
-
+const Message = resolve => require(['@/components/message.vue'], resolve)
 export default {
   name: "topBar",
   mixins: [cookieManage, initInfo],
   data() {
     return {
       theme1: "light",
-      showAskBtn: true
+      showAskBtn: true,
+      unreadMsgsCount: 0
     };
   },
   methods: {
@@ -69,15 +73,23 @@ export default {
       this.cookieLogout();
       this.$Message.info("已退出");
       this.$router.push({ name: "login" });
+    },
+    getUnreadMsg() {
+      this.$http.get('/api/messages/unread')
+        .then(res => {
+          this.unreadMsgsCount = res.body.data.count
+        })
     }
   },
   components: {
     questionModal,
     updatePwdModal,
     Logo,
+    Message,
   },
   created () {
-    this.initInfo()
+    if(this.initInfo())
+      this.getUnreadMsg()
   }
 };
 </script>
