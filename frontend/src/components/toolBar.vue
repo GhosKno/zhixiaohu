@@ -1,6 +1,7 @@
 <template>
   <div class="toolBar">
-   <div class="btn-group" v-if="question">
+    
+   <div class="btn-group" v-if="forQuestion">
       <Button type="primary">关注问题</Button>
       <Button type="ghost" class="writeBtn"><svg viewBox="0 0 12 12" class="writeIcon" width="14" height="16" aria-hidden="true"><g data-reactid="108"><path d="M.423 10.32L0 12l1.667-.474 1.55-.44-2.4-2.33-.394 1.564zM10.153.233c-.327-.318-.85-.31-1.17.018l-.793.817 2.49 2.414.792-.814c.318-.328.312-.852-.017-1.17l-1.3-1.263zM3.84 10.536L1.35 8.122l6.265-6.46 2.49 2.414-6.265 6.46z" fill-rule="evenodd"></path></g></svg>
         写回答
@@ -20,7 +21,7 @@
         <svg class="actionIcon" viewBox="0 0 24 24"><path d="M2.931 7.89c-1.067.24-1.275 1.669-.318 2.207l5.277 2.908 8.168-4.776c.25-.127.477.198.273.39L9.05 14.66l.927 5.953c.18 1.084 1.593 1.376 2.182.456l9.644-15.242c.584-.892-.212-2.029-1.234-1.796L2.93 7.89z" fill-rule="evenodd"></path></svg>
         分享
       </Button>
-      <Button type="text" class="actionBtn" v-if="question">
+      <Button type="text" class="actionBtn" v-if="forQuestion">
         <svg class="actionIcon" viewBox="0 0 24 24" ><path d="M5.515 19.64l.918-5.355-3.89-3.792c-.926-.902-.639-1.784.64-1.97L8.56 7.74l2.404-4.871c.572-1.16 1.5-1.16 2.072 0L15.44 7.74l5.377.782c1.28.186 1.566 1.068.64 1.97l-3.89 3.793.918 5.354c.219 1.274-.532 1.82-1.676 1.218L12 18.33l-4.808 2.528c-1.145.602-1.896.056-1.677-1.218z" fill-rule="evenodd"></path></svg>
         邀请回答
       </Button>
@@ -31,10 +32,12 @@
       <Button type="text" class="actionBtn">
         <svg class="actionIcon" viewBox="0 0 24 24"><path d="M5 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fill-rule="evenodd"></path></svg>
       </Button>
-      <Button type="text" class="actionBtn right" v-show="!fold" @click="unfold">
-          收起 <Icon type="chevron-up"></Icon>
+      <Button type="text" class="actionBtn right" v-if="showFoldBtn" @click="toggleFold">
+          <span v-if="fold">展开全文 <Icon type="chevron-down"></Icon></span>
+          <span v-else>收起 <Icon type="chevron-up"></Icon></span>
       </Button>
-<Modal v-model="showComment" v-if="question">
+
+<Modal v-model="showComment" v-if="forQuestion">
   <CommentList :numOfComment="numOfComment">
   </CommentList>
 </Modal>
@@ -64,8 +67,8 @@ export default {
       }
       this.showComment = !this.showComment;
     },
-    unfold(){
-      this.$emit('unfold')
+    toggleFold(){
+      this.$emit('toggleFold')
     }
   },
   data() {
@@ -79,7 +82,7 @@ export default {
       type: Number,
       default: 0
     },
-    "question": {
+    "forQuestion": {
       type: Boolean,
       default:false,
     },
@@ -90,6 +93,9 @@ export default {
     "fold":{
       type: Boolean,
       default: true,
+    },
+    "showFoldBtn":{
+      default: true
     }
   },
   created() {
@@ -108,6 +114,7 @@ export default {
 .btn-group{
   display: inline;
 }
+
 .voteBtn {
   line-height: 30px;
   padding: 0 12px;
@@ -131,6 +138,7 @@ export default {
 .voteNum {
   margin-left: 8px;
 }
+
 .actionBtn {
   display: inline-block;
   font-size: 14px;
@@ -148,6 +156,7 @@ export default {
 .actionBtn:hover {
   color: #7a8599;
 }
+
 .writeIcon{
   fill: #2d84cc;
   vertical-align: text-bottom;
@@ -157,6 +166,7 @@ export default {
 .writeBtn{
   color:#2d84cc;
 }
+
 .commentCard {
   border: 1px solid #e7eaf2;
   -webkit-box-shadow: 0 1px 3px 0 rgba(0, 33, 77, 0.05);
@@ -165,6 +175,7 @@ export default {
   margin-top: 12px;
   border-radius: 4px;
 }
+
 /* 隐藏 modal footer */
 .ivu-modal-footer{
   display: none;

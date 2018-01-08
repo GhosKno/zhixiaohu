@@ -6,8 +6,7 @@
 <div class="info">
     <Poptip trigger="hover" placement="right" width="400">
         <Avatar class="avatar" shape="square" size="small"  :src="authorAvatar"  />
-        <div class="api" slot="content">
-            
+        <div class="api" slot="content"> 
         </div>
     </Poptip>
     <div class="name">
@@ -20,84 +19,56 @@
     <div class="question">
         <a :href="'/question/'+pk" class="title">{{question}}</a>
     </div>
-    <div class="content">
-        <div class="cover" v-show="coverImg" ><img width="190" :src="coverImg">
-        </div>
-        <div class="inner">
-        <span class="inner-text">{{answer}}</span>
-        <Button type="text" class="foldBtn" v-if="fold" @click="toggleRead">
-            阅读全文 <Icon type="chevron-down"></Icon>
-        </Button>
-        </div>
-    </div>
-    <ToolBar :fold="fold" @unfold="toggleRead"></ToolBar>
+    <TextWithToolBar 
+        :text="answer" 
+        :coverImg="coverImg" ></TextWithToolBar>
 </div>
 </template>
 <script>
-const ToolBar = resolve => require(["@/components/toolBar"], resolve);
+const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
 export default {
   name: "answerListCard",
-  components: { ToolBar },
+  components: { TextWithToolBar },
   props:{
-      'feedTitle':{
-        type: String,
-        default: ''
+      feedTitle:{
+          type: String,
+          default: ''
       },
-      'question':{
+      question:{
           type: String,
           default: "作为一个示例问题是怎样的体验?"
       },
-      'coverImg':{
-          default: false
-      },
-      'answer':{
+      answer:{
           type: String,
-          default: "泻药.这个答案是一个示例答案."
+          default: "泻药.这个答案是一个示例答案.这个示例答案很短."
       },
-      'pk':{
-          type: Number | String,          
-          default: 0
+      pk:{
+          type: Number | String,
+          default: "0"
       },
-      'authorAvatar':{
+      authorAvatar:{
           type: String,
-          default: '/static/avatar.jpg'
+          default: '/static/avatar.jpg',
       },
-      'authorName':{
+      authorName:{
           type: String,
-          default: 'hhh'
+          default: '匿名用户'
       },
-      'authorBadge':{
+      authorBadge:{
           type: String,
-          default: "已婚人士/专业数星星团队成员/编程狂热者/不只是Python/并行框架/DL爱好者"
+          default: ""
       },
+      coverImg:{
+          default:false
+      }
   },
   data() {
       return {
-          fold: true,
       }
   },
   methods: {
-      toggleRead:function(){
-          if(this.fold){
-             this.$http.get('/api/questions/'+this.pk)
-                .then(res => {
-                    if(res.body.success) {
-                    this.$Message.success('登陆成功')
-                    Vue.http.headers.common['X-CSRFTOKEN'] = this.$cookie.get('csrftoken')
-                    this.setCookie(true, res.body.data.id, res.body.data.nickname)
-                    this.$store.commit('LOGIN')
-                    this.$store.commit('USER', {id: res.body.data.id, name: res.body.data.nickname})
-                    this.$router.push({name: 'home'})
-                    } else {
-                    this.$Message.error(res.data.msg)
-                    }
-                })
-          }else{
-
-          }
-          this.fold=!this.fold;
-
-      }
+  },
+  mounted(){
   }
 };
 </script>
@@ -127,34 +98,6 @@ export default {
   margin: 0;
   position: relative;
 }
-.foldBtn {
-  padding: 0;
-  margin-left: 4px;
-  color: #175199;
-}
-.cover {
-  position: relative;
-  width: 190px;
-  height: 105px;
-  margin-top: -2px;
-  margin-right: 18px;
-  margin-bottom: 4px;
-  float: left;
-  overflow: hidden;
-  background-position: 50%;
-  background-size: cover;
-  border-radius: 4px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-.inner-text {
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.67;
-  max-height: 100px;
-  margin-bottom: -4px;
-  overflow: hidden;
-}
 .title{
     font-size: 18px;
     font-weight: 600;
@@ -166,10 +109,6 @@ export default {
 }
 .title:hover{
     color:#175199;
-}
-.toolBar{
-    background: #fff;
-    padding: 5px 0;
 }
 .name{
     margin-left: 5px;

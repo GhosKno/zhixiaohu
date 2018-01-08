@@ -19,25 +19,13 @@
         </div>
         </div>
     </div>
-    <div class="content">
-        <div class="inner" v-if="fold">
-        <span class="inner-text" >{{answer}}</span>
-        <Button type="text" class="foldBtn" @click="toggleRead">
-            展开阅读全文 <Icon type="chevron-down"></Icon>
-        </Button>
-        </div>
-        <div class="inner" v-else>
-            <span class="inner-text" >{{fullAnswer}}</span>
-        </div>
-    </div>
-    <ToolBar :fold="fold" @unfold="toggleRead"></ToolBar>
-</div>
+    <TextWithToolBar :text="answer" ></TextWithToolBar></div>
 </template>
 <script>
-const ToolBar = resolve => require(["@/components/toolBar"], resolve);
+const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
 export default {
   name: "answerCard",
-  components: { ToolBar },
+  components: { TextWithToolBar },
   props:{
       'feedTitle':{},
       'question':{
@@ -57,33 +45,17 @@ export default {
       },
       'authorBadge':{
           default: "已婚人士/专业数星星团队成员/编程狂热者/不只是Python/并行框架/DL爱好者"
-      },
-      'fold': {
-          default: true,
       }
   },
   data() {
       return {
-          fullAnswer: '',
+          
       }
   },
   methods: {
-      toggleRead:function(){
-          if(this.fold){
-             this.$http.get(`/api/answers/${this.pk}`)
-                .then(res => {
-                    if(res.body.success) {
-                        this.fullAnswer=res.body.detail
-                    } else {
-                        this.$Message.error(res.data.msg)
-                    }
-                })
-          }else{
-
-          }
-          this.fold=!this.fold;
-
-      }
+  },
+  mounted(){
+      
   }
 };
 </script>
@@ -105,29 +77,6 @@ export default {
 .content {
   line-height: 1.625;
   margin: 0;
-}
-.foldBtn {
-  display: block;
-  width: 100%;
-  padding: 0;
-  margin: 20px;
-  color: #175199;
-  font-size: 15px;
-}
-.inner{
-    margin: 5px 0;
-}
-.inner-text {
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.67;
-  max-height: 100px;
-  
-  overflow: hidden;
-}
-.toolBar{
-    background: #fff;
-    padding: 5px 0;
 }
 .info{
     display: -webkit-box;

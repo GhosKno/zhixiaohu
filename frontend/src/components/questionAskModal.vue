@@ -13,8 +13,8 @@
           v-model="questionForm.title" 
           type="textarea" 
           :autosize="{minRows: 3,maxRows: 6}" 
-          placeholder="问题标题">
-        </Input>
+          placeholder="问题标题"
+        />
         <Select
           class="question-input"
           v-model="selectTopics"

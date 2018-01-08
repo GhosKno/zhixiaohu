@@ -1,5 +1,6 @@
 <template>
   <div class="topic">
+    <TopBar class="top-bar"></TopBar>
     <Scroll 
       :on-reach-bottom="handleReachBottom" 
       :height="windowHeight">

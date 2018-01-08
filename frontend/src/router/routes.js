@@ -9,7 +9,7 @@ const HeatPage = resolve => require(['@/views/heat/index'], resolve)
 const ProfilePage = resolve => require(['@/views/user/profile'], resolve)
 const ProfileEditPage = resolve => require(['@/views/user/profileEdit'], resolve)
 const QuestionPage = resolve => require(['@/views/question/index'], resolve)
-
+const NotFoundPage = resolve => require(['@/views/errors/404'], resolve)
 
 export default [{
   path: '/',
@@ -34,9 +34,13 @@ export default [{
 }, {
   path: '/question/:id',
   name: 'question',
-  component: QuestionPage,
+  component: QuestionPage
 }, {
   path: '/heat',
   name: 'heat',
   component: HeatPage
+},{
+  path: "*",
+  name: 'noFound',
+  component: NotFoundPage
 }]

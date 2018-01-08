@@ -43,7 +43,7 @@ class RetrieveModelMixin(object):
         if instance:
             serializer = self.get_serializer(instance)
             return Response({'success': True, 'data': serializer.data})
-        return Response({'success': False, 'msg': 'cant found'})
+        return Response({'success': False, 'msg': 'can\'t found'})
 
 
 class UpdateModelMixin(object):
@@ -51,7 +51,7 @@ class UpdateModelMixin(object):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         if not instance:
-            return Response({'success': False, 'msg': 'cant found'})
+            return Response({'success': False, 'msg': 'can\'t found'})
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)

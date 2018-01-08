@@ -20,3 +20,5 @@ static/
 db.sqlite3
 
 media/
+api/migrations/
+

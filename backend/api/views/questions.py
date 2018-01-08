@@ -9,7 +9,7 @@ from utils import mixins
 from utils.views import GenericViewSet, error, success
 
 
-# used for create or show user assocatied question
+# used for create or show user associated question
 class QuestionViewSet(GenericViewSet,
                       mixins.CreateModelMixin,
                       mixins.RetrieveModelMixin):

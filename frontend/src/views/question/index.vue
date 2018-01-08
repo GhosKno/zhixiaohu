@@ -1,18 +1,18 @@
 <template>
   <div>
+    <NotFoundPage v-if="noFound"></NotFoundPage>
+    <ErrPage v-else-if="err" :errCode="errCode" :errText="errText"></ErrPage>
+    <div v-else>
+      <TopBar class="top-bar"></TopBar>
     <div class="header">
         <div class="content">
           <div class="description">
               <div class="topics">
-              <a href="/" class="Tag" v-for="topic in question.topics" :key="topic">{{topic}}</a>
+              <a href="/" class="Tag" v-for="topic in question.topics" :key="topic.id">{{topic.label}}</a>
               </div>
               <h1 class="title">
                   {{question.title}}
               </h1>
-              <div class="summary">
-                  {{question.summary}}
-                  <Button type="text" class="read-all">显示全部 <Icon type="chevron-down"></Icon></Button>
-              </div>
           </div>
           <div class="countBoard">
               <a type="text" class="countItem">
@@ -29,14 +29,15 @@
                       浏览量
                   </div>
                   <div class="countNum">
-                      398,231
+                      {{question.visit_count}}
                   </div>
               </div>
           </div>
-
         </div>
         <div class="footer">
-        <ToolBar :question="true"></ToolBar>
+        <TextWithToolBar 
+          :text="question.detail" 
+          :forQuestion="true" ></TextWithToolBar>
         </div>
     </div>
     <div class="main">
@@ -45,52 +46,52 @@
             <div class="title">
                 {{numOfAnswer}} 个回答
             </div>
-            <Select v-model="model1" style="float: right;width:100px" placeholder="默认排序">
+            <Select style="float: right;width:100px" placeholder="默认排序">
                 <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
         </div>
         <AnswerCard>
         </AnswerCard>
-        <AnswerCard>
+        <AnswerCard
           v-for="(item, index) in answerList"
           :key="index"
           :avatar="item.avatar"
           :name="item.name" 
           :pk="item.pk" 
-          :feed-title="item.feedTitle" 
-          :question="item.question" 
+          :feed-title="item.feedTitle"
           :answer="item.answer">
 
         </AnswerCard>
       </div>
       <SideBar class="sidebar"></SideBar>
     </div>
+    </div>
+    
   </div>
 </template>
 
 <script>
 const AnswerCard = resolve =>
   require(["@/components/answerCard"], resolve);
-const ToolBar = resolve => require(["@/components/toolBar"], resolve);
+const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
 const SideBar = resolve => require(["@/components/sideBar"], resolve);
+const TopBar = resolve => require(['@/components/topBar'], resolve)
+const NotFoundPage = resolve => require(['@/views/errors/404'], resolve)
+const ErrPage = resolve => require(['@/views/errors/err'], resolve)
+
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
 export default {
   name: "QuestionPage",
   mixins: [cookieManage, initInfo],
-  components: { AnswerCard, ToolBar, SideBar },
+  components: { AnswerCard,NotFoundPage,ErrPage, TopBar, TextWithToolBar, SideBar },
   data() {
     return {
       windowHeight: "",
       answerList: [
         {
-          avatar: "h",
-          name: "ccc",
-          pk: "",
-          feedTitle: "热门内容,来自: 历史",
-          question: "历史上外交时有哪些尴尬场面？",
           answer:
-            "南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."
+            "垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵"
         }
       ],
       comments: [
@@ -98,12 +99,21 @@ export default {
         { id: 1, author: "橘子超人", time: "1 天前", text: "呵呵", zan: 0 },
         { id: 2, author: "想乖乖写代码的喵", time: "1 天前", text: "超吓人的啊", zan: 2 }
       ],
-      showCommentBtn: false,
       question: {
-        title: "作为一名程序员，我这属于什么水平？",
-        summary:
-          "已开源，源码URL请往下翻，剧情要反转了！ 不明真相的群众，请看帖子详细编辑过程。 野生的程序员们，这次我斗胆站出来，为你们呐喊。 是否像我这样迷惘过？ 没…",
-        topics: ['IT','程序员','C(编程语言)','C++'],
+        "author": 1,
+        "id": 1,
+        "add_time": "2018-01-07T12:24:03.872424Z",
+        "title": "???",
+        "detail": "...",
+        "topics": [
+            {
+                "id": 1,
+                "label": "hhh",
+                "introduction": "xxx"
+            }
+        ],
+        "visit_count": 1,
+        "is_watch": false
       },
       numOfAnswer: 12,
       answerSort: [
@@ -116,6 +126,10 @@ export default {
               label: '按时间排序'
           }
       ],
+      noFound: false,
+      err: false,
+      errText: "",
+      errCode: 0,
     };
   },
   methods: {
@@ -126,10 +140,40 @@ export default {
           resolve();
         }, 2000);
       });
+    },
+    fetchData: function(){
+      this.$http.get(`/api/questions/${this.$route.params.id}/`)
+          .then(res => {
+            if(res.body.success==true) {
+              this.question=res.body.data
+            } else {
+              this.noFound=true
+            }
+          }, function(response){
+            // 响应错误回调 
+             this.err=true
+             this.errCode=response.status
+             this.errText=response.statusText
+          });
+      this.$http.get(`/api/questions/${this.$route.params.id}/get_answers/`)
+          .then(res => {
+            if(res.body.success==true) {
+              this.answerList=res.body.data.results
+              this.numOfAnswer=res.body.data.count
+            } else {
+              this.$Message.error(res.body.msg);
+            }
+          }, function(response){
+            // 响应错误回调 
+             this.err=true
+             this.errCode=response.status
+             this.errText=response.statusText
+          });
+          
     }
   },
-  created() {
-
+  mounted() {
+      this.fetchData()
   }
 };
 </script>
@@ -157,6 +201,7 @@ export default {
   font-synthesis: style;
   color: #1e1e1e;
 }
+
 .header {
   padding: 16px 0;
   position: relative;
@@ -178,6 +223,7 @@ export default {
   padding: 0 16px;
   margin: 0 auto;
 }
+
 .answer-flow{
   width: 696px;
 }
@@ -222,21 +268,8 @@ export default {
 .description {
   width: 640px;
 }
-.read-all {
-  height: auto;
-  padding: 0;
-  line-height: inherit;
-  background-color: transparent;
-  border: none;
-  border-radius: 0;
-  color: #8590a6;
-}
-.summary{
-    cursor: pointer;
+.detail{
     margin-bottom: 10px;
-}
-.summary:hover{
-    opacity: 0.8;
 }
 .Tag{
     margin: 3px 5px 3px 0;
