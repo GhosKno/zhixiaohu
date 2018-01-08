@@ -1,5 +1,6 @@
 <template>
   <div class="profile-edit">
+    <TopBar class="top-bar"></TopBar>
     <Row>
       <Col span="18" offset="3" class="main-content">
         <div class="background"></div>
@@ -113,9 +114,12 @@
 <script>
 import cookieManage from '@/mixins/cookieManage'
 import initInfo from '@/mixins/initInfo'
+const TopBar = resolve => require(["@/components/topBar"], resolve);
+
 export default {
   name: 'profileEdit',
   mixins: [cookieManage, initInfo],
+  components: {TopBar},
   data() {
     return {
       nickName: '',

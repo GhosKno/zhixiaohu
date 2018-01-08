@@ -1,5 +1,6 @@
 <template>
   <div class="profile">
+    <TopBar class="top-bar"></TopBar>
     <Scroll 
       :on-reach-bottom="handleReachBottom" 
       :height="windowHeight">
@@ -294,6 +295,7 @@
   const AnswerListCard = resolve => require(['@/components/answerListCard'], resolve)
   const userCard = resolve => require(['@/components/userCard'], resolve)
   const questionCard = resolve => require(['@/components/questionCard'], resolve)
+const TopBar = resolve => require(["@/components/topBar"], resolve);
 
   import cookieManage from '@/mixins/cookieManage'
   import initInfo from '@/mixins/initInfo'
@@ -303,7 +305,8 @@
     components: {
       AnswerListCard,
       userCard,
-      questionCard
+      questionCard,
+      TopBar
     },
     data() {
       return {

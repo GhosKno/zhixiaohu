@@ -12,10 +12,10 @@
   <div slot="body">
     <Form ref="pwdForm" :rules="updateRule">
       <FormItem prop="password" label="新密码">
-        <Input v-model="passwordForm.password" placeholder="请输入新密码"></Input>
+        <Input v-model="passwordForm.password" placeholder="请输入新密码"/>
       </FormItem>
       <FormItem prop="checkPassword" label="确认密码">
-        <Input v-model="passwordForm.checkPassword" placeholder="请再次输入密码"></Input>
+        <Input v-model="passwordForm.checkPassword" placeholder="请再次输入密码"/>
       </FormItem>
     </Form>
   </div>

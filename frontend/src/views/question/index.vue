@@ -141,11 +141,12 @@ export default {
         }, 2000);
       });
     },
-    fetchData: function(){
+    fetchQuestion: function(){
       this.$http.get(`/api/questions/${this.$route.params.id}/`)
           .then(res => {
             if(res.body.success==true) {
               this.question=res.body.data
+              return true;
             } else {
               this.noFound=true
             }
@@ -155,6 +156,9 @@ export default {
              this.errCode=response.status
              this.errText=response.statusText
           });
+          return false;   
+    },
+    fetchAnswers: function(){
       this.$http.get(`/api/questions/${this.$route.params.id}/get_answers/`)
           .then(res => {
             if(res.body.success==true) {
@@ -169,11 +173,12 @@ export default {
              this.errCode=response.status
              this.errText=response.statusText
           });
-          
     }
   },
   mounted() {
-      this.fetchData()
+      if(this.fetchQuestion()){
+        this.fetchAnswers()
+      }
   }
 };
 </script>

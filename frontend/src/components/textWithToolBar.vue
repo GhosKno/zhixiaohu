@@ -2,7 +2,7 @@
 <div>
     <div class="text" ref="foldText" :class="{'is-fold':fold}">
         <div class="cover-img" :style="'background-image:url(' + coverImg + ');'" v-if="coverImg"></div>
-        {{text}}
+        <span v-html="text"></span>
     </div>
     <ToolBar class="tool-bar"
         :fold="fold" 
