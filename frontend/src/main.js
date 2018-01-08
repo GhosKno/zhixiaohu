@@ -9,8 +9,8 @@ import vuex from 'vuex'
 import iView from 'iview'
 import '@/zxh-theme/index.less'
 import store from '@/store'
-
 import { Tabs, TabPane } from 'element-ui'
+import timeago from '@/utils/time';
 
 Vue.component(Tabs.name, Tabs)
 Vue.component(TabPane.name, TabPane)
@@ -19,6 +19,7 @@ Vue.config.productionTip = false
 Vue.use(VueResource)
 Vue.use(vueCookie)
 Vue.use(iView)
+Vue.use(timeago)
 
 new Vue({
   el: '#app',

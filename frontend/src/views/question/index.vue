@@ -1,101 +1,102 @@
 <template>
   <div>
-    <NotFoundPage v-if="noFound"></NotFoundPage>
+    <div v-if="loading"></div>
+    <NotFoundPage v-else-if="noFound"></NotFoundPage>
     <ErrPage v-else-if="err" :errCode="errCode" :errText="errText"></ErrPage>
     <div v-else>
       <TopBar class="top-bar"></TopBar>
-    <div class="header">
-        <div class="content">
-          <div class="description">
-              <div class="topics">
-              <a href="/" class="Tag" v-for="topic in question.topics" :key="topic.id">{{topic.label}}</a>
-              </div>
-              <h1 class="title">
-                  {{question.title}}
-              </h1>
-          </div>
-          <div class="countBoard">
-              <a type="text" class="countItem">
-                  <div class="countName">
-                      关注者
-                  </div>
-                  <div class="countNum">
-                      123
-                  </div>
-              </a>
-
-              <div class="countItem">
-                  <div class="countName">
-                      浏览量
-                  </div>
-                  <div class="countNum">
-                      {{question.visit_count}}
-                  </div>
-              </div>
-          </div>
-        </div>
-        <div class="footer">
-        <TextWithToolBar 
-          :text="question.detail" 
-          :forQuestion="true" ></TextWithToolBar>
-        </div>
-    </div>
-    <div class="main">
-      <div class="answer-flow card">
-        <div class="topbar">
-            <div class="title">
-                {{numOfAnswer}} 个回答
+      <div class="header">
+          <div class="content">
+            <div class="description">
+                <div class="topics">
+                <a href="/" class="Tag" v-for="topic in question.topics" :key="topic.id">{{topic.label}}</a>
+                </div>
+                <h1 class="title">
+                    {{question.title}}
+                </h1>
             </div>
-            <Select style="float: right;width:100px" placeholder="默认排序">
-                <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
-        </div>
-        <AnswerCard>
-        </AnswerCard>
-        <AnswerCard
-          v-for="(item, index) in answerList"
-          :key="index"
-          :avatar="item.avatar"
-          :name="item.name" 
-          :pk="item.pk" 
-          :feed-title="item.feedTitle"
-          :answer="item.answer">
+            <div class="countBoard">
+                <a type="text" class="countItem">
+                    <div class="countName">
+                        关注者
+                    </div>
+                    <div class="countNum">
+                        123
+                    </div>
+                </a>
 
-        </AnswerCard>
+                <div class="countItem">
+                    <div class="countName">
+                        浏览量
+                    </div>
+                    <div class="countNum">
+                        {{question.visit_count}}
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="footer">
+          <TextWithToolBar 
+            :text="question.detail" 
+            :forQuestion="true"
+            @writeAnswer="showEditor=!showEditor"
+            :postTime="question.add_time"
+           ></TextWithToolBar>
+          </div>
       </div>
-      <SideBar class="sidebar"></SideBar>
+      <div class="main">
+        <div class="answer-flow">
+          <AnswerEditor class="answer-editor card" v-if="showEditor" :pk="$route.params.id"></AnswerEditor>    
+          <div class="card">
+            <div class="topbar">
+                <div class="title">
+                    {{answerCount}} 个回答
+                </div>
+                <Select style="float: right;width:100px" placeholder="默认排序">
+                    <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+            </div>
+            <AnswerCard
+              v-for="(item, index) in answerList"
+              :key="index"
+              :avatar="item.avatar"
+              :author="item.userSummary" 
+              :pk="item.id" 
+              :feed-title="item.feedTitle"
+              :answer="item.answer"
+              :commentCount="item.comment_count"
+              :answerTime="item.add_time">
+            </AnswerCard>
+          </div>
+        </div>
+        <SideBar class="sidebar"></SideBar>
+      </div>
     </div>
     </div>
-    
-  </div>
 </template>
 
 <script>
+const NotFoundPage = resolve => require(['@/views/errors/404'], resolve)
+const ErrPage = resolve => require(['@/views/errors/err'], resolve)
 const AnswerCard = resolve =>
   require(["@/components/answerCard"], resolve);
 const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
 const SideBar = resolve => require(["@/components/sideBar"], resolve);
-const TopBar = resolve => require(['@/components/topBar'], resolve)
-const NotFoundPage = resolve => require(['@/views/errors/404'], resolve)
-const ErrPage = resolve => require(['@/views/errors/err'], resolve)
-
+const TopBar = resolve => require(['@/components/topBar'], resolve);
+const AnswerEditor = resolve => require(['@/components/answerEditor'], resolve);
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
 export default {
   name: "QuestionPage",
   mixins: [cookieManage, initInfo],
-  components: { AnswerCard,NotFoundPage,ErrPage, TopBar, TextWithToolBar, SideBar },
+  components: { AnswerCard,AnswerEditor,NotFoundPage,ErrPage, TopBar, TextWithToolBar, SideBar },
   data() {
     return {
       windowHeight: "",
-      answerList: [],
-      comments: [
-        { id: 0, author: "失豆", time: "2 天前", text: "心疼 好可怕", zan: 12 },
-        { id: 1, author: "橘子超人", time: "1 天前", text: "呵呵", zan: 0 },
-        { id: 2, author: "想乖乖写代码的喵", time: "1 天前", text: "超吓人的啊", zan: 2 }
-      ],
       question: {},
-      numOfAnswer: 12,
+      answerCount: {},
+      answerList: [],
+      comments: [],
       answerSort: [
           {
               value: 'default',
@@ -110,6 +111,8 @@ export default {
       err: false,
       errText: "",
       errCode: 0,
+      loading: true,
+      showEditor: false
     };
   },
   methods: {
@@ -126,7 +129,7 @@ export default {
           .then(res => {
             if(res.body.success==true) {
               this.question=res.body.data
-              return true
+              this.fetchAnswer()
             } else {
               this.noFound=true
             }
@@ -136,14 +139,14 @@ export default {
              this.errCode=response.status
              this.errText=response.statusText
           });
-          return false;
+          this.loading=false
     },
     fetchAnswer: function(){
       this.$http.get(`/api/questions/${this.$route.params.id}/get_answers/`)
           .then(res => {
             if(res.body.success==true) {
               this.answerList=res.body.data.results
-              this.numOfAnswer=res.body.data.count
+              this.answerCount=res.body.data.count
             } else {
               this.$Message.error(res.body.msg);
             }
@@ -153,12 +156,11 @@ export default {
              this.errCode=response.status
              this.errText=response.statusText
           });
-    }
+    },
+    
   },
   mounted() {
-      if(this.fetchQuestion()){
-        this.fetchAnswer()
-      }
+      this.fetchQuestion()
   }
 };
 </script>
@@ -300,5 +302,9 @@ export default {
     display: block;
     border-bottom: 1px solid #f0f2f7;
     content: "";
+}
+.answer-editor{
+ width: 696px;
+ margin-bottom: 12px;
 }
 </style>

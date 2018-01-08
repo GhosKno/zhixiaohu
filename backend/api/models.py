@@ -60,6 +60,7 @@ class Question(models.Model):
     # watches in accounts
     topics = models.ManyToManyField(to=Topic, related_name='questions')
     visit_count =models.IntegerField(default=0)
+    watch_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

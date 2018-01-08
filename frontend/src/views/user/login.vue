@@ -126,7 +126,6 @@ export default {
        const submit  = () => {
         this.$http.post('/api/users/register/', this.regForm)
           .then(res => {
-            console.log(res)
             if(res.body.success) {
               this.$Message.success('注册成功')
               Vue.http.headers.common['X-CSRFTOKEN'] = this.$cookie.get('csrftoken')

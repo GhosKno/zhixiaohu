@@ -3,14 +3,14 @@
     
    <div class="btn-group" v-if="forQuestion">
       <Button type="primary">关注问题</Button>
-      <Button type="ghost" class="writeBtn"><svg viewBox="0 0 12 12" class="writeIcon" width="14" height="16" aria-hidden="true"><g data-reactid="108"><path d="M.423 10.32L0 12l1.667-.474 1.55-.44-2.4-2.33-.394 1.564zM10.153.233c-.327-.318-.85-.31-1.17.018l-.793.817 2.49 2.414.792-.814c.318-.328.312-.852-.017-1.17l-1.3-1.263zM3.84 10.536L1.35 8.122l6.265-6.46 2.49 2.414-6.265 6.46z" fill-rule="evenodd"></path></g></svg>
+      <Button type="ghost" class="writeBtn" @click="$emit('writeAnswer')"><svg viewBox="0 0 12 12" class="writeIcon" width="14" height="16" aria-hidden="true"><g data-reactid="108"><path d="M.423 10.32L0 12l1.667-.474 1.55-.44-2.4-2.33-.394 1.564zM10.153.233c-.327-.318-.85-.31-1.17.018l-.793.817 2.49 2.414.792-.814c.318-.328.312-.852-.017-1.17l-1.3-1.263zM3.84 10.536L1.35 8.122l6.265-6.46 2.49 2.414-6.265 6.46z" fill-rule="evenodd"></path></g></svg>
         写回答
       </Button>
    </div>
    <!-- 点赞 -->
    <div class="btn-group" v-else>
       <Button class="voteBtn"><Icon type="arrow-up-b" class="voteIcon" size=16></Icon>
-        <span class="voteNum">{{agreeCount}}</span>
+        <span class="voteNum">{{approve}}</span>
       </Button>
       <Button class="voteBtn"><Icon type="arrow-down-b" class="voteIcon" size=16></Icon></Button>
    </div>
@@ -38,11 +38,11 @@
       </Button>
 
 <Modal v-model="showComment" v-if="forQuestion">
-  <CommentList :numOfComment="numOfComment">
+  <CommentList :commentCount="commentCount">
   </CommentList>
 </Modal>
 <div class="commentCard" v-else v-show="showComment">
-  <CommentList :numOfComment="numOfComment">
+  <CommentList :commentCount="commentCount">
   </CommentList>
   <div slot="footer"></div>
 </div>
@@ -57,8 +57,8 @@ export default {
   methods: {
     toggleComment: function() {
       if (this.showComment) {
-        if (this.numOfComment > 0) {
-          this.commentBtn = this.numOfComment + " 条评论";
+        if (this.commentCount > 0) {
+          this.commentBtn = this.commentCount + " 条评论";
         } else {
           this.commentBtn = "评论";
         }
@@ -78,29 +78,29 @@ export default {
     };
   },
   props: {
-    agreeCount: {
+    approve: {
       type: Number,
       default: 0
     },
-    "forQuestion": {
+    forQuestion: {
       type: Boolean,
       default:false,
     },
-    "numOfComment": {
+    commentCount: {
       type:Number,
-      default:0,
+      default: 0
     },
-    "fold":{
+    fold:{
       type: Boolean,
       default: true,
     },
-    "showFoldBtn":{
+    showFoldBtn:{
       default: true
     }
   },
   created() {
-    if (this.numOfComment > 0) {
-      this.commentBtn = this.numOfComment + " 条评论";
+    if (this.commentCount > 0) {
+      this.commentBtn = this.commentCount + " 条评论";
     } else {
       this.commentBtn = "评论";
     }

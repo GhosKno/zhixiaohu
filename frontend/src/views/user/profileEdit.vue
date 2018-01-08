@@ -145,7 +145,6 @@ export default {
 
     },
     getProfile() {
-      console.log(111)
       this.$http.get(`/api/profiles/${this.$store.state.userid}/`)
       .then(res => {
         if(res.body.success) {

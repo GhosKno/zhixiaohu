@@ -4,11 +4,15 @@
         <div class="cover-img" :style="'background-image:url(' + coverImg + ');'" v-if="coverImg"></div>
         <span v-html="text"></span>
     </div>
+    <div class="time">发布于{{this.timeago(postTime)}}</div>
     <ToolBar class="tool-bar"
         :fold="fold" 
         :forQuestion="forQuestion" 
         :showFoldBtn="FoldByDefault"
-        @toggleFold="fold=!fold;"></ToolBar>
+        :commentCount="commentCount"
+        @toggleFold="fold=!fold;"
+        @writeAnswer="$emit('writeAnswer')"
+        :approve="approve"></ToolBar>
 </div>
 </template>
 <script>
@@ -24,6 +28,11 @@ export default {
       coverImg:{
           default: false
       },
+      commentCount:{},
+      postTime:{
+          default:''
+      },
+      approve:{}
   },
   data() {
       return {
@@ -48,7 +57,7 @@ export default {
 
 <style scoped>
 .text {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: normal;
   line-height: 1.67;
   margin: 5px 0;
@@ -71,5 +80,10 @@ export default {
   background-position: 50%;
   background-size: cover;
   border-radius: 4px;
+}
+.time{
+    margin-top: 10px;
+    font-size: 14px;
+    color: #8590a6;
 }
 </style>

@@ -5,21 +5,25 @@
     </div>
     <div class="info">
         <Poptip trigger="hover" placement="right" width="400">
-            <Avatar class="avatar" shape="square" size="large"  :src="authorAvatar"  />
+            <Avatar class="avatar" shape="square" size="large"  :src="author.avatar?author.avatar:'/static/avatar.jpg'"  />
             <div class="api" slot="content">
                 
             </div>
         </Poptip>
         <div class="author-text">
         <div class="name">
-            {{authorName}}
+            {{author.nickname}}
         </div>
         <div class="badge-text">
-            {{authorBadge}}
+            {{author.description?author.description:"这个人很懒,没有设置简介"}}
         </div>
         </div>
     </div>
-    <TextWithToolBar :text="answer" ></TextWithToolBar></div>
+    <TextWithToolBar 
+        :text="answer" 
+        :commentCount="commentCount"
+        :postTime="answerTime"
+        ></TextWithToolBar></div>
 </template>
 <script>
 const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
@@ -27,25 +31,16 @@ export default {
   name: "answerCard",
   components: { TextWithToolBar },
   props:{
-      'feedTitle':{},
-      'question':{
-          default: "作为一个示例问题是怎样的体验?"
-      },
-      'answer':{
+      feedTitle:{},
+      answer:{
           default: "泻药.这个答案是一个示例答案."
       },
-      'pk':{
+      pk:{
           default: "0"
       },
-      'authorAvatar':{
-          default: ('/static/avatar.jpg'),
-      },
-      'authorName':{
-          default: 'hhh'
-      },
-      'authorBadge':{
-          default: "已婚人士/专业数星星团队成员/编程狂热者/不只是Python/并行框架/DL爱好者"
-      }
+      author:{},
+      commentCount:{},
+      answerTime:{}
   },
   data() {
       return {
@@ -67,12 +62,6 @@ export default {
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 10px;
-}
-.question {
-  color: #000;
-  margin: 8px 0;
-  font-size: 18px;
-  font-weight: 700;
 }
 .content {
   line-height: 1.625;
@@ -100,5 +89,6 @@ export default {
     white-space: nowrap;
     font-size: 14px;
     line-height: 24px;
+    color: #555;
 }
 </style>

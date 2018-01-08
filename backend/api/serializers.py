@@ -45,7 +45,7 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('url', 'add_time', 'title', 'answer_count', 'watch_count')
+        fields = ('url', 'add_time', 'title', 'watch_count')
 
 
 # all url
@@ -125,12 +125,11 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 class QuestionDetailSerializer(serializers.ModelSerializer):
     topics = TopicListSerializer(many=True)
     is_watch = serializers.BooleanField(default=False)
-    answer_count = serializers.IntegerField()
     watch_count = serializers.IntegerField()
 
     class Meta:
         model = Question
-        fields = ('author', 'id', 'add_time', 'answer_count',
+        fields = ('author', 'id', 'add_time',
                   'watch_count', 'title', 'detail', 'topics',
                   'visit_count', 'is_watch')
 

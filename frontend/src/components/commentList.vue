@@ -2,7 +2,7 @@
 <div>
     <div class="topbar">
         <div class="title">
-            {{numOfComment}} 条评论
+            {{commentCount}} 条评论
         </div>
         <Select style="float: right;width:100px" placeholder="默认排序">
           <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -20,7 +20,7 @@
                     </div>
                 </Poptip>
                 <span class="name">{{cm.author}}</span>
-                <span class="time">{{cm.time}}</span>
+                <span class="time">{{timeago(cm.time)}}</span>
             </div>
             <div class="content">
                 {{cm.text}}
@@ -30,7 +30,6 @@
                     <svg viewBox="0 0 20 18" aria-hidden="true" class="zanIcon"><g><path d="M.718 7.024c-.718 0-.718.63-.718.63l.996 9.693c0 .703.718.65.718.65h1.45c.916 0 .847-.65.847-.65V7.793c-.09-.88-.853-.79-.846-.79l-2.446.02zm11.727-.05S13.2 5.396 13.6 2.89C13.765.03 11.55-.6 10.565.53c-1.014 1.232 0 2.056-4.45 5.83C5.336 6.965 5 8.01 5 8.997v6.998c-.016 1.104.49 2 1.99 2h7.586c2.097 0 2.86-1.416 2.86-1.416s2.178-5.402 2.346-5.91c1.047-3.516-1.95-3.704-1.95-3.704l-5.387.007z"></path></g></svg>
                 {{cm.zan?cm.zan:"赞"}}
                 </Button>
-                
             </div>
         </div>
     </div>
@@ -41,18 +40,19 @@
 </div>
 </template>
 <script>
+import timeago from '@/utils/time';
 export default {
   name: "commentList",
   props: {
-    numOfComment: {}
-  },
-  data() {
-    return {
-      comments: [
-        { id: 0, author: "失豆", time: "2 天前", text: "心疼 好可怕", zan: 12 },
+    commentCount: {},
+    comments: [
+        { id: 0, author: "失豆", time: "2018-01-08T12:10:07.144373Z", text: "心疼 好可怕", zan: 12 },
         { id: 1, author: "橘子超人", time: "1 天前", text: "呵呵", zan: 0 },
         { id: 2, author: "想乖乖写代码的喵", time: "1 天前", text: "超吓人的啊", zan: 2 }
       ],
+  },
+  data() {
+    return {
       showCommentBtn: false,
       commentVal: '',
       answerSort: [
