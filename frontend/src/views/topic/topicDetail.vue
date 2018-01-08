@@ -1,27 +1,31 @@
 <template>
-  <div class="topicDetail">
-    <Row class="topic-header">
-      <div class="title">
-        {{topicTitle}}
-      </div>
-      <div class="introduction">
-        {{introduction}}
-      </div>
-    </Row>
-    <Row class="topic-body">
-      <question-card
-        v-for="(item, index) in questions"
-        :key="index"
-        :title="item.title"
-        :time="item.add_time"
-        :answers="item.answer_count"
-        :watchers="item.watch_count"
-      ></question-card>
-    </Row>
+  <div>
+    <TopBar class="top-bar"></TopBar>
+    <div class="topicDetail">
+      <Row class="topic-header">
+        <div class="title">
+          {{topicTitle}}
+        </div>
+        <div class="introduction">
+          {{introduction}}
+        </div>
+      </Row>
+      <Row class="topic-body">
+        <question-card
+          v-for="(item, index) in questions"
+          :key="index"
+          :title="item.title"
+          :time="item.add_time"
+          :answers="item.answer_count"
+          :watchers="item.watch_count"
+        ></question-card>
+      </Row>
+    </div>
   </div>
 </template>
 
 <script>
+const TopBar = resolve => require(['@/components/topBar'], resolve)
 const questionCard = resolve => require(['@/components/questionCard'], resolve)
 export default {
   name: 'topicDetail',
@@ -35,7 +39,8 @@ export default {
     }
   },
   components: {
-    questionCard
+    questionCard,
+    TopBar
   },
   methods: {
     getQuestions () {

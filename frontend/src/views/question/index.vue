@@ -88,33 +88,13 @@ export default {
   data() {
     return {
       windowHeight: "",
-      answerList: [
-        {
-          answer:
-            "垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵垃圾呵呵"
-        }
-      ],
+      answerList: [],
       comments: [
         { id: 0, author: "失豆", time: "2 天前", text: "心疼 好可怕", zan: 12 },
         { id: 1, author: "橘子超人", time: "1 天前", text: "呵呵", zan: 0 },
         { id: 2, author: "想乖乖写代码的喵", time: "1 天前", text: "超吓人的啊", zan: 2 }
       ],
-      question: {
-        "author": 1,
-        "id": 1,
-        "add_time": "2018-01-07T12:24:03.872424Z",
-        "title": "???",
-        "detail": "...",
-        "topics": [
-            {
-                "id": 1,
-                "label": "hhh",
-                "introduction": "xxx"
-            }
-        ],
-        "visit_count": 1,
-        "is_watch": false
-      },
+      question: {},
       numOfAnswer: 12,
       answerSort: [
           {
@@ -146,7 +126,7 @@ export default {
           .then(res => {
             if(res.body.success==true) {
               this.question=res.body.data
-              return true;
+              return true
             } else {
               this.noFound=true
             }
@@ -156,9 +136,9 @@ export default {
              this.errCode=response.status
              this.errText=response.statusText
           });
-          return false;   
+          return false;
     },
-    fetchAnswers: function(){
+    fetchAnswer: function(){
       this.$http.get(`/api/questions/${this.$route.params.id}/get_answers/`)
           .then(res => {
             if(res.body.success==true) {
@@ -177,7 +157,7 @@ export default {
   },
   mounted() {
       if(this.fetchQuestion()){
-        this.fetchAnswers()
+        this.fetchAnswer()
       }
   }
 };
