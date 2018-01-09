@@ -13,6 +13,8 @@
         @toggleFold="fold=!fold;"
         @writeAnswer="$emit('writeAnswer')"
         :approve="approve"
+        :hasApprove="hasApprove"
+        :hasAgainst="hasAgainst"
         :pk="pk"
         :isWatch="isWatch"></ToolBar>
 </div>
@@ -35,6 +37,8 @@ export default {
       approve:{},
       pk:{},
       isWatch:{},
+      hasApprove:{},
+      hasAgainst:{}
   },
   data() {
       return {

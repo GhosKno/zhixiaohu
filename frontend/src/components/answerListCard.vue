@@ -31,7 +31,9 @@
         :postTime="answer.add_time"
         :approve="answer.approve"
         :pk="answer.id"
-        :coverImg="answer.coverImg" ></TextWithToolBar>
+        :coverImg="answer.coverImg"
+        :hasApprove="answer.has_approve"
+        :hasAgainst="answer.has_against"></TextWithToolBar>
 </div>
 </template>
 <script>

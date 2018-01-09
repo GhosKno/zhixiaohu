@@ -173,7 +173,7 @@ export default {
           this.newNickName = this.nickName;
           this.newDescription = this.description;
           this.newEmail = this.email;
-          this.avatarUrl = data.avatar;
+          this.avatarUrl = data.avatar?data.avatar:'/static/avatar.jpg';
           this.initInfo();
         }
       });
@@ -189,10 +189,6 @@ export default {
 
 <style lang="less" scoped>
 .profile-edit {
-
-  .edit-avatar:hover {
-    opacity: 1;
-  }
   .main-content {
     margin-top: 60px;
     margin-bottom: 40px;
@@ -206,10 +202,10 @@ export default {
     position: relative;
   }
   .blur {  
-    width: 60%;
+    width: 70%;
     position: absolute;
     top: -30%;
-    left: 20%;
+    left: 15%;
     -webkit-filter: blur(10px); /* Chrome, Opera */
        -moz-filter: blur(10px);
         -ms-filter: blur(10px);    
@@ -244,6 +240,9 @@ export default {
         transition: all 0.2s;
         -webkit-transition: all 0.2s;
         cursor: pointer;
+      }
+      .edit-avatar:hover {
+        opacity: 1;
       }
     }
     .content-header {

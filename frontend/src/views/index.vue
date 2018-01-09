@@ -48,17 +48,13 @@ export default {
       this.$http.get(`/api/answers/`)
           .then(res => {
             if(res.body.success==true) {
-             
+              console.log(res.body.data.results)
               this.answerList=res.body.data.results
-              console.log(this.answerList)
             } else {
               this.$Message.error(res.body.msg);
             }
           }, function(response){
-            // 响应错误回调 
-             this.err=true
-             this.errCode=response.status
-             this.errText=response.statusText
+            this.$Message.error(response.status + " " + response.statusText);
           });
     },
     handleReachBottom() {

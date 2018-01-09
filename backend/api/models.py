@@ -100,7 +100,7 @@ class Comment(models.Model):
                                related_name='comments')
     detail = models.CharField(max_length=500)
 
-    add_time = models.DateField(auto_now_add=True)
+    add_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.detail

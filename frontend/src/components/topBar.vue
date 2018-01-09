@@ -81,6 +81,7 @@ export default {
           }, function(response){
             // 响应错误回调 
              this.$Message.error(response.status+" "+response.statusText)
+             this.cookieLogout();
           });
     },
     getUnreadMsg() {
@@ -240,6 +241,7 @@ nav {
   font-size: 2em;
   color: #9fadc7;
   margin-right: 20px;
+  line-height: 24px;
 }
 .userMenu button {
   font-size: 1.2em;

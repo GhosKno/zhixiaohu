@@ -115,7 +115,6 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     has_approve = serializers.BooleanField()
     has_against = serializers.BooleanField()
-
     class Meta:
         model = Answer
         fields = ('id', 'userSummary', 'approve', 'question', 'has_approve',

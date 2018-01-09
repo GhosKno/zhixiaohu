@@ -10,10 +10,10 @@
    </div>
    <!-- 点赞 -->
    <div class="btn-group" v-else>
-      <Button class="voteBtn"><Icon type="arrow-up-b" class="voteIcon" size=16></Icon>
-        <span class="voteNum">{{approve}}</span>
+      <Button class="voteBtn" :class="{'is-active': newHasApprove}" @click="newHasApprove?postCancelApprove():postApprove()"><Icon type="arrow-up-b" class="voteIcon" size=16></Icon>
+        <span class="voteNum">{{newApprove}}</span>
       </Button>
-      <Button class="voteBtn"><Icon type="arrow-down-b" class="voteIcon" size=16></Icon></Button>
+      <Button class="voteBtn" :class="{'is-active': newHasAgainst}" @click="newHasAgainst?postCancelAgainst():postAgainst()"><Icon type="arrow-down-b" class="voteIcon" size=16></Icon></Button>
    </div>
       <Button type="text" class="actionBtn" @click="toggleComment"><svg class="actionIcon" fill="currentColor" viewBox="0 0 24 24" width="1.2em" height="1.2em"><path d="M10.241 19.313a.97.97 0 0 0-.77.2 7.908 7.908 0 0 1-3.772 1.482.409.409 0 0 1-.38-.637 5.825 5.825 0 0 0 1.11-2.237.605.605 0 0 0-.227-.59A7.935 7.935 0 0 1 3 11.25C3 6.7 7.03 3 12 3s9 3.7 9 8.25-4.373 9.108-10.759 8.063z" fill-rule="evenodd"></path></svg>
         {{commentBtn}}
@@ -55,6 +55,52 @@ const CommentList = resolve => require(["@/components/commentList"], resolve);
 export default {
   name: "toolBar",
   components: { CommentList },
+  data() {
+    return {
+      showComment: false,
+      commentBtn: "评论",
+      comments: [],
+      newHasApprove: {
+        type: Boolean
+      },
+      newHasAgainst: {
+        type: Boolean
+      },
+      newApprove: {
+        type: Number,
+        default: 0
+      },
+    };
+  },
+  props: {
+    hasApprove: {
+      type: Boolean
+    },
+    hasAgainst: {
+      type: Boolean
+    },
+    approve: {
+      type: Number,
+      default: 0
+    },
+    forQuestion: {
+      type: Boolean,
+      default: false,
+    },
+    fold:{
+      type: Boolean,
+      default: true,
+    },
+    showFoldBtn:{
+      default: true
+    },
+    commentCount: {},
+    pk:{},
+    isWatch:{
+      type: Boolean,
+      default: false,
+    }
+  },
   methods: {
     toggleComment: function() {
       if (this.showComment) {
@@ -80,61 +126,79 @@ export default {
               this.$Message.error(res.body.msg);
             }
           }, function(response){
-            // 响应错误回调 
-             this.err=true
-             this.errCode=response.status
-             this.errText=response.statusText
+            this.$Message.error(response.status + " " + response.statusText);
           });
       
     },
     getComments() {
       this.$http.get(`/api/answers/${this.pk}/get_comments/`).then(res => {
         if (res.body.success == true) {
-          console.log(res.body)
           this.comments = res.body.data.results;
         } else {
           this.$Message.error(res.body.msg);
         }
       },
       function(response) {
-        // 响应错误回调
-        this.err = true;
-        this.errCode = response.status;
-        this.errText = response.statusText;
+        this.$Message.error(response.status + " " + response.statusText);
+      });
+    },
+    postApprove() {
+      if(this.newHasAgainst)this.postCancelAgainst()
+      this.$http.get(`/api/answers/${this.pk}/agree/`).then(res => {
+        if (res.body.success == true) {
+          this.newApprove++
+          this.newHasApprove=true
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      },
+      function(response) {
+        this.$Message.error(response.status + " " + response.statusText);
+      });
+    },
+    postCancelApprove() {
+      this.$http.get(`/api/answers/${this.pk}/cancel_agree/`).then(res => {
+        if (res.body.success == true) {
+          this.newApprove--
+          this.newHasApprove=false
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      },
+      function(response) {
+        this.$Message.error(response.status + " " + response.statusText);
+      });
+    },
+    postAgainst() {
+      if(this.newHasApprove)this.postCancelApprove()
+      this.$http.get(`/api/answers/${this.pk}/disagree/`).then(res => {
+        if (res.body.success == true) {
+          this.newHasAgainst=true
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      },
+      function(response) {
+        this.$Message.error(response.status + " " + response.statusText);
+      });
+    },
+    postCancelAgainst() {
+      this.$http.get(`/api/answers/${this.pk}/cancel_disagree/`).then(res => {
+        if (res.body.success == true) {
+          this.newHasAgainst=false
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      },
+      function(response) {
+        this.$Message.error(response.status + " " + response.statusText);
       });
     },
   },
-  data() {
-    return {
-      showComment: false,
-      commentBtn: "评论",
-      comments: [],
-    };
-  },
-  props: {
-    approve: {
-      type: Number,
-      default: 0
-    },
-    forQuestion: {
-      type: Boolean,
-      default: false,
-    },
-    fold:{
-      type: Boolean,
-      default: true,
-    },
-    showFoldBtn:{
-      default: true
-    },
-    commentCount: {},
-    pk:{},
-    isWatch:{
-      type: Boolean,
-      default: false,
-    }
-  },
   created() {
+    this.newHasAgainst=this.hasAgainst
+    this.newHasApprove=this.hasApprove
+    this.newApprove=this.approve
     if(!this.forQuestion)this.getComments()
     if (this.commentCount > 0) {
       this.commentBtn = this.commentCount + " 条评论";

@@ -92,8 +92,6 @@ export default {
           this.$Message.error(res.body.msg);
         }
       }, function(response) {
-        // 响应错误回调
-        console.log(this.commentForm)
         this.$Message.error(response.status + " " + response.statusText);
       });
     },

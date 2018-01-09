@@ -24,7 +24,6 @@
                         {{question.watch_count}}
                     </div>
                 </a>
-
                 <div class="countItem">
                     <div class="countName">
                         浏览量
