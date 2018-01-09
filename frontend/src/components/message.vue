@@ -32,13 +32,7 @@
       :styles="{left: '20px', 'margin-left': '0px'}"
     >
       <AnswerListCard
-        :avatar="currentAnswer.avatar"
-        :name="currentAnswer.name"
-        :pk="currentAnswer.pk"
-        :feed-title="currentAnswer.feedTitle" 
-        :coverImg="currentAnswer.coverImg"
-        :question="currentAnswer.question" 
-        :answer="currentAnswer.answer"
+        :answer="currentAnswer"
       >
       </AnswerListCard>
     </Modal>
