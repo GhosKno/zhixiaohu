@@ -5,23 +5,27 @@
     </div>
 <div class="info">
     <Poptip trigger="hover" placement="right" width="400">
-        <Avatar class="avatar" shape="square" size="small"  :src="authorAvatar"  />
+        <Avatar class="avatar" shape="square" size="small"  :src="answer.userSummary.avatar"  />
         <div class="api" slot="content"> 
         </div>
     </Poptip>
     <div class="name">
-        {{authorName}}
+        {{answer.userSummary.nickname}}
     </div>
     <div class="badge-text">
-        {{authorBadge}}
+        {{answer.userSummary.description}}
     </div>
 </div>
     <div class="question">
-        <a :href="'/question/'+pk" class="title">{{question}}</a>
+        <a :href="'/question/'+answer.question.id" class="title">{{answer.question.title}}</a>
     </div>
     <TextWithToolBar 
-        :text="answer" 
-        :coverImg="coverImg" ></TextWithToolBar>
+        :text="answer.detail" 
+        :commentCount="answer.comment_count"
+        :postTime="answer.add_time"
+        :approve="answer.approve"
+        :pk="answer.id"
+        :coverImg="answer.coverImg" ></TextWithToolBar>
 </div>
 </template>
 <script>
@@ -34,33 +38,7 @@ export default {
           type: String,
           default: ''
       },
-      question:{
-          type: String,
-          default: "作为一个示例问题是怎样的体验?"
-      },
-      answer:{
-          type: String,
-          default: "泻药.这个答案是一个示例答案.这个示例答案很短."
-      },
-      pk:{
-          type: Number | String,
-          default: "0"
-      },
-      authorAvatar:{
-          type: String,
-          default: '/static/avatar.jpg',
-      },
-      authorName:{
-          type: String,
-          default: '匿名用户'
-      },
-      authorBadge:{
-          type: String,
-          default: ""
-      },
-      coverImg:{
-          default:false
-      }
+      answer:{},
   },
   data() {
       return {

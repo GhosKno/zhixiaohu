@@ -140,13 +140,13 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('detail', 'userSummary', 'add_time')
+        fields = ('id', 'detail', 'userSummary', 'add_time')
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('detail', 'answer')
+        fields = ('id', 'detail', 'userSummary', 'add_time')
 
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):

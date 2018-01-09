@@ -78,21 +78,11 @@ class QuestionViewSet(GenericViewSet,
         question = self.get_object()
         if question is None:
             return error('question not exists')
-<<<<<<< HEAD
-        if request.user.is_authenticated:
-            Activity.watchQuestion(request.user.profile, question)
-            profile = request.user.profile
-            profile.watchedQuestion.add(question)
-            profile.save()
-            return success()
-        return error('please login at first')
-=======
         profile = request.user.profile
+        Activity.watchQuestion(request.user.profile, question)
         profile.watchedQuestion.add(question)
         profile.save()
-        Activity.watchQuestion(request.user.profile, question)
         return success()
->>>>>>> frontend: fetch answers in question page
 
     @detail_route(methods=['GET'])
     def cancel_watch(self, request, pk=None):

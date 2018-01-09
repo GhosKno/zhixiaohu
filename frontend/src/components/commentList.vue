@@ -2,7 +2,7 @@
 <div>
     <div class="topbar">
         <div class="title">
-            {{commentCount}} 条评论
+            {{comments.length}} 条评论
         </div>
         <Select style="float: right;width:100px" placeholder="默认排序">
           <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -14,16 +14,16 @@
             v-bind:key="cm.id">
             <div class="meta">
                 <Poptip trigger="hover" placement="right" width="400">
-                    <Avatar class="avatar" shape="square" size="small"  />
+                    <Avatar class="avatar" shape="square" size="small"  :src="cm.userSummary.avatar"/>
                     <div class="api" slot="content">
                         
                     </div>
                 </Poptip>
-                <span class="name">{{cm.author}}</span>
-                <span class="time">{{timeago(cm.time)}}</span>
+                <span class="name">{{cm.userSummary.nickname}}</span>
+                <span class="time">{{timeago(cm.add_time)}}</span>
             </div>
             <div class="content">
-                {{cm.text}}
+                {{cm.detail}}
             </div>
             <div class="tool">
                 <Button type="text" class="zan">
@@ -55,10 +55,10 @@ import timeago from "@/utils/time";
 export default {
   name: "commentList",
   props: {
-    commentCount: {},
     comments: {
       type: Array
     },
+    pk: {}
   },
   data() {
     return {
@@ -80,21 +80,21 @@ export default {
     };
   },
   methods: {
-    
     postComment() {
-      this.$http.post(`/api/comments/`, this.commentForm).then(res => {
+      this.$http.post(`/api/comments/`, this.commentForm)
+      .then(res => {
+        
         if (res.body.success == true) {
           console.log(res.body);
           this.$Message.success("评论成功");
+          comments.push(res.body.data)
         } else {
           this.$Message.error(res.body.msg);
         }
-      },
-      function(response) {
+      }, function(response) {
         // 响应错误回调
-        this.err = true;
-        this.errCode = response.status;
-        this.errText = response.statusText;
+        console.log(this.commentForm)
+        this.$Message.error(response.status + " " + response.statusText);
       });
     },
     hideCommentBtn() {
