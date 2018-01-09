@@ -11,7 +11,7 @@
         </div>
       </Row>
       <Row class="topic-body">
-        <div class="no-data-content">
+        <div class="no-data-content" v-if="questions.length == 0">
           当前话题下还没有内容
         </div>
         <question-card
@@ -100,7 +100,7 @@ export default {
   }
   .topic-body {
     margin-top: 20px;
-
+    min-height: 300px;
   }
 }
 .no-data-content {

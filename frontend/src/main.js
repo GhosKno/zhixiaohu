@@ -11,7 +11,7 @@ import '@/zxh-theme/index.less'
 import store from '@/store'
 import { Tabs, TabPane } from 'element-ui'
 import timeago from '@/utils/time';
-
+import urlHandle from '@/utils/urlHandle'
 Vue.component(Tabs.name, Tabs)
 Vue.component(TabPane.name, TabPane)
 
@@ -20,6 +20,7 @@ Vue.use(VueResource)
 Vue.use(vueCookie)
 Vue.use(iView)
 Vue.use(timeago)
+Vue.use(urlHandle)
 
 new Vue({
   el: '#app',

@@ -11,7 +11,8 @@ from utils.views import GenericViewSet, error, success
 # used for create or show user associated question
 class QuestionViewSet(GenericViewSet,
                       mixins.CreateModelMixin,
-                      mixins.RetrieveModelMixin):
+                      mixins.RetrieveModelMixin,
+                      mixins.ListModelMixin):
 
     permission_classes = (IsAuthenticatedOrReadOnly, )
     filter_backends = (SearchFilter,)

@@ -40,7 +40,8 @@ export default {
       windowHeight: "",
       answerList: {
           type: Array,
-      }
+      },
+      nextUrl: ''
     };
   },
   methods: {
@@ -48,8 +49,8 @@ export default {
       this.$http.get(`/api/answers/`)
           .then(res => {
             if(res.body.success==true) {
-              console.log(res.body.data.results)
               this.answerList=res.body.data.results
+              this.nextUrl = res.body.data.next
             } else {
               this.$Message.error(res.body.msg);
             }
@@ -59,10 +60,17 @@ export default {
     },
     handleReachBottom() {
       return new Promise(resolve => {
-        setTimeout(() => {
-          this.answerList.push(...this.answerList);
-          resolve();
-        }, 2000);
+        if(this.nextUrl == null || this.nextUrl.length == 0) {
+          this.$Message.info('没有更多的内容了')
+          return resolve()
+        }
+        this.$http.get(this.transUrl(this.nextUrl))
+          .then(res => {
+            setTimeout(() => {
+              this.answerList.push(...(res.body.data.results));
+              resolve();
+            }, 1000);
+          })
       });
     }
   },

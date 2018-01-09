@@ -82,14 +82,13 @@
     },
     methods: {
       handleReachBottom () {
-        let re = /(\w+):\/\/([^\:|\/]+)(\:\d*)?(.*\/)([^#|\?|\n]+)?(#.*)?(\?.*)?/i;
         return new Promise(resolve => {
           if(!this.nextPageUrl){
             this.$Message.info('没有下一页了')
             resolve()
             return
           }
-          this.$http.get(this.nextPageUrl.match(re).slice(4).join(''))
+          this.$http.get(this.transUrl(this.nextPageUrl))
             .then(res => {
               this.nextPageUrl = res.body.data.next
               this.topicsCount = res.body.data.count

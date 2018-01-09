@@ -26,8 +26,21 @@
 
   export default {
     name: 'commonEditor',
-    props: ['placeholder','height'],
+    // props: ['placeholder','height'],
     components: {quillEditor},
+    props: {
+      imgUpload: {
+        type: Boolean,
+        default: true
+      },
+      placeholder: {
+        type: String,
+        default: '让我们来谈笑风生'
+      },
+      height: {
+        default: 150
+      }
+    },
     data(){
       return {
         quillEditorRoot: {},
@@ -42,8 +55,7 @@
               ['bold','italic','underline', 'strike'],
               [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
               [{ 'color': [] }, { 'background': [] }],
-              [{ 'size': ['small', false, 'large', 'huge'] }],
-              ['image'],
+              [{ 'size': ['small', false, 'large', 'huge'] }],              
               ['clean']
             ],
             imageImport: true
@@ -104,7 +116,10 @@
         this.$refs['upload'].clearFiles()
       }
     },
-    created: function () {
+    created() {
+      if(this.imgUpload) {
+        this.editorOption.modules.toolbar.push(['image'])
+      }
     },
     mounted() {
       this.quillEditorRoot = new Quill('#quillEditor', this.editorOption)

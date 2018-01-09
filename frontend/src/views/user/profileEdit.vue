@@ -80,29 +80,6 @@
                   </Col>
                 </Row>
               </div>
-              <div class="edit-item">
-                <Row>
-                  <Col span="6" class="label">
-                  邮箱
-                  </Col>
-                  <Col span="18" class="detail">
-                    <template v-if="!isEditEmail">
-                      {{email}}
-                      <Button type="text" class="edit-handle" icon="edit" @click="isEditEmail = true">修改</Button>
-                    </template>                
-                    <div class="edit-input" v-else>
-                      <Input 
-                        v-model="newEmail"
-                        style="width: 200px;"
-                      ></Input>
-                      <div class="button-handle">
-                        <Button @click="updateEmail()" type="primary">保存</Button>
-                        <Button @click="isEditEmail = false">取消</Button>
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
             </Col>
           </Row>
         </div>
@@ -124,14 +101,11 @@ export default {
     return {
       nickName: "",
       description: "",
-      email: "",
       isEditNickName: false,
       newNickName: "",
       isEditDescription: false,
       newDescription: "",
-      isEditEmail: false,
-      newEmail: "",
-      avatarUrl: ""
+      avatarUrl: "/static/avatar.jpg"
     };
   },
   methods: {
@@ -161,7 +135,6 @@ export default {
         }
       })
     },
-    updateEmail() {},
     getProfile() {
       this.$http.get(`/api/profiles/${this.$store.state.userid}/`).then(res => {
         if (res.body.success) {
@@ -169,11 +142,9 @@ export default {
           this.nickName = data.nickname;
           this.description =
             data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description;
-          this.email = data.email || "xxxx";
           this.newNickName = this.nickName;
           this.newDescription = this.description;
-          this.newEmail = this.email;
-          this.avatarUrl = data.avatar?data.avatar:'/static/avatar.jpg';
+          this.avatarUrl = data.avatar || "/static/avatar.jpg";
           this.initInfo();
         }
       });

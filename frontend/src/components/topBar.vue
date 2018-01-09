@@ -74,7 +74,7 @@ export default {
           .then(res => {
             if(res.body.success) {
               this.cookieLogout();
-              this.$router.go(0);
+              this.$router.push({name: 'login'});
             } else {
               this.$Message.error(res.data.msg)
             }

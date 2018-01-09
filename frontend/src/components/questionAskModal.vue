@@ -39,6 +39,7 @@
           ref="quillEditor"
           placeholder="问题背景、条件等详细信息"
           :height="150"
+          :imgUpload="false"
         ></common-editor>
       </div>
       <div slot="footer" style="text-align:center;">

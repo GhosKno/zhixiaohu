@@ -8,7 +8,8 @@
             width="400"
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">
-            <Avatar style="width: 100%; height: 100%;" shape="square" size="large" :src="avatar"/>
+            <!-- <Avatar shape="square" size="large" :src="avatar"/> -->
+            <img :src="avatar || '/static/avatar.jpg'" alt="" style="height:100%;width:100%;">
             <div class="api" slot="content">
                 <user-poptip ref="userPoptip" :id="userid"></user-poptip>
             </div>
@@ -18,7 +19,7 @@
     <Col span="14" class="info">
       <div class="user-name" @click="$router.push({path: `/profile/${userid}`})">{{userName}}</div>
       <div class="description">{{description.length > 0 ? description : '这个用户很懒，什么都没留下'}}</div>
-      <div class="detail">
+      <div class="detail" v-if="answer">
         <span>{{answer}}回答</span>
         <span>{{watched}}关注者</span>
       </div>
@@ -67,11 +68,11 @@ const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
       },
       answer: {
         type: Number,
-        required: true
+        default: 0
       },
       watched: {
         type: Number,
-        required: true
+        default: 0
       },
       avatar: {
         type: String,
@@ -111,7 +112,7 @@ const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
     .avatar-content {
       height: 70px;
       width: 70px;
-      background: #969696;
+      // background: #969696;
       position: relative;
       margin: 0 auto;
       border-radius: 5px;

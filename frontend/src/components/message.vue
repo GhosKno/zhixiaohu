@@ -69,7 +69,7 @@ export default {
     },
     toQuestion(answerUrl, id) {
       this.$http.get(`/api/messages/${id}/readed/`)
-      this.$http.get(answerUrl)
+      this.$http.get(this.transUrl(answerUrl))
         .then(res => {
           this.currentAnswer = res.body.data
         })
@@ -142,6 +142,12 @@ export default {
         display: block;
         text-align: end;
       }
+    }
+  }
+  .has-read {
+    color: #8590a6 !important;
+    .user, .question{
+      color: #8590a6 !important;
     }
   }
 </style>

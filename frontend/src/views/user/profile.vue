@@ -68,7 +68,7 @@
                             :userid="item.watch.id"
                             :userName="item.watch.nickname"
                             :isWatched="item.watch.is_watch"
-                            :avatar="item.watch.url"
+                            :avatar="item.watch.avatar"
                             :description="item.watch.description"
                             :answer="item.watch.answerCount"
                             :watched="item.watch.beWatchCount"
@@ -83,6 +83,7 @@
                           <question-card                        
                             :title="item.question.title"
                             :time="item.question.add_time"
+                            :id="item.question.id"
                             :answers="item.question.answer_count"
                             :watchers="item.question.watch_count"
                           ></question-card>
@@ -141,7 +142,10 @@
                       :value="morePaneActiveName"
                       @tab-click="tabClick"
                       class="morePane">
-                      <el-tab-pane :label="`${$route.params.id == $store.state.userid ? '我' : 'Ta'}关注的人`" name="watch">
+                      <el-tab-pane 
+                        :label="`${$route.params.id == $store.state.userid ? '我' : 'Ta'}关注的人`" name="watch"
+                        style="margin: 60px 0;overflow: visible;min-height: 150px;"
+                      >
                         <div
                           class="no-data-content" 
                           v-if="watchedUser.length == 0"
@@ -154,14 +158,16 @@
                           :userid="user.id || '1'"
                           :userName="user.nickname"
                           :isWatched="true"
-                          :avatar="user.url"
+                          :avatar="user.avatar"
                           :description="user.description"
                           :answer="user.answerCount"
                           :watched="user.beWatchCount"
                           :watchHandle="getWatchUser"
                         ></user-card>
                       </el-tab-pane>
-                      <el-tab-pane :label="`关注${$route.params.id == $store.state.userid ? '我' : 'Ta'}的人`" name="watched">
+                      <el-tab-pane 
+                        style="margin: 60px 0;overflow: visible;min-height: 150px;"
+                        :label="`关注${$route.params.id == $store.state.userid ? '我' : 'Ta'}的人`" name="watched">
                         <div 
                           class="no-data-content" 
                           v-if="watchedBy.length == 0"
@@ -174,7 +180,8 @@
                           :userid="user.id || '1'"
                           :userName="user.nickname"
                           :isWatched="true"
-                          :description="user,description"
+                          :avatar="user.avatar"
+                          :description="user.description"
                           :answer="user.answerCount"
                           :watched="user.beWatchCount"
                           :watchHandle="getWatchUser"
@@ -190,6 +197,7 @@
                         <question-card
                           v-for="(item, index) in watchedQuestion"
                           :key="index"
+                          :id="item.id"
                           :title="item.title"
                           :time="item.add_time"
                           :answers="item.answer_count"
@@ -220,6 +228,7 @@
                         <question-card
                           v-for="(item, index) in history"
                           :key="index"
+                          :id="item.id"
                           :title="item.title"
                           :time="item.add_time"
                           :answers="item.answer_count"
@@ -312,8 +321,6 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
     data() {
       return {
         windowHeight: '',
-        heatedTopoics: [],
-        answerList: [],
         morePaneActiveName: 'watch',
         profilePaneActiveName: 'activities',
         //user info
@@ -323,6 +330,8 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
         avatarUrl: '',
         nickName: '',
         description: '',
+        nextUrl: '',
+        answerList: [],
         activities: [],
         watchedUser: [],
         watchedBy: [],
@@ -376,15 +385,18 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
                 break
             }
           }
-          this.$http.get(`/api/profiles/${this.$route.params.id}/${url}/`)
-            .then(res => {
-              this[listName] = res.body.data.results
+          if(!(this.nextUrl == null || this.nextUrl.length == 0)) {
+            this.$http.get(this.transUrl(this.nextUrl)).then(res => {
+              setTimeout(() => {
+                this[listName].push(...(res.body.data.results))
+                resolve();
+              }, 1000);
             })
-          setTimeout(() => {
-            this.answerList.push(...this.answerList)
-            resolve();
-          }, 2000);
-        });
+          } else {
+            this.$Message.info('没有更多内容了')
+            resolve()
+          }
+        })
       },
       tabClick(pane) {
         if(['activities','answer','question','more'].indexOf(pane.name) != -1)
@@ -439,11 +451,13 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           .then(res => {
             this.watchedUserCount = res.body.data.count
             this.watchedUser = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
         this.$http.get(`/api/profiles/${this.$route.params.id}/be_watched/`)
           .then(res => {
             this.watchbyUserCount = res.body.data.count
             this.watchedBy = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
       },
       getActivities() {
@@ -452,6 +466,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           .then(res => {
             if(res.body.success) {
               this.activities = res.body.data.results
+              this.nextUrl = res.body.data.next
             }
           })
       },
@@ -460,6 +475,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
         this.$http.get(`/api/profiles/${this.$route.params.id}/answers`)
           .then(res => {
             this.answerList = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
       },
       getQuestions() {
@@ -467,6 +483,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
         this.$http.get(`/api/profiles/${this.$route.params.id}/questions`)
           .then(res => {
             this.askQuestion = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
       },
       getWatchQuestions() {
@@ -474,6 +491,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
         this.$http.get(`/api/profiles/${this.$route.params.id}/watched_questions`)
           .then(res => {
             this.watchedQuestion = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
       },
       getCollectAnswer() {
@@ -481,6 +499,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
         this.$http.get(`/api/profiles/${this.$route.params.id}/favorites`)
           .then(res => {
             this.favorites = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
       },
       getHistory() {
@@ -488,6 +507,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
         this.$http.get(`/api/profiles/${this.$route.params.id}/history`)
           .then(res => {
             this.history = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
       },
       getProfile() {
@@ -525,6 +545,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
 </script>
 
 <style lang="less" scoped>
+.el-tabs__content {
+  overflow: hidden !important;
+}
 .profile{
   height: 100vh;
   ::-webkit-scrollbar {
@@ -582,8 +605,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           }
           .morePane {
             // width: 95%;
-            min-height: 300px;
+            min-height: 400px;
             margin: 0 auto;
+
           }
           .no-data-content {
             height: 200px;

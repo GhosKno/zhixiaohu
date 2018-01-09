@@ -7,7 +7,7 @@
       <span>{{(new Date(time)).toISOString().split('T')[0]}}</span>
       <span>{{answers}}个回答</span>
       <span>{{watchers}}个关注</span>
-      <Button type="ghost" @click="toQuestionDetail()">去写回答</Button>
+      <Button type="primary" @click="toQuestionDetail()">去写回答</Button>
     </div>
   </div>
 </template>
@@ -34,11 +34,6 @@ export default {
     watchers: {
       type: Number,
       required: true
-    },
-    url: {
-      type: String,
-      //todo
-      default: '/home'
     },
     id: {
       type: Number,
@@ -79,7 +74,7 @@ export default {
     }
     button {
       // position: absolute;
-      margin-left: 50px;
+      margin-left: 15px;
     }
   }
 }

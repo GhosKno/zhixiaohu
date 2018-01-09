@@ -4,7 +4,7 @@
     <div class="top-info">
       <Row>
         <Col span="5" class="avatar-content">
-          <img :src="user.avatar">
+          <img :src="user.avatar || '/static/avatar.jpg'">
         </Col>
         <Col span="19" class="info-content">
           <div class="nickname" @click="$router.push({path: `/profile/${id}`})">

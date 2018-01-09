@@ -9,7 +9,7 @@
           <div class="content">
             <div class="description">
                 <div class="topics">
-                <a href="/" class="Tag" v-for="topic in question.topics" :key="topic.id">{{topic.label}}</a>
+                <a :href="`/topic/${topic.id}`" class="Tag" v-for="topic in question.topics" :key="topic.id">{{topic.label}}</a>
                 </div>
                 <h1 class="title">
                     {{question.title}}

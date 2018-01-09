@@ -73,7 +73,7 @@
             this.$Message.info('没有更多的内容了')
             return resolve()
           }
-          this.$http.get(this.nextUrl)
+          this.$http.get(this.transUrl(this.nextUrl))
             .then(res => {
               setTimeout(() => {
                 this.answerList.push(...res.body.data.results)
