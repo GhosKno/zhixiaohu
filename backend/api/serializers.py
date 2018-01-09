@@ -122,7 +122,6 @@ class AnswerSerializer(serializers.ModelSerializer):
                   'has_against', 'add_time', 'detail', 'comment_count')
 
 
-
 class AnswerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
@@ -153,7 +152,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'detail', 'userSummary', 'add_time')
+        fields = ('answer', 'detail', 'add_time')
 
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):

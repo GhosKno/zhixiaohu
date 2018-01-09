@@ -51,7 +51,7 @@ class AnswerViewSet(GenericViewSet,
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance:
-            instance.userSummary = self.request.user.profile
+            instance.userSummary = instance.author.profile
             instance.comment_count = instance.comments.count()
             user = request.user
             if user.is_authenticated:
