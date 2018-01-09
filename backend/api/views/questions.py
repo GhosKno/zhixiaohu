@@ -1,7 +1,6 @@
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from api.models import Question, Activity
 from api.serializers import QuestionCreateSerializer, QuestionDetailSerializer, AnswerSerializer
@@ -71,20 +70,24 @@ class QuestionViewSet(GenericViewSet,
             return success(temp.data)
         return error('no more data')
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=[IsAuthenticated])
     def watch(self, request, pk=None):
         if request.user.is_authenticated is False:
             return error('please login')
         question = self.get_object()
         if question is None:
             return error('question not exists')
+        
         profile = request.user.profile
         Activity.watchQuestion(request.user.profile, question)
+
         profile.watchedQuestion.add(question)
         profile.save()
         return success()
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['GET'],
+                  permission_classes=[IsAuthenticated])
     def cancel_watch(self, request, pk=None):
         if request.user.is_authenticated is False:
             return error('please login')
