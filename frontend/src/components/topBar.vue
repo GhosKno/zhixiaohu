@@ -84,7 +84,7 @@ export default {
           });
     },
     getUnreadMsg() {
-      this.$http.get('/api/messages/unread')
+      this.$http.get('/api/messages/unread/')
         .then(res => {
           this.unreadMsgsCount = res.body.data.count
         }, function(response){

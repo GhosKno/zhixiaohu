@@ -136,10 +136,30 @@ export default {
   },
   methods: {
     updateNickName() {
-      // this.$http.post()
+      this.$http.post('/api/profiles/update_info/', {
+        nickname: this.newNickName
+      }).then(res => {
+        if(res.body.success) {
+          this.$Message.success('修改成功')
+          this.getProfile()
+          this.isEditNickName = false
+        } else {
+          this.$Message.error('修改失败' + res.body.msg)          
+        }
+      })
     },
     updatedescription() {
-      //todo update description
+      this.$http.post('/api/profiles/update_info/', {
+        description: this.newDescription
+      }).then(res => {
+        if(res.body.success) {
+          this.$Message.success('修改成功')
+          this.getProfile()
+          this.isEditDescription = false
+        } else {
+          this.$Message.error('修改失败' + res.body.msg)          
+        }
+      })
     },
     updateEmail() {},
     getProfile() {

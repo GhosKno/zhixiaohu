@@ -1,15 +1,6 @@
 <template>
   <div>
-    <!-- <quill-editor
-      ref="quillEditor"
-      :options="editorOption"
-      style="height: 180px; margin-bottom: 10px;display: none;"
-      v-model="editorContent"
-      @change="editorChange"
-    >
-    </quill-editor> -->
-    <div id="quillEditor">
-
+    <div id="quillEditor" :style="{'height': `${height}px`}">
     </div>
     <Upload 
       action="//up-z1.qiniu.com"
@@ -35,7 +26,7 @@
 
   export default {
     name: 'commonEditor',
-    props: ['placeholder'],
+    props: ['placeholder','height'],
     components: {quillEditor},
     data(){
       return {
@@ -130,4 +121,7 @@
 <style scoped>
 @import 'quill/dist/quill.core.css';                                                                                                                 
 @import 'quill/dist/quill.snow.css';
+#quillEditor {
+  height: 200px;
+}
 </style>

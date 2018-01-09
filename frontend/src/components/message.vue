@@ -7,14 +7,21 @@
       <Scroll 
         :on-reach-bottom="handleReachBottom" 
         height="300">
+        <div class="no-data-content" v-if="messages.length == 0">
+          还没有消息
+        </div>
         <div 
           v-for="(msg,index) in messages"
           :class="{'message-content': true, 'has-read': msg.has_read}"
           :key="index"
         >
+        <p>
           <span class="user">{{msg.author}}</span>
           <span class="text">回答了</span>
-          <span class="question" @click="toQuestion(msg.answer,msg.id)">{{msg.question}}</span>
+          <span class="question" @click="toQuestion(msg.answer,msg.id)">
+            {{msg.question.slice(0,12)}}...
+          </span>
+        </p>
           <span class="time">{{msg.time}}</span>
         </div>
       </Scroll>
@@ -78,13 +85,13 @@ export default {
         if(this.nextUrl) {
           this.$http.get('/api/users/messages/')
             .then(res => {
-              this.messages.push(...(res.body.data.results))
+              setTimeout(() => {
+                this.messages.push(...(res.body.data.results))
+                resolve()
+              }, 1000)
               this.nextUrl = res.body.data.next
             })
         }
-        setTimeout(() => {
-          resolve()
-        }, 2000)
       })
     }
   },
@@ -109,8 +116,14 @@ export default {
     ::-webkit-scrollbar {
       display:none;
     }
+    .no-data-content {
+      font-size: 15px;
+      color: #8590a6;
+      text-align: center;
+      padding-top: 100px;
+    }
     .message-content{
-      height: 40px;
+      // height: 40px;
       font-size: 15px;
       padding: 5px 0px;
       width: 95%;
@@ -120,14 +133,19 @@ export default {
         color: #3e7ac2;
       }
       .text {
-        margin: 0 5px;
+        margin: 0 3px;
       }
       .question {
         cursor: pointer;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
       }
+      // span{word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;overflow: hidden ;}  
       .time {
-        right: 5px;
-        position: absolute;
+        color: #8590a6;
+        display: block;
+        text-align: end;
       }
     }
   }

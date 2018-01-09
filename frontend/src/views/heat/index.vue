@@ -89,6 +89,7 @@
         this.$http.get('/api/topics/hot')
           .then(res => {
             this.heatedTopoics = res.body.data
+            this.curTopicId = this.heatedTopoics[0].id
           })
       },
       viewTopicDetail(id) {

@@ -2,6 +2,7 @@
   <div class="question-modal-content">
     <Modal
       v-model="showQuestionForm"
+      class-name="vertical-center-modal"
     >
       <div slot="header" style="color:#0f88eb;text-align:center">
         <p style="height: 30px;line-height: 30px;font-size: 23px;">写下你的问题</p>
@@ -37,6 +38,7 @@
         <common-editor
           ref="quillEditor"
           placeholder="问题背景、条件等详细信息"
+          :height="150"
         ></common-editor>
       </div>
       <div slot="footer" style="text-align:center;">
@@ -130,6 +132,15 @@ export default {
     .ql-container {
       height: 100px;
     }
+  }
+}
+.vertical-center-modal{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .ivu-modal{
+    top: 0;
   }
 }
 </style>

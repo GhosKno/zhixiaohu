@@ -14,6 +14,7 @@
       <common-editor
           ref="quillEditor"
           placeholder="在这里写下你的回答"
+          :height="200"
         ></common-editor>
     <Button type="primary" class="postBtn" @click="postAnswer">提交回答</Button>
   </div>

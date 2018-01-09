@@ -5,7 +5,7 @@
       <div class="avatar-content"></div>
     </Col>
     <Col span="14" class="info">
-      <div class="user-name">{{userName}}</div>
+      <div class="user-name" @click="$router.push({path: `/profile/${userid}`})">{{userName}}</div>
       <div class="description">{{description.length > 0 ? description : '这个用户很懒，什么都没留下'}}</div>
       <div class="detail">
         <span>{{answer}}回答</span>
@@ -107,9 +107,13 @@
       margin-bottom: 5px;
     }
     .user-name{
+      cursor: pointer;
       font-size: 1.3em;
       font-weight: bold;
       line-height: 100%;
+    }
+    .user-name:hover {
+      color:#175199;
     }
     .description{
       font-size: 15px;

@@ -310,7 +310,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
     },
     watch: {
       '$route' (to, from) {
-        if(from.name === 'profile' && from.path !== to.path)
+        if(from.name === 'profile' && from.path !== to.path) {
+          this.morePaneActiveName = 'watch'
+          this.profilePaneActiveName = 'activities'
           if(this.initInfo()){
             this.getProfile()
           }
@@ -319,6 +321,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           this.getWatchQuestions()
           this.getCollectAnswer()
           this.getHistory()
+        }
       }
     },
     data() {
