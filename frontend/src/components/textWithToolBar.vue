@@ -12,7 +12,9 @@
         :commentCount="commentCount"
         @toggleFold="fold=!fold;"
         @writeAnswer="$emit('writeAnswer')"
-        :approve="approve"></ToolBar>
+        :approve="approve"
+        :pk="pk"
+        :isWatch="isWatch"></ToolBar>
 </div>
 </template>
 <script>
@@ -29,10 +31,10 @@ export default {
           default: false
       },
       commentCount:{},
-      postTime:{
-          default:''
-      },
-      approve:{}
+      postTime:{},
+      approve:{},
+      pk:{},
+      isWatch:{},
   },
   data() {
       return {

@@ -13,7 +13,7 @@
               FormItem(prop="username")
                 Input(type="text" v-model="loginForm.username" placeholder="用户名或邮箱")
               FormItem(prop="password")
-                Input(type="password" v-model="loginForm.password" placeholder="密码")
+                Input(type="password" v-model="loginForm.password" placeholder="密码"  @keyup.enter="loginSubmit()")
               FormItem.button-content(style="text-align:center")
                 Button(type="primary" @click="loginSubmit()" long size="large") 登陆
                 Button(type="ghost" @click="handleReset('loginForm')" long size="large") 重置

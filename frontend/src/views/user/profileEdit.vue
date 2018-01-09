@@ -3,7 +3,7 @@
     <TopBar class="top-bar"></TopBar>
     <Row>
       <Col span="18" offset="3" class="main-content">
-        <div class="background"></div>
+        <div class="background"><img :src="avatarUrl" class="blur" alt=""></div>
         <div class="edit-content">
           <Row>
             <Col span="6">
@@ -17,7 +17,7 @@
                   :show-upload-list=false
                   :on-success="getProfile"
                 >
-                  <div style="padding-top: 40px;text-align: center;width: 160px;height: 160px;background: rgba(0, 0, 0, 0.5);">
+                  <div class="edit-avatar">
                     <Icon type="camera" size="45"></Icon>
                     <p>修改我的头像</p>
                   </div>
@@ -112,27 +112,27 @@
 </template>
 
 <script>
-import cookieManage from '@/mixins/cookieManage'
-import initInfo from '@/mixins/initInfo'
+import cookieManage from "@/mixins/cookieManage";
+import initInfo from "@/mixins/initInfo";
 const TopBar = resolve => require(["@/components/topBar"], resolve);
 
 export default {
-  name: 'profileEdit',
+  name: "profileEdit",
   mixins: [cookieManage, initInfo],
-  components: {TopBar},
+  components: { TopBar },
   data() {
     return {
-      nickName: '',
-      description: '',
-      email: '',
+      nickName: "",
+      description: "",
+      email: "",
       isEditNickName: false,
-      newNickName: '',
+      newNickName: "",
       isEditDescription: false,
-      newDescription: '',
+      newDescription: "",
       isEditEmail: false,
-      newEmail: '',
-      avatarUrl: ''
-    }
+      newEmail: "",
+      avatarUrl: ""
+    };
   },
   methods: {
     updateNickName() {
@@ -141,45 +141,59 @@ export default {
     updatedescription() {
       //todo update description
     },
-    updateEmail() {
-
-    },
+    updateEmail() {},
     getProfile() {
-      this.$http.get(`/api/profiles/${this.$store.state.userid}/`)
-      .then(res => {
-        if(res.body.success) {
-          let data = res.body.data
-          this.nickName = data.nickname
-          this.description = data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description
-          this.email = data.email || 'xxxx'
-          this.newNickName = this.nickName
-          this.newDescription = this.description
-          this.newEmail = this.email
-          this.avatarUrl = data.avatar
-          this.initInfo()
+      this.$http.get(`/api/profiles/${this.$store.state.userid}/`).then(res => {
+        if (res.body.success) {
+          let data = res.body.data;
+          this.nickName = data.nickname;
+          this.description =
+            data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description;
+          this.email = data.email || "xxxx";
+          this.newNickName = this.nickName;
+          this.newDescription = this.description;
+          this.newEmail = this.email;
+          this.avatarUrl = data.avatar;
+          this.initInfo();
         }
-      })
+      });
     }
   },
-  created () {
-    if(this.initInfo()){
-      this.getProfile()
+  created() {
+    if (this.initInfo()) {
+      this.getProfile();
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 .profile-edit {
+
+  .edit-avatar:hover {
+    opacity: 1;
+  }
   .main-content {
     margin-top: 60px;
     margin-bottom: 40px;
     background: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .background {
     background: #f7f8fa;
     height: 240px;
+    overflow: hidden;
+    position: relative;
+  }
+  .blur {  
+    width: 60%;
+    position: absolute;
+    top: -30%;
+    left: 20%;
+    -webkit-filter: blur(10px); /* Chrome, Opera */
+       -moz-filter: blur(10px);
+        -ms-filter: blur(10px);    
+            filter: blur(10px);    
   }
   .edit-content {
     background: #fff;
@@ -194,9 +208,22 @@ export default {
       position: relative;
       top: -35px;
       border-radius: 10px;
-      .upload , .upload>div{
+      .upload,
+      .upload > div {
         width: 100%;
         height: 100%;
+      }
+      .edit-avatar {
+        padding-top: 40px;
+        text-align: center;
+        width: 160px;
+        height: 160px;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: all 0.2s;
+        -webkit-transition: all 0.2s;
+        cursor: pointer;
       }
     }
     .content-header {
@@ -224,11 +251,11 @@ export default {
     // }
     .edit-item {
       border-bottom: 1px solid #dddee1;
-      >div {
+      > div {
         height: 30px;
         position: relative;
         top: 50%;
-        transform: translateY(-50%);  
+        transform: translateY(-50%);
       }
       margin-top: 20px;
       min-height: 100px;
@@ -239,7 +266,7 @@ export default {
         padding-left: 30px;
       }
       .detail {
-        .edit-handle{
+        .edit-handle {
           display: none;
           padding: 0 0 0 10px;
         }
@@ -249,7 +276,7 @@ export default {
           }
         }
       }
-      .detail:hover>.edit-handle{
+      .detail:hover > .edit-handle {
         display: inline !important;
       }
     }

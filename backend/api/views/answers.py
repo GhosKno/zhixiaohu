@@ -55,7 +55,7 @@ class AnswerViewSet(GenericViewSet,
     def get_comments(self, request, pk=None):
         answer = self.get_object()
         if answer is None:
-            return error("no topic found")
+            return error("no answer found")
 
         queryset = self.filter_queryset(answer.comments.all())
 

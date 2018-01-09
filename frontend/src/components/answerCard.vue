@@ -5,24 +5,26 @@
     </div>
     <div class="info">
         <Poptip trigger="hover" placement="right" width="400">
-            <Avatar class="avatar" shape="square" size="large"  :src="author.avatar?author.avatar:'/static/avatar.jpg'"  />
+            <Avatar class="avatar" shape="square" size="large"  :src="answer.userSummary.avatar?answer.userSummary.avatar:'/static/avatar.jpg'"  />
             <div class="api" slot="content">
                 
             </div>
         </Poptip>
         <div class="author-text">
         <div class="name">
-            {{author.nickname}}
+            {{answer.userSummary.nickname}}
         </div>
         <div class="badge-text">
-            {{author.description?author.description:"这个人很懒,没有设置简介"}}
+            {{answer.userSummary.description?answer.userSummary.description:"这个人很懒,没有设置简介"}}
         </div>
         </div>
     </div>
     <TextWithToolBar 
-        :text="answer" 
-        :commentCount="commentCount"
-        :postTime="answerTime"
+        :text="answer.detail" 
+        :commentCount="answer.comment_count"
+        :postTime="answer.add_time"
+        :approve="answer.approve"
+        :pk="answer.id"
         ></TextWithToolBar></div>
 </template>
 <script>
@@ -32,15 +34,7 @@ export default {
   components: { TextWithToolBar },
   props:{
       feedTitle:{},
-      answer:{
-          default: "泻药.这个答案是一个示例答案."
-      },
-      pk:{
-          default: "0"
-      },
-      author:{},
-      commentCount:{},
-      answerTime:{}
+      answer:{},
   },
   data() {
       return {

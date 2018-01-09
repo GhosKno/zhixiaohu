@@ -34,64 +34,78 @@
         </div>
     </div>
     <div class="footer">
-    <input class="commentInput" :class="{'is-active': showCommentBtn}" v-model="commentVal" type="text" placeholder="写下你的评论..." required @focus="showCommentBtn = true" @blur="showCommentBtn = false">
-    <Button type="primary" class="commentBtn" :class="{ 'is-visible': showCommentBtn }" :disabled="commentVal==''">评论</Button>
+      <div class="commentEditor" :class="{'is-active': showCommentBtn}" >
+        <input type="text" class="commentInput" 
+          v-model="commentForm.detail" 
+          placeholder="写下你的评论..." required 
+          @focus="showCommentBtn = true" 
+          @blur="hideCommentBtn()"
+          @keyup.enter="postComment()"/>
+          
+        <Button type="primary" class="commentBtn" 
+          :class="{ 'is-visible': showCommentBtn }" 
+          :disabled="commentForm.detail==''"
+          @click="postComment()">评论</Button>
+      </div>
     </div>
 </div>
 </template>
 <script>
-import timeago from '@/utils/time';
+import timeago from "@/utils/time";
 export default {
   name: "commentList",
   props: {
     commentCount: {},
-    comments: [
-        { id: 0, author: "失豆", time: "2018-01-08T12:10:07.144373Z", text: "心疼 好可怕", zan: 12 },
-        { id: 1, author: "橘子超人", time: "1 天前", text: "呵呵", zan: 0 },
-        { id: 2, author: "想乖乖写代码的喵", time: "1 天前", text: "超吓人的啊", zan: 2 }
-      ],
+    comments: {
+      type: Array
+    },
   },
   data() {
     return {
       showCommentBtn: false,
-      commentVal: '',
+      commentForm: {
+        answer: this.pk,
+        detail: ""
+      },
       answerSort: [
-          {
-              value: 'default',
-              label: '默认排序'
-          },
-          {
-              value: 'time',
-              label: '按时间排序'
-          }
-      ],
+        {
+          value: "default",
+          label: "默认排序"
+        },
+        {
+          value: "time",
+          label: "按时间排序"
+        }
+      ]
     };
   },
   methods: {
-    getComments() {
-      const submit = () => {
-        this.$http.post("/api/users/register/", this.regForm).then(res => {
-          if (res.body.success) {
-            this.$Message.success("注册成功");
-            Vue.http.headers.common["X-CSRF-TOKEN"] = this.$cookie.get(
-              "csrftoken"
-            );
-            this.setCookie(true, res.body.data.id, res.body.data.nickname);
-            this.$store.commit("LOGIN");
-            this.$store.commit("USER", {
-              id: res.body.data.id,
-              name: res.body.data.nickname
-            });
-            this.$router.push({ name: "home" });
-          } else {
-            this.$Message.error(res.data.msg);
-          }
-        });
-      };
-      this.$refs["regForm"].validate(valid => {
-        if (valid) submit();
+    
+    postComment() {
+      this.$http.post(`/api/comments/`, this.commentForm).then(res => {
+        if (res.body.success == true) {
+          console.log(res.body);
+          this.$Message.success("评论成功");
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      },
+      function(response) {
+        // 响应错误回调
+        this.err = true;
+        this.errCode = response.status;
+        this.errText = response.statusText;
       });
+    },
+    hideCommentBtn() {
+      if (this.commentForm.detail===""){
+        setTimeout(() => {
+          this.showCommentBtn = false
+        }, 100);
+      }
     }
+  },
+  mounted() {
   }
 };
 </script>
@@ -171,8 +185,19 @@ export default {
 .meta {
   margin-bottom: 5px;
 }
-
+.commentEditor{
+  position: relative;
+    -webkit-transition: padding-right .3s ease;
+    transition: padding-right .3s ease;
+}
+.commentEditor.is-active {
+  padding-right: 94px;
+}
 .commentInput {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   width: 100%;
   height: 34px;
   padding: 0 10px;
@@ -183,14 +208,13 @@ export default {
   box-sizing: border-box;
   background: #f7f8fa;
   outline: none;
-  transition: width 0.2s;
-  -moz-transition: width 0.2s; /* Firefox 4 */
-  -webkit-transition: width 0.2s; /* Safari 和 Chrome */
-  -o-transition: width 0.2s; /* Opera */
+  transition: all 0.2s;
+  -moz-transition: all 0.2s; /* Firefox 4 */
+  -webkit-transition: all 0.2s; /* Safari 和 Chrome */
+  -o-transition: all 0.2s; /* Opera */
 }
 
-.commentInput.is-active{
-  width: 90%;
+.commentInput.is-active {
   background: #fff;
   border: 1px solid #9fadc7;
 }
@@ -209,20 +233,23 @@ export default {
   font-weight: 500;
 }
 .commentBtn {
-  margin-left:7px;
   position: absolute;
+  right: 16px;
+  bottom: 2px;
   transform: scale(0);
   -webkit-transform: scale(0);
-  transition: transform .2s ease,
-    -webkit-transform .2s ease;
+  transition: all 0.2s ease;
+  -moz-transition: all 0.2s; /* Firefox 4 */
+  -webkit-transition: all 0.2s; /* Safari 和 Chrome */
+  -o-transition: all 0.2s; /* Opera */
 }
 .commentBtn.is-visible {
   transform: scale(1);
   -webkit-transform: scale(1);
 }
-.footer{
-    padding: 12px 16px;
-    background: #fff;
-    border-top: 1px solid #ebeef5;
+.footer {
+  padding: 12px 16px;
+  background: #fff;
+  border-top: 1px solid #ebeef5;
 }
 </style>

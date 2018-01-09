@@ -112,7 +112,7 @@ class AnswerSerializer(serializers.ModelSerializer):
     question = QuestionSummarySerializer()
     class Meta:
         model = Answer
-        fields = ('userSummary', 'approve', 'question',
+        fields = ('id', 'userSummary', 'approve', 'question',
                   'add_time', 'detail', 'comment_count')
 
 

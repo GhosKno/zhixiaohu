@@ -21,7 +21,7 @@
                         关注者
                     </div>
                     <div class="countNum">
-                        123
+                        {{question.watch_count}}
                     </div>
                 </a>
 
@@ -41,6 +41,8 @@
             :forQuestion="true"
             @writeAnswer="showEditor=!showEditor"
             :postTime="question.add_time"
+            :pk="$route.params.id"
+            :isWatch="question.is_watch"
            ></TextWithToolBar>
           </div>
       </div>
@@ -59,13 +61,7 @@
             <AnswerCard
               v-for="(item, index) in answerList"
               :key="index"
-              :avatar="item.avatar"
-              :author="item.userSummary" 
-              :pk="item.id" 
-              :feed-title="item.feedTitle"
-              :answer="item.answer"
-              :commentCount="item.comment_count"
-              :answerTime="item.add_time">
+              :answer="item">
             </AnswerCard>
           </div>
         </div>

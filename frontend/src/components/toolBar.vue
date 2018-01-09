@@ -2,7 +2,8 @@
   <div class="toolBar">
     
    <div class="btn-group" v-if="forQuestion">
-      <Button type="primary">关注问题</Button>
+      <Button v-if="isWatch">取消关注</Button>
+      <Button type="primary" @click="watchQ()" v-else>关注问题</Button>
       <Button type="ghost" class="writeBtn" @click="$emit('writeAnswer')"><svg viewBox="0 0 12 12" class="writeIcon" width="14" height="16" aria-hidden="true"><g data-reactid="108"><path d="M.423 10.32L0 12l1.667-.474 1.55-.44-2.4-2.33-.394 1.564zM10.153.233c-.327-.318-.85-.31-1.17.018l-.793.817 2.49 2.414.792-.814c.318-.328.312-.852-.017-1.17l-1.3-1.263zM3.84 10.536L1.35 8.122l6.265-6.46 2.49 2.414-6.265 6.46z" fill-rule="evenodd"></path></g></svg>
         写回答
       </Button>
@@ -38,11 +39,11 @@
       </Button>
 
 <Modal v-model="showComment" v-if="forQuestion">
-  <CommentList :commentCount="commentCount">
+  <CommentList :commentCount="commentCount" :pk="pk" :comments="comments">
   </CommentList>
 </Modal>
 <div class="commentCard" v-else v-show="showComment">
-  <CommentList :commentCount="commentCount">
+  <CommentList :commentCount="commentCount" :pk="pk" :comments="comments">
   </CommentList>
   <div slot="footer"></div>
 </div>
@@ -69,12 +70,45 @@ export default {
     },
     toggleFold(){
       this.$emit('toggleFold')
-    }
+    },
+    watchQ(){
+      this.$http.get(`/api/questions/${this.pk}/watch/`)
+          .then(res => {
+            if(res.body.success==true) {
+              this.$Message.success("关注成功");
+            } else {
+              this.$Message.error(res.body.msg);
+            }
+          }, function(response){
+            // 响应错误回调 
+             this.err=true
+             this.errCode=response.status
+             this.errText=response.statusText
+          });
+      
+    },
+    getComments() {
+      this.$http.get(`/api/answers/${this.pk}/get_comments/`).then(res => {
+        if (res.body.success == true) {
+          console.log(res.body)
+          this.comments = res.body.data.results;
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      },
+      function(response) {
+        // 响应错误回调
+        this.err = true;
+        this.errCode = response.status;
+        this.errText = response.statusText;
+      });
+    },
   },
   data() {
     return {
       showComment: false,
       commentBtn: "评论",
+      comments: [],
     };
   },
   props: {
@@ -84,11 +118,7 @@ export default {
     },
     forQuestion: {
       type: Boolean,
-      default:false,
-    },
-    commentCount: {
-      type:Number,
-      default: 0
+      default: false,
     },
     fold:{
       type: Boolean,
@@ -96,9 +126,16 @@ export default {
     },
     showFoldBtn:{
       default: true
+    },
+    commentCount: {},
+    pk:{},
+    isWatch:{
+      type: Boolean,
+      default: false,
     }
   },
   created() {
+    if(!this.forQuestion)this.getComments()
     if (this.commentCount > 0) {
       this.commentBtn = this.commentCount + " 条评论";
     } else {

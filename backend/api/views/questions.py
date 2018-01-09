@@ -65,6 +65,7 @@ class QuestionViewSet(GenericViewSet,
             for answer in page:
                 profile = answer.author.profile
                 answer.userSummary = profile
+                answer.comment_count = answer.comments.count()
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -72,9 +73,12 @@ class QuestionViewSet(GenericViewSet,
 
     @detail_route(methods=['GET'])
     def watch(self, request, pk=None):
+        if request.user.is_authenticated is False:
+            return error('please login')
         question = self.get_object()
         if question is None:
             return error('question not exists')
+<<<<<<< HEAD
         if request.user.is_authenticated:
             Activity.watchQuestion(request.user.profile, question)
             profile = request.user.profile
@@ -82,9 +86,18 @@ class QuestionViewSet(GenericViewSet,
             profile.save()
             return success()
         return error('please login at first')
+=======
+        profile = request.user.profile
+        profile.watchedQuestion.add(question)
+        profile.save()
+        Activity.watchQuestion(request.user.profile, question)
+        return success()
+>>>>>>> frontend: fetch answers in question page
 
     @detail_route(methods=['GET'])
     def cancel_watch(self, request, pk=None):
+        if request.user.is_authenticated is False:
+            return error('please login')
         question = self.get_object()
         if question is None:
             return error('question not exists')

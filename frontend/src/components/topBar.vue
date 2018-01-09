@@ -70,15 +70,27 @@ export default {
   },
   methods: {
     logout() {
-      this.cookieLogout();
-      this.$Message.info("已退出");
-      this.$router.push({ name: "login" });
+      this.$http.get('/api/users/logout/')
+          .then(res => {
+            if(res.body.success) {
+              this.cookieLogout();
+              this.$router.go(0);
+            } else {
+              this.$Message.error(res.data.msg)
+            }
+          }, function(response){
+            // 响应错误回调 
+             this.$Message.error(response.status+" "+response.statusText)
+          });
     },
     getUnreadMsg() {
       this.$http.get('/api/messages/unread')
         .then(res => {
           this.unreadMsgsCount = res.body.data.count
-        })
+        }, function(response){
+            // 响应错误回调 
+             this.$Message.error(response.status+" "+response.statusText)
+        });
     }
   },
   components: {
