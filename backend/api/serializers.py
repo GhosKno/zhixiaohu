@@ -173,7 +173,7 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
 class ActivitySerializer(serializers.ModelSerializer):
     answer = AnswerSerializer(allow_null=True)
     question = QuestionListSerializer(allow_null=True)
-    watch = ProfileSerializer(allow_null=True)
+    watch = ProfileSummarySerializer(allow_null=True)
 
     class Meta:
         model = Activity
