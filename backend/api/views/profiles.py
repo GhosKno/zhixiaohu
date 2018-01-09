@@ -79,6 +79,13 @@ class ProfileViewSet(GenericViewSet,
             for answer in page:
                 profile = answer.author.profile
                 answer.userSummary = profile
+                user = request.user
+                if user.is_authenticated:
+                    answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()
+                    answer.has_against = user.profile.disagreed.filter(id=answer.id).exists()
+                else:
+                    answer.has_approve = False
+                    answer.has_against = False
             serializer = AnswerSerializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -111,6 +118,13 @@ class ProfileViewSet(GenericViewSet,
             for answer in page:
                 profile = answer.author.profile
                 answer.userSummary = profile
+                user = request.user
+                if user.is_authenticated:
+                    answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()
+                    answer.has_against = user.profile.disagreed.filter(id=answer.id).exists()
+                else:
+                    answer.has_approve = False
+                    answer.has_against = False
             serializer = AnswerSerializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -152,6 +166,14 @@ class ProfileViewSet(GenericViewSet,
                 elif activity.answer:
                     profile = activity.answer.author.profile
                     activity.answer.userSummary = profile
+                    instance = activity.answer
+                    user = request.user
+                    if user.is_authenticated:
+                        instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
+                        instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
+                    else:
+                        instance.has_approve = False
+                        instance.has_against = False
 
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)

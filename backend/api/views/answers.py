@@ -17,7 +17,7 @@ class AnswerViewSet(GenericViewSet,
                     mixins.RetrieveModelMixin):
     filter_backends = (SearchFilter,)
     search_fields = ('detail',)
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     queryset = Answer.objects.all()
 
@@ -36,17 +36,30 @@ class AnswerViewSet(GenericViewSet,
             for instance in page:
                 instance.userSummary = instance.author.profile
                 instance.comment_count = instance.comments.count()
+                user = request.user
+                if user.is_authenticated:
+                    instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
+                    instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
+                else:
+                    instance.has_approve = False
+                    instance.has_against = False
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
-
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance:
             instance.userSummary = self.request.user.profile
             instance.comment_count = instance.comments.count()
+            user = request.user
+            if user.is_authenticated:
+                instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
+                instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
+            else:
+                instance.has_approve = False
+                instance.has_against = False
             serializer = self.get_serializer(instance)
             return success(serializer.data)
         return error('cant found')
@@ -132,7 +145,7 @@ class AnswerViewSet(GenericViewSet,
         profile.save()
         return success()
 
-    @detail_route(methods=['GET'],permission_classes=[IsAuthenticated])
+    @detail_route(methods=['GET'], permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()
@@ -142,7 +155,7 @@ class AnswerViewSet(GenericViewSet,
         profile.save()
         return success()
 
-    @detail_route(methods=['GET'],permission_classes=[IsAuthenticated])
+    @detail_route(methods=['GET'], permission_classes=[IsAuthenticated])
     def cancel_favorite(self, request, pk=None):
         profile = request.user.profile
         answer = self.get_object()

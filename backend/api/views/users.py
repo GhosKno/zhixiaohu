@@ -105,7 +105,7 @@ class UserViewSet(viewsets.GenericViewSet):
         user.profile.beWatchCount += 1
         user.profile.save()
         if request.user.is_authenticated:
-            Activity.watchUser(request.user.profile, profile)
+            Activity.watchUser(request.user.profile, user.profile)
         return success()
 
     @detail_route(methods=['GET'],

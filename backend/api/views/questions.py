@@ -65,6 +65,13 @@ class QuestionViewSet(GenericViewSet,
                 profile = answer.author.profile
                 answer.userSummary = profile
                 answer.comment_count = answer.comments.count()
+                user = request.user
+                if user.is_authenticated:
+                    answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()
+                    answer.has_against = user.profile.disagreed.filter(id=answer.id).exists()
+                else:
+                    answer.has_approve = False
+                    answer.has_against = False
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)

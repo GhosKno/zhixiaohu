@@ -32,6 +32,7 @@ class AvatarSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     is_watch = serializers.BooleanField(default=False)
+
     class Meta:
         model = Profile
         fields = ('id', 'url', 'avatar', 'is_watch',
@@ -73,6 +74,7 @@ class ProfileSummarySerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('id', 'avatar', 'nickname', 'description')
 
+
 # class TopicCreateSerializer(serializers.HyperlinkedModelSerializer):
 #     class Meta:
 #         model = Topic
@@ -108,12 +110,17 @@ class QuestionSummarySerializer(serializers.ModelSerializer):
 
 class AnswerSerializer(serializers.ModelSerializer):
     userSummary = ProfileSummarySerializer()
-    comment_count = serializers.IntegerField(default=0)
+    comment_count = serializers.IntegerField()
     question = QuestionSummarySerializer()
+
+    has_approve = serializers.BooleanField()
+    has_against = serializers.BooleanField()
+
     class Meta:
         model = Answer
-        fields = ('id', 'userSummary', 'approve', 'question',
-                  'add_time', 'detail', 'comment_count')
+        fields = ('id', 'userSummary', 'approve', 'question', 'has_approve',
+                  'has_against', 'add_time', 'detail', 'comment_count')
+
 
 
 class AnswerCreateSerializer(serializers.ModelSerializer):
