@@ -32,6 +32,7 @@
       :styles="{left: '20px', 'margin-left': '0px'}"
     >
       <AnswerListCard
+        v-if="Object.keys(currentAnswer).length > 0"
         :answer="currentAnswer"
       >
       </AnswerListCard>

@@ -118,6 +118,7 @@ class ProfileViewSet(GenericViewSet,
             for answer in page:
                 profile = answer.author.profile
                 answer.userSummary = profile
+                answer.comment_count = answer.comments.count()
                 user = request.user
                 if user.is_authenticated:
                     answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()

@@ -15,6 +15,14 @@
                 </div>
                 <div class="watched-list">
                   <Button 
+                    class="topic-button" 
+                    size="small"
+                    type="ghost"                    
+                    shape="circle"
+                    v-if="heatedTopoics.length == 0">
+                    还没有话题
+                  </Button >
+                  <Button 
                     :class="{'topic-button': true, 'topic-button-active': el.id === curTopicId}"
                     type="ghost"
                     @click="viewTopicDetail(el.id)"
@@ -26,6 +34,9 @@
                 </div>
               </div>
               <div class="answer-list">
+                <div class="no-data-content" v-if="answerList.length == 0">
+                  当前话题下没有内容
+                </div>
                 <AnswerListCard
 									v-for="(item, index) in answerList"
 									:key="index"
@@ -76,6 +87,7 @@
           .then(res => {
             this.heatedTopoics = res.body.data
             this.curTopicId = this.heatedTopoics[0].id
+            this.viewTopicDetail(this.curTopicId)
           })
       },
       viewTopicDetail(id) {
@@ -136,6 +148,21 @@
           border-color: #2b85e4;
         }
       }
+    }
+  }
+  .answer-list {
+    .no-data-content {
+      height: 200px;
+      background: #fff;
+      font-size: 15px;
+      color: #8590a6;
+      text-align: center;
+      padding-top: 100px;
+      border-radius: 2px;
+      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
     }
   }
 }

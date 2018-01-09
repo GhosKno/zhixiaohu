@@ -2,7 +2,18 @@
   <div class="user-card">
     <Row style="height:100%;">
     <Col span="5" class="avatar">
-      <div class="avatar-content"></div>
+      <div class="avatar-content">
+        <Poptip trigger="hover" 
+            placement="right" 
+            width="400"
+            @on-popper-hide="() => $refs['userPoptip'].blur()"
+            @on-popper-show="() => $refs['userPoptip'].load()">
+            <Avatar style="width: 100%; height: 100%;" shape="square" size="large" :src="avatar"/>
+            <div class="api" slot="content">
+                <user-poptip ref="userPoptip" :id="userid"></user-poptip>
+            </div>
+        </Poptip>
+      </div>
     </Col>
     <Col span="14" class="info">
       <div class="user-name" @click="$router.push({path: `/profile/${userid}`})">{{userName}}</div>
@@ -28,8 +39,12 @@
 
 
 <script>
+const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
   export default {
     name: 'userCard',
+    components: {
+      UserPoptip
+    },
     data() {
       return {}
     },

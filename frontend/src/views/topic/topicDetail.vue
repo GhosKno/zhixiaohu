@@ -11,6 +11,9 @@
         </div>
       </Row>
       <Row class="topic-body">
+        <div class="no-data-content">
+          当前话题下还没有内容
+        </div>
         <question-card
           v-for="(item, index) in questions"
           :key="index"
@@ -99,6 +102,13 @@ export default {
     margin-top: 20px;
 
   }
+}
+.no-data-content {
+  height: 200px;
+  font-size: 15px;
+  color: #8590a6;
+  text-align: center;
+  padding-top: 100px;
 }
 </style>
 

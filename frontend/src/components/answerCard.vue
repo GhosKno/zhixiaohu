@@ -4,10 +4,14 @@
         {{feedTitle}}
     </div>
     <div class="info">
-        <Poptip trigger="hover" placement="right" width="400">
+        <Poptip trigger="hover" 
+            placement="right" 
+            width="400"
+            @on-popper-hide="() => $refs['userPoptip'].blur()"
+            @on-popper-show="() => $refs['userPoptip'].load()">
             <Avatar class="avatar" shape="square" size="large"  :src="answer.userSummary.avatar?answer.userSummary.avatar:'/static/avatar.jpg'"  />
             <div class="api" slot="content">
-                
+                <user-poptip ref="userPoptip" :id="answer.userSummary.id"></user-poptip>
             </div>
         </Poptip>
         <div class="author-text">
@@ -29,9 +33,10 @@
 </template>
 <script>
 const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
+const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
 export default {
   name: "answerCard",
-  components: { TextWithToolBar },
+  components: { TextWithToolBar, UserPoptip},
   props:{
       feedTitle:{},
       answer:{},
