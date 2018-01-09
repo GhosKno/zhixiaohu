@@ -70,9 +70,11 @@ class QuestionViewSet(GenericViewSet,
                 if user.is_authenticated:
                     answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()
                     answer.has_against = user.profile.disagreed.filter(id=answer.id).exists()
+                    answer.has_favorite = user.profile.favorites.filter(id=answer.id).exists()
                 else:
                     answer.has_approve = False
                     answer.has_against = False
+                    answer.has_favorite = False
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)

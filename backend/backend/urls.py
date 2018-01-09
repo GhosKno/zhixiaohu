@@ -33,11 +33,10 @@ def on_startup(r):
     string = r.get('hot')
     if string is not None:
         # print("hot string" + string.decode("utf-8"))
-        HeatQueue.from_str(string.decode("utf-8") )
+        HeatQueue.from_str(string.decode("utf-8"))
 
 
 def time_task():
-    # print('start timer task...........')
     string = HeatQueue.to_str()
     t = r.set('hot', string)
     # print(t)

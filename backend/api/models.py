@@ -47,7 +47,7 @@ class Topic(models.Model):
 
     class Meta:
         db_table = 'topic'
-        ordering = ('-heat', )
+        ordering = ('-heat',)
 
 
 class Question(models.Model):
@@ -59,7 +59,7 @@ class Question(models.Model):
     detail = models.TextField(u"描述")
     # watches in accounts
     topics = models.ManyToManyField(to=Topic, related_name='questions')
-    visit_count =models.IntegerField(default=0)
+    visit_count = models.IntegerField(default=0)
     watch_count = models.IntegerField(default=0)
 
     def __str__(self):
@@ -67,7 +67,7 @@ class Question(models.Model):
 
     class Meta:
         db_table = 'question'
-        ordering = ('-visit_count', )
+        ordering = ('visit_count',)
 
 
 class Answer(models.Model):
@@ -89,7 +89,7 @@ class Answer(models.Model):
 
     class Meta:
         db_table = 'answer'
-        ordering = ('-add_time', )
+        ordering = ('add_time',)
 
 
 class Comment(models.Model):
@@ -107,7 +107,7 @@ class Comment(models.Model):
 
     class Meta:
         db_table = 'comment'
-        ordering = ('-add_time',)
+        ordering = ('add_time',)
 
 
 class Profile(models.Model):
@@ -135,7 +135,7 @@ class Profile(models.Model):
 
     class Meta:
         db_table = 'profile'
-        ordering = ('-beWatchCount',)
+        ordering = ('beWatchCount',)
 
 
 class Message(models.Model):
@@ -149,7 +149,7 @@ class Message(models.Model):
 
     class Meta:
         db_table = 'message'
-        ordering = ('-time',)
+        ordering = ('time',)
 
 
 class Activity(models.Model):
@@ -168,8 +168,8 @@ class Activity(models.Model):
                                  null=True)
     # watch user
     watch = models.ForeignKey(to=Profile,
-                             on_delete=models.CASCADE,
-                             null=True)
+                              on_delete=models.CASCADE,
+                              null=True)
     time = models.DateField(auto_now_add=True)
 
     @classmethod
@@ -189,6 +189,7 @@ class Activity(models.Model):
         cls.objects.create(type='USER_WATCH',
                            watch=watch,
                            user=user).save()
+
     class Meta:
         db_table = 'activity'
-        ordering = ('-time',)
+        ordering = ('time',)

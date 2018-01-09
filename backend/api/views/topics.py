@@ -70,9 +70,11 @@ class TopicViewSet(GenericViewSet,
                 if user.is_authenticated:
                     instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
                     instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
+                    instance.has_favorite = user.profile.favorites.filter(id=instance.id).exists()
                 else:
                     instance.has_approve = False
                     instance.has_against = False
+                    instance.has_favorite = False
                 instance.userSummary = instance.author.profile
                 instance.comment_count = instance.comments.count()
             serializer = self.get_serializer(page, many=True)

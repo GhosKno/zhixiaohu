@@ -1,10 +1,12 @@
 from threading import Thread
 
+from rest_framework import status
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.response import Response
 
-from api.models import Answer, Message, Activity
+from api.models import Answer, Message, Activity, Question
 from api.serializers import AnswerSerializer, CommentSerializer, AnswerCreateSerializer
 from utils.heat import HeatQueue
 from utils.views import error, success, GenericViewSet
@@ -48,6 +50,20 @@ class AnswerViewSet(GenericViewSet,
             return success(temp.data)
         return error('no more data')
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        question_id = serializer.validated_data['question']
+        question = Question.objects.get(id=question_id)
+        if question.answers.filter(author=request.user).exists():
+            return error('you already answered this question')
+        answer = self.perform_create(serializer)
+        answer.userSummary = request.user.profile
+        answer.has_favorite = False
+        seri = AnswerSerializer(answer, context={'request': request})
+        headers = self.get_success_headers(seri.data)
+        return Response({'success': True, 'data': seri.data}, status=status.HTTP_201_CREATED, headers=headers)
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance:
@@ -57,9 +73,11 @@ class AnswerViewSet(GenericViewSet,
             if user.is_authenticated:
                 instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
                 instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
+                instance.has_favorite = user.profile.favorites.filter(id=instance.id).exists()
             else:
                 instance.has_approve = False
                 instance.has_against = False
+                instance.has_favorite = False
             serializer = self.get_serializer(instance)
             return success(serializer.data)
         return error('cant found')
@@ -90,6 +108,7 @@ class AnswerViewSet(GenericViewSet,
         answer = serializer.save(author=user)
         thread = Thread(target=msg_thread, args=(question, user, answer))
         thread.start()
+        return answer
 
     @detail_route(methods=['GET'],
                   permission_classes=[IsAuthenticated])
