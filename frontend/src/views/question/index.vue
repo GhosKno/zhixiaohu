@@ -16,14 +16,14 @@
                 </h1>
             </div>
             <div class="countBoard">
-                <a type="text" class="countItem">
+                <div class="countItem">
                     <div class="countName">
                         关注者
                     </div>
                     <div class="countNum">
                         {{question.watch_count}}
                     </div>
-                </a>
+                </div>
                 <div class="countItem">
                     <div class="countName">
                         浏览量
@@ -39,9 +39,12 @@
             :text="question.detail" 
             :forQuestion="true"
             @writeAnswer="showEditor=!showEditor"
+            @watch="question.watch_count++"
+            @cancelWatch="question.watch_count--"
             :postTime="question.add_time"
             :pk="$route.params.id"
             :isWatch="question.is_watch"
+            :isOwner="$store.state.userid == question.author"
            ></TextWithToolBar>
           </div>
       </div>
@@ -107,7 +110,7 @@ export default {
       errText: "",
       errCode: 0,
       loading: true,
-      showEditor: false
+      showEditor: false,
     };
   },
   methods: {
@@ -124,6 +127,7 @@ export default {
           .then(res => {
             if(res.body.success==true) {
               this.question=res.body.data
+              document.title=this.question.title+' - 知小乎'
               this.fetchAnswer()
             } else {
               this.noFound=true

@@ -10,16 +10,16 @@
         @on-popper-hide="() => $refs['userPoptip'].blur()"
         @on-popper-show="() => $refs['userPoptip'].load()"
         width="400">
-        <Avatar class="avatar" shape="square" size="small"  :src="answer.userSummary.avatar"  />
+        <Avatar class="avatar" shape="square" size="small"  :src="author.avatar||'static/avatar.jpg'"  />
         <div class="api" slot="content"> 
-            <user-poptip ref="userPoptip" :id="answer.userSummary.id"></user-poptip>
+            <user-poptip ref="userPoptip" :id="author.id"></user-poptip>
         </div>
     </Poptip>
     <div class="name">
-        {{answer.userSummary.nickname}}
+        {{author.nickname}}
     </div>
     <div class="badge-text">
-        {{answer.userSummary.description}}
+        {{author.description}}
     </div>
 </div>
     <div class="question">
@@ -33,7 +33,8 @@
         :pk="answer.id"
         :coverImg="answer.coverImg"
         :hasApprove="answer.has_approve"
-        :hasAgainst="answer.has_against"></TextWithToolBar>
+        :hasAgainst="answer.has_against"
+        :isOwner="$store.state.userid == author.id"></TextWithToolBar>
 </div>
 </template>
 <script>
@@ -51,11 +52,13 @@ export default {
   },
   data() {
       return {
+          author:{}
       }
   },
   methods: {
   },
   mounted(){
+      this.author=this.answer.userSummary
   }
 };
 </script>

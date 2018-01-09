@@ -53,6 +53,7 @@ export default {
         this.$http.post(`/api/answers/`, this.answerForm)
           .then(res => {
             if(res.body.success==true) {
+                console.log(res.body);
               this.$Message.success("回答成功");
             } else {
               this.$Message.error(res.body.msg);

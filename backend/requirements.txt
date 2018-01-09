@@ -6,6 +6,7 @@ coreapi-cli==1.0.6
 coreschema==0.0.4
 Django==2.0
 django-filter==1.1.0
+django-mysql==2.2.0
 djangorestframework==3.7.6
 httpie==0.9.9
 idna==2.6
@@ -26,3 +27,4 @@ rsa==3.4.2
 shellescape==3.4.1
 uritemplate==3.0.0
 urllib3==1.22
+virtualenv==15.1.0

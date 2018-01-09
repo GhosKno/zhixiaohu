@@ -13,6 +13,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "clipboard": "^1.7.1",
     "element-ui": "^2.0.10",
     "iview": "^2.8.0-rc.3",
     "pug": "^2.0.0-rc.4",

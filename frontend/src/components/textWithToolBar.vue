@@ -12,11 +12,14 @@
         :commentCount="commentCount"
         @toggleFold="fold=!fold;"
         @writeAnswer="$emit('writeAnswer')"
+        @cancelWatch="$emit('cancelWatch')"
+        @watch="$emit('watch')"
         :approve="approve"
         :hasApprove="hasApprove"
         :hasAgainst="hasAgainst"
         :pk="pk"
-        :isWatch="isWatch"></ToolBar>
+        :isWatch="isWatch"
+        :isOwner="isOwner"></ToolBar>
 </div>
 </template>
 <script>
@@ -38,7 +41,8 @@ export default {
       pk:{},
       isWatch:{},
       hasApprove:{},
-      hasAgainst:{}
+      hasAgainst:{},
+      isOwner:{}
   },
   data() {
       return {

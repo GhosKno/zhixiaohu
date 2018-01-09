@@ -443,7 +443,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
             } else {
               this.getProfile()
             }
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getWatchUser() {
         //获取关注/被关注的用户
@@ -452,13 +454,17 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
             this.watchedUserCount = res.body.data.count
             this.watchedUser = res.body.data.results
             this.nextUrl = res.body.data.next
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
         this.$http.get(`/api/profiles/${this.$route.params.id}/be_watched/`)
           .then(res => {
             this.watchbyUserCount = res.body.data.count
             this.watchedBy = res.body.data.results
             this.nextUrl = res.body.data.next
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getActivities() {
         //获取动态
@@ -468,7 +474,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
               this.activities = res.body.data.results
               this.nextUrl = res.body.data.next
             }
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getAnswers() {
         //获取用户回答
@@ -476,7 +484,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           .then(res => {
             this.answerList = res.body.data.results
             this.nextUrl = res.body.data.next
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getQuestions() {
         //获取用户的提问
@@ -484,7 +494,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           .then(res => {
             this.askQuestion = res.body.data.results
             this.nextUrl = res.body.data.next
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getWatchQuestions() {
         //获取用户关注的问题
@@ -492,7 +504,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           .then(res => {
             this.watchedQuestion = res.body.data.results
             this.nextUrl = res.body.data.next
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getCollectAnswer() {
         //获取用户收藏的回答
@@ -500,7 +514,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           .then(res => {
             this.favorites = res.body.data.results
             this.nextUrl = res.body.data.next
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getHistory() {
         //获取用户收藏的回答
@@ -508,7 +524,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           .then(res => {
             this.history = res.body.data.results
             this.nextUrl = res.body.data.next
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       },
       getProfile() {
         //获取用户信息
@@ -523,7 +541,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
               this.watchedUserCount = data.watchCount
               this.avatarUrl = data.avatar || '/static/avatar.jpg'
             }
-          })
+          }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+          });
       }
     },
     created () {

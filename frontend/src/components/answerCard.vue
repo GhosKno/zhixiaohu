@@ -9,17 +9,17 @@
             width="400"
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">
-            <Avatar class="avatar" shape="square" size="large"  :src="answer.userSummary.avatar?answer.userSummary.avatar:'/static/avatar.jpg'"  />
+            <Avatar class="avatar" shape="square" size="large"  :src="author.avatar||'/static/avatar.jpg'"  />
             <div class="api" slot="content">
-                <user-poptip ref="userPoptip" :id="answer.userSummary.id"></user-poptip>
+                <user-poptip ref="userPoptip" :id="author.id"></user-poptip>
             </div>
         </Poptip>
         <div class="author-text">
         <div class="name">
-            {{answer.userSummary.nickname}}
+            {{author.nickname}}
         </div>
         <div class="badge-text">
-            {{answer.userSummary.description?answer.userSummary.description:"这个人很懒,没有设置简介"}}
+            {{author.description||"这个人很懒,没有设置简介"}}
         </div>
         </div>
     </div>
@@ -29,6 +29,7 @@
         :postTime="answer.add_time"
         :approve="answer.approve"
         :pk="answer.id"
+        :isOwner="$store.state.userid == author.id"
         ></TextWithToolBar></div>
 </template>
 <script>
@@ -43,13 +44,13 @@ export default {
   },
   data() {
       return {
-          
+          author:{}
       }
   },
   methods: {
   },
   mounted(){
-      
+      this.author=answer.userSummary
   }
 };
 </script>

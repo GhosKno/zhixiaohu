@@ -16,7 +16,7 @@
                 <Poptip trigger="hover" placement="right" width="400">
                     <Avatar class="avatar" shape="square" size="small"  :src="cm.userSummary.avatar"/>
                     <div class="api" slot="content">
-                        
+                        <user-poptip ref="userPoptip" :id="author.id"></user-poptip>
                     </div>
                 </Poptip>
                 <span class="name">{{cm.userSummary.nickname}}</span>
@@ -51,6 +51,7 @@
 </div>
 </template>
 <script>
+const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
 import timeago from "@/utils/time";
 export default {
   name: "commentList",
@@ -83,11 +84,10 @@ export default {
     postComment() {
       this.$http.post(`/api/comments/`, this.commentForm)
       .then(res => {
-        
         if (res.body.success == true) {
           console.log(res.body);
           this.$Message.success("评论成功");
-          comments.push(res.body.data)
+          this.comments.push(res.body.data)
         } else {
           this.$Message.error(res.body.msg);
         }
