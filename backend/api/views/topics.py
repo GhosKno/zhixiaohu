@@ -56,6 +56,8 @@ class TopicViewSet(GenericViewSet,
     @detail_route(methods=['GET'])
     def get_answers(self, request, pk=None):
         topic = self.get_object()
+        if topic is None:
+            return error("no such a topic")
         questions = topic.questions.all()
         answers = []
         for question in questions:

@@ -4,7 +4,7 @@
     <Col span="5" class="avatar">
       <div class="avatar-content">
         <Poptip trigger="hover" 
-            placement="right" 
+            placement="right-start" 
             width="400"
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">
@@ -24,7 +24,7 @@
         <span>{{watched}}关注者</span>
       </div>
     </Col>
-    <Col span="5" class="button-handle">
+    <Col span="5" class="button-handle" v-if="userid !== $store.state.userid">
       <Button 
         size="large" 
         class="watch-button"

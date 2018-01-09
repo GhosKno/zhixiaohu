@@ -53,7 +53,7 @@ export default {
         return
       }
       let url = (this.nextUrl.length == 0) ? `/api/topics/${this.$route.params.id}/get_questions/` : this.nextUrl
-      this.$http.get(url).then(res => {
+      this.$http.get(this.transUrl(url)).then(res => {
         this.questions.push(...(res.body.data.results))
         this.nextUrl = res.body.data.next
         this.questionCount = res.body.data.count

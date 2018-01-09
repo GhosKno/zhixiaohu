@@ -74,7 +74,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ProfileSummarySerializer(serializers.ModelSerializer):
+class ProfileSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Profile
         fields = ('id', 'avatar', 'nickname', 'description')

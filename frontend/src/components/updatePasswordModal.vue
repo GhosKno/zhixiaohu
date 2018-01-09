@@ -1,6 +1,6 @@
 <template>
   <z-modal
-    action="/"
+    action="/api/users/reset_password/"
     :onSuccess="settingHandle()"
     :params="passwordForm"
     successMsg="成功修改密码"
@@ -11,11 +11,11 @@
   >
   <div slot="body">
     <Form ref="pwdForm" :rules="updateRule" :model="passwordForm">
-      <FormItem prop="oldPassword" label="旧密码">
-        <Input type="password" v-model="passwordForm.oldPassword" placeholder="请输入新密码"/>
+      <FormItem prop="old" label="旧密码">
+        <Input type="password" v-model="passwordForm.old" placeholder="请输入新密码"/>
       </FormItem>
-      <FormItem prop="password" label="新密码">
-        <Input type="password" v-model="passwordForm.password" placeholder="请输入新密码"/>
+      <FormItem prop="new" label="新密码">
+        <Input type="password" v-model="passwordForm.new" placeholder="请输入新密码"/>
       </FormItem>
       <FormItem prop="checkPassword" label="确认密码">
         <Input type="password" v-model="passwordForm.checkPassword" placeholder="请再次输入密码"/>
@@ -33,7 +33,7 @@ export default {
     const validatePassCheck = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次完整输入新密码'))
-      } else if (value !== this.passwordForm.password) {
+      } else if (value !== this.passwordForm.new) {
         callback(new Error('两次密码不一致！'))
       } else {
         callback()
@@ -41,16 +41,16 @@ export default {
     }
     return {
       passwordForm: {
-        oldPassword:'',
-        password: '',
+        old:'',
+        new: '',
         checkPassword: '',
       },
       updateRule: {
-        oldPassword: [
+        old: [
           { required: true, message: '请完整输入旧的密码', trigger: 'blur' },
           { type: 'string', min: 6, message: '密码长度不能小于六位', trigger: 'blur' }
         ],
-        password: [
+        new: [
           { required: true, message: '请完整输入新密码', trigger: 'blur' },
           { type: 'string', min: 6, message: '密码长度不能小于六位', trigger: 'blur' }
         ],

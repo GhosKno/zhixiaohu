@@ -86,11 +86,13 @@
         this.$http.get('/api/topics/hot')
           .then(res => {
             this.heatedTopoics = res.body.data
-            this.curTopicId = this.heatedTopoics[0].id
+            this.curTopicId = this.heatedTopoics[0]? this.heatedTopoics[0].id : 0
             this.viewTopicDetail(this.curTopicId)
           })
       },
       viewTopicDetail(id) {
+        if(id == 0)
+          return
         this.curTopicId = id
         this.$http.get(`/api/topics/${id}/get_answers/`)
           .then(res => {

@@ -94,7 +94,7 @@
                             赞同了回答
                           </div>
                           <AnswerListCard
-                            :answer="item"
+                            :answer="item.answer"
                           >
                           </AnswerListCard>
                         </template>
@@ -142,9 +142,8 @@
                       :value="morePaneActiveName"
                       @tab-click="tabClick"
                       class="morePane">
-                      <el-tab-pane 
+                      <el-tab-pane class="more-tab-pane" 
                         :label="`${$route.params.id == $store.state.userid ? '我' : 'Ta'}关注的人`" name="watch"
-                        style="margin: 60px 0;overflow: visible;min-height: 150px;"
                       >
                         <div
                           class="no-data-content" 
@@ -157,7 +156,7 @@
                           :key="index"
                           :userid="user.id || '1'"
                           :userName="user.nickname"
-                          :isWatched="true"
+                          :isWatched="user.is_watch"
                           :avatar="user.avatar"
                           :description="user.description"
                           :answer="user.answerCount"
@@ -165,8 +164,7 @@
                           :watchHandle="getWatchUser"
                         ></user-card>
                       </el-tab-pane>
-                      <el-tab-pane 
-                        style="margin: 60px 0;overflow: visible;min-height: 150px;"
+                      <el-tab-pane class="more-tab-pane" 
                         :label="`关注${$route.params.id == $store.state.userid ? '我' : 'Ta'}的人`" name="watched">
                         <div 
                           class="no-data-content" 
@@ -179,7 +177,7 @@
                           :key="index"
                           :userid="user.id || '1'"
                           :userName="user.nickname"
-                          :isWatched="true"
+                          :isWatched="user.is_watch"
                           :avatar="user.avatar"
                           :description="user.description"
                           :answer="user.answerCount"
@@ -187,7 +185,8 @@
                           :watchHandle="getWatchUser"
                         ></user-card>
                       </el-tab-pane>
-                      <el-tab-pane label="关注的问题" name="watchQuestion">
+                      <el-tab-pane class="more-tab-pane" 
+                        label="关注的问题" name="watchQuestion">
                         <div 
                           class="no-data-content"  
                           v-if="watchedQuestion.length == 0"
@@ -204,7 +203,8 @@
                           :watchers="item.watch_count"
                         ></question-card>
                       </el-tab-pane>
-                      <el-tab-pane label="收藏的回答" name="collectedAnswer">
+                      <el-tab-pane class="more-tab-pane" 
+                        label="收藏的回答" name="collectedAnswer">
                         <div 
                           class="no-data-content"  
                           v-if="favorites.length == 0"
@@ -212,13 +212,13 @@
                           还没有收藏的回答
                         </div>
                         <AnswerListCard
-                          v-for="(item, index) in answerList"
+                          v-for="(item, index) in favorites"
                           :key="index"
                           :answer="item"
                         >
                         </AnswerListCard>
                       </el-tab-pane>
-                      <el-tab-pane label="围观历史" name="history">
+                      <el-tab-pane class="more-tab-pane" label="围观历史" name="history">
                         <div 
                           class="no-data-content" 
                           v-if="history.length == 0"
@@ -468,7 +468,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
       },
       getActivities() {
         //获取动态
-        this.$http.get(`/api/profiles/${this.$route.params.id}/activities`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/activities/`)
           .then(res => {
             if(res.body.success) {
               this.activities = res.body.data.results
@@ -480,7 +480,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
       },
       getAnswers() {
         //获取用户回答
-        this.$http.get(`/api/profiles/${this.$route.params.id}/answers`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/answers/`)
           .then(res => {
             this.answerList = res.body.data.results
             this.nextUrl = res.body.data.next
@@ -490,7 +490,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
       },
       getQuestions() {
         //获取用户的提问
-        this.$http.get(`/api/profiles/${this.$route.params.id}/questions`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/questions/`)
           .then(res => {
             this.askQuestion = res.body.data.results
             this.nextUrl = res.body.data.next
@@ -500,7 +500,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
       },
       getWatchQuestions() {
         //获取用户关注的问题
-        this.$http.get(`/api/profiles/${this.$route.params.id}/watched_questions`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/watched_questions/`)
           .then(res => {
             this.watchedQuestion = res.body.data.results
             this.nextUrl = res.body.data.next
@@ -510,7 +510,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
       },
       getCollectAnswer() {
         //获取用户收藏的回答
-        this.$http.get(`/api/profiles/${this.$route.params.id}/favorites`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/favorites/`)
           .then(res => {
             this.favorites = res.body.data.results
             this.nextUrl = res.body.data.next
@@ -520,7 +520,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
       },
       getHistory() {
         //获取用户收藏的回答
-        this.$http.get(`/api/profiles/${this.$route.params.id}/history`)
+        this.$http.get(`/api/profiles/${this.$route.params.id}/history/`)
           .then(res => {
             this.history = res.body.data.results
             this.nextUrl = res.body.data.next
@@ -627,6 +627,9 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
             // width: 95%;
             min-height: 400px;
             margin: 0 auto;
+            .more-tab-pane {
+              min-height: 350px;
+            }
 
           }
           .no-data-content {

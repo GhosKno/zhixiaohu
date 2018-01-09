@@ -44,6 +44,7 @@ class QuestionViewSet(GenericViewSet,
             question.is_watch = False
         seri = self.get_serializer(question)
         question.visit_count+=1
+        question.save()
         return success(seri.data)
 
     def perform_create(self, serializer):

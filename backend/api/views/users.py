@@ -74,14 +74,14 @@ class UserViewSet(viewsets.GenericViewSet):
     def reset_password(self, request, *args, **kwargs):
         seri = self.get_serializer(data=request.data)
         if not seri.is_valid():
-            return Response({'status', False})
+            return error()
         user = request.user
         data = seri.validated_data
         if user.check_password(data['old']):
             user.set_password(data['new'])
             user.save()
-            return Response({'status', True})
-        return Response({'status', False})
+            return success()
+        return error()
 
     @list_route(methods=['GET'],
                 permission_classes=(IsAuthenticated,))

@@ -5,7 +5,7 @@ from utils import mixins
 
 
 def success(data=None, context=None):
-    if data:
+    if data is not None:
         return __resp({'success': True, 'data': data})
     return __resp({'success': True})
 

@@ -153,6 +153,8 @@ export default {
   created() {
     if (this.initInfo()) {
       this.getProfile();
+    } else {
+      this.$router.push({name: 'login'})
     }
   }
 };

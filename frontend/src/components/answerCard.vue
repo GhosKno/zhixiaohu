@@ -5,7 +5,7 @@
     </div>
     <div class="info">
         <Poptip trigger="hover" 
-            placement="right" 
+            placement="right-start" 
             width="400"
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">

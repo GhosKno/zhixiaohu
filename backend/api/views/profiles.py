@@ -88,7 +88,8 @@ class ProfileViewSet(GenericViewSet,
                     answer.has_approve = False
                     answer.has_against = False
                     answer.has_favorite = False
-            serializer = AnswerSerializer(page, many=True)
+                answer.comment_count = answer.comments.count()
+            serializer = AnswerSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
@@ -130,7 +131,7 @@ class ProfileViewSet(GenericViewSet,
                     answer.has_approve = False
                     answer.has_against = False
                     answer.has_favorite = False
-            serializer = AnswerSerializer(page, many=True)
+            serializer = AnswerSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
@@ -179,6 +180,7 @@ class ProfileViewSet(GenericViewSet,
                     profile = activity.answer.author.profile
                     activity.answer.userSummary = profile
                     instance = activity.answer
+                    instance.comment_count = instance.comments.count()
                     user = request.user
                     if user.is_authenticated:
                         instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()

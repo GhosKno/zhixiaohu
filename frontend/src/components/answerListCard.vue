@@ -6,7 +6,7 @@
 <div class="info">
     <Poptip 
         trigger="hover" 
-        placement="right"
+        placement="right-start"
         @on-popper-hide="() => $refs['userPoptip'].blur()"
         @on-popper-show="() => $refs['userPoptip'].load()"
         width="400">

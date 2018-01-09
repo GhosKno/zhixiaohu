@@ -42,9 +42,11 @@ class AnswerViewSet(GenericViewSet,
                 if user.is_authenticated:
                     instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
                     instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
+                    instance.has_favorite = user.profile.favorites.filter(id=instance.id).exists()
                 else:
                     instance.has_approve = False
                     instance.has_against = False
+                    instance.has_favorite = False
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -53,16 +55,18 @@ class AnswerViewSet(GenericViewSet,
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        question_id = serializer.validated_data['question']
-        question = Question.objects.get(id=question_id)
+        question = serializer.validated_data['question']
+        #question = Question.objects.get(id=id)
         if question.answers.filter(author=request.user).exists():
             return error('you already answered this question')
         answer = self.perform_create(serializer)
         answer.userSummary = request.user.profile
         answer.has_favorite = False
+        answer.has_approve = False
+        answer.has_against = False
         seri = AnswerSerializer(answer, context={'request': request})
-        headers = self.get_success_headers(seri.data)
-        return Response({'success': True, 'data': seri.data}, status=status.HTTP_201_CREATED, headers=headers)
+#        headers = self.get_success_headers(seri.data)
+        return Response({'success': True, 'data': seri.data}, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
