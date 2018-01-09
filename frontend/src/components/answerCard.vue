@@ -40,7 +40,12 @@ export default {
   components: { TextWithToolBar, UserPoptip},
   props:{
       feedTitle:{},
-      answer:{},
+      answer:{
+          userSummary:{
+              id:'',
+              nickname:''
+          }
+      },
   },
   data() {
       return {
@@ -50,7 +55,7 @@ export default {
   methods: {
   },
   mounted(){
-      this.author=answer.userSummary
+      this.author=this.answer.userSummary
   }
 };
 </script>

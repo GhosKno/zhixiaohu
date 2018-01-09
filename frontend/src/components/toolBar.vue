@@ -49,7 +49,7 @@
           收藏
         </Button>
         <Button type="text" class="actionBtn">
-          <Dropdown trigger="click">
+          <Dropdown trigger="click" :transfer="true">
               <svg class="actionIcon" viewBox="0 0 24 24"><path d="M5 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fill-rule="evenodd"></path></svg>
               <DropdownMenu slot="list" v-if="isOwner">
                   <DropdownItem >删除</DropdownItem>
@@ -381,15 +381,6 @@ export default {
   height: 16px;
   width: 16px;
   vertical-align: text-bottom;
-}
-.ivu-dropdown-item {
-  line-height: 30px;
-  font-size: 14px!important;
-  color: #262626;
-}
-.ivu-dropdown-item:hover {
- color: #7a8599;
- background: #f4f8fb;
 }
 </style>
 

@@ -16,12 +16,32 @@
               话题
           </a>
         </Nav>
-
-        <div class="search">
-          <input class="searchInput" maxlength="50" type="text" placeholder="搜索你感兴趣的内容..." required @focus="showAskBtn = false" @blur="showAskBtn = true">
+        <Dropdown trigger="custom" :visible="!showAskBtn" :transfer="true" placement="bottom-start" @on-click="handleSearchResult">
+        
+        <div class="search" :class="{'is-active':showAskBtn}">
+          <div class="inputWrapper">
+          <input 
+          class="searchInput" 
+          maxlength="50" 
+          type="text" 
+          placeholder="搜索你想问的问题..." required 
+          v-model="searchData"
+          @focus="showAskBtn = false" 
+          @blur="showAskBtn = true"
+          @keyup="handleSearch()">
           <Button type="text" class="searchBtn"><Icon type="ios-search-strong" class="searchIcon" size=20 ></Icon></Button>  
+          </div>
+          <Button type="primary" class="askBtn" :class="{'is-active':showAskBtn}" @click="$refs['questionModal'].open()">提问</Button>
         </div>
-        <Button type="primary" class="askBtn" :class="{'is-active':showAskBtn}" @click="$refs['questionModal'].open()">提问</Button>
+              <DropdownMenu slot="list" style="width: 380px;">
+                  <DropdownItem 
+                  v-for="item in searchRes"
+                  :key="item.id"
+                  :name="item.id"
+                  >{{item.title}}
+                  </DropdownItem>
+              </DropdownMenu>
+          </Dropdown>
         <div class="rightBtns" v-if="!$store.state.isLogin">
           <Button type="ghost" class="loginBtn" @click="$router.push({name: 'login'})">登录</Button>
           <Button type="primary" class="joinBtn" @click="$router.push({name: 'login', params: {register: true}})">加入知小乎</Button>
@@ -65,7 +85,9 @@ export default {
     return {
       theme1: "light",
       showAskBtn: true,
-      unreadMsgsCount: 0
+      unreadMsgsCount: 0,
+      searchData:'',
+      searchRes: []
     };
   },
   methods: {
@@ -79,7 +101,6 @@ export default {
               this.$Message.error(res.data.msg)
             }
           }, function(response){
-            // 响应错误回调 
              this.$Message.error(response.status+" "+response.statusText)
              this.cookieLogout();
           });
@@ -89,9 +110,23 @@ export default {
         .then(res => {
           this.unreadMsgsCount = res.body.data.count
         }, function(response){
-            // 响应错误回调 
              this.$Message.error(response.status+" "+response.statusText)
         });
+    },
+    handleSearch() {
+      this.$http.get('/api/questions?search='+this.searchData)
+        .then(res => {
+          if(res.body.success){
+            this.searchRes=res.body.data.results
+          }else{
+            this.$Message.error(res.body.msg)
+          }
+        }, function(response){
+             this.$Message.error(response.status+" "+response.statusText)
+        });
+    },
+    handleSearchResult(id) {
+      window.location="/question/"+id;
     }
   },
   components: {
@@ -128,6 +163,7 @@ nav {
   -ms-flex-pack: justify;
   justify-content: space-between;
   height: 30px;
+  margin-right: 20px;
   color: #999;
 }
 .header-inner {
@@ -160,7 +196,11 @@ nav {
 }
 .search {
   position: relative;
-  margin: 15px;
+    -webkit-transition: padding-right .3s ease;
+    transition: padding-right .3s ease;
+}
+.search.is-active{
+  padding-right: 94px;
 }
 .searchInput {
   display: -webkit-box;
@@ -183,9 +223,12 @@ nav {
   transition: background 0.3s, width 0.2s;
 }
 .search .searchInput:focus {
-  width: 400px;
+  width: 380px;
   background: #fff;
   border: 1px solid #9fadc7;
+}
+.inputWrapper{
+  position: relative;
 }
 .searchBtn {
   position: absolute;
@@ -197,11 +240,14 @@ nav {
   transform: scale(1);
 }
 .askBtn {
+  position: absolute;
+  right: 15px;
+  bottom: 0;
   opacity: 0;
   transform: scale(0);
   -webkit-transform: scale(0);
-  transition: opacity 0.2s, transform 0.2s,
-    -webkit-transform 0.2s;
+  transition: opacity .2s, transform .2s,
+    -webkit-transform .2s;
 }
 .searchIcon {
   color: #8590a6;
