@@ -15,8 +15,9 @@
                 </div>
                 <div class="watched-list">
                   <Button 
-                    :class="{'topic-button': true, 'topic-button-active': el.label === curTopic}"
-                    type="ghost" 
+                    :class="{'topic-button': true, 'topic-button-active': el.id === curTopicId}"
+                    type="ghost"
+                    @click="viewTopicDetail(el.id)"
                     size="small"
                     shape="circle"
                     v-for="(el,index) in heatedTopoics" 
@@ -25,9 +26,6 @@
                 </div>
               </div>
               <div class="answer-list">
-                <AnswerListCard avatar="h" name="ccc" qlink="" feed-title="热门内容,来自: 历史" question="历史上外交时有哪些尴尬场面？" answer="南海仲裁案之后，2016年7月16日，在美国国务院记者会上，凤凰卫视记者王冰汝向美国国务院发言人马克·托纳提问：“新加坡国立大学国际法中心在网站上刊登了地图和地名词典，其中一份地图，它的来源是美国政府，而且这张地图上写的是太平岛，而不是太平礁，这跟南海仲裁案“仲裁”结果不..."></AnswerListCard>
-								<AnswerListCard qlink="" question="Mac 上的每个菜单命令，都能自定义快捷键吗?" cover-img="https://ss0.baidu.com/73F1bjeh1BF3odCf/it/u=3420588888,2752900295&fm=85&s=03809E4D4422EB430E34E03103008043" answer = "通常情况下，一个应用在 Mac 菜单栏显示的菜单命令，可以囊括了这个应用的大部分功能。同时也会为常用的菜单设置快捷键，比如最常见的「新建」功能，默认都是 Command + N。 为什么要自定义快捷键,许多开发者有自己的习惯,或..."></AnswerListCard>
-								<AnswerListCard feed-title="你可能感兴趣: 生活"></AnswerListCard>
                 <AnswerListCard
 									v-for="(item, index) in answerList"
 									:key="index"
@@ -58,7 +56,7 @@
         windowHeight: '',
         filename: '',
         heatedTopoics: [],
-        curTopic: '', // 当前查看话题列表
+        curTopicId: '', // 当前查看话题列表
         answerList: [
 					{
 						avatar:"h",
@@ -74,21 +72,31 @@
     methods: {
       handleReachBottom () {
         return new Promise(resolve => {
-          setTimeout(() => {
-            // this.number = this.number + 5
-            this.answerList.push(...this.answerList)
-            resolve();
-          }, 2000);
-        });
-      },
-      upload(file) {
-        console.log(file)
-        this.filename = file.name
+          if(!this.nextUrl){
+            this.$Message.info('没有更多的内容了')
+            return resolve()
+          }
+          this.$http.get(this.nextUrl)
+            .then(res => {
+              setTimeout(() => {
+                this.answerList.push(...res.body.data.results)
+                resolve();
+              }, 1000);
+            })
+        })
       },
       getHotTopics() {
         this.$http.get('/api/topics/hot')
           .then(res => {
             this.heatedTopoics = res.body.data
+          })
+      },
+      viewTopicDetail(id) {
+        this.curTopicId = id
+        this.$http.get(`/api/topics/${id}/get_questions/`)
+          .then(res => {
+            this.answerList = res.body.data.results
+            this.nextUrl = res.body.data.next
           })
       }
     },

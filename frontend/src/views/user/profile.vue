@@ -308,6 +308,19 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
       questionCard,
       TopBar
     },
+    watch: {
+      '$route' (to, from) {
+        if(from.name === 'profile' && from.path !== to.path)
+          if(this.initInfo()){
+            this.getProfile()
+          }
+          this.getActivities()
+          this.getWatchUser()
+          this.getWatchQuestions()
+          this.getCollectAnswer()
+          this.getHistory()
+      }
+    },
     data() {
       return {
         windowHeight: '',

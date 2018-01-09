@@ -31,11 +31,11 @@
                     span="12"
                     class="topic-content-body"
                   >
-                  <div class="topic-header" @click="$router.push({path: `topic/${1}`})">
+                  <div class="topic-header" @click="$router.push({path: `topic/${topic.id}`})">
                     {{topic.label}}
                   </div>
                   <div class="topic-introduction">
-                    {{topic.introduction}}
+                    {{topic.introduction.slice(0,50)}}...
                   </div>
                   </Col>
                 </Row>

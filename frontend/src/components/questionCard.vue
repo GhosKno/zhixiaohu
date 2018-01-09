@@ -7,7 +7,7 @@
       <span>{{(new Date(time)).toISOString().split('T')[0]}}</span>
       <span>{{answers}}个回答</span>
       <span>{{watchers}}个关注</span>
-      <Button type="ghost">去写回答</Button>
+      <Button type="ghost" @click="toQuestionDetail()">去写回答</Button>
     </div>
   </div>
 </template>
@@ -39,11 +39,15 @@ export default {
       type: String,
       //todo
       default: '/home'
+    },
+    id: {
+      type: Number,
+      default: 0
     }
   },
   methods: {
     toQuestionDetail() {
-      //todo router to question detail page
+      this.$router.push({path: `/question/${this.id}`})
     }
   }
 }
@@ -67,15 +71,15 @@ export default {
   .info {
     // margin-top: 5px;
     span {
-      color: #8590a6
+      color: #8590a6;
     }
     span:not(:first-child):before {
       margin: 0 5px;
       content: "\B7";
     }
     button {
-      padding: 0;
-      margin-left: 20px;
+      // position: absolute;
+      margin-left: 50px;
     }
   }
 }

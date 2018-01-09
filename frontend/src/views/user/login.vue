@@ -48,9 +48,9 @@ export default {
   data () {
     const validatePassCheck = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('Please enter your password again'))
+        callback(new Error('请再次完整输入密码'))
       } else if (value !== this.regForm.password) {
-        callback(new Error('The two input passwords do not match!'))
+        callback(new Error('两次密码不一致！'))
       } else {
         callback()
       }
@@ -69,27 +69,27 @@ export default {
       },
       loginRule: {
         username: [
-          { required: true, message: 'Please fill in the user name', trigger: 'blur' }
+          { required: true, message: '请输入您的用户名', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: 'Please fill in the password.', trigger: 'blur' },
-          { type: 'string', min: 6, message: 'The password length cannot be less than 6 bits', trigger: 'blur' }
+          { required: true, message: '请完整输入密码', trigger: 'blur' },
+          { type: 'string', min: 6, message: '密码长度不能小于六位', trigger: 'blur' }
         ]
       },
       regRule: {
         username: [
-          { required: true, message: 'Please fill in the user name', trigger: 'blur' }
+          { required: true, message: '请输入您的用户名', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: 'Please fill in the password.', trigger: 'blur' },
-          { type: 'string', min: 6, message: 'The password length cannot be less than 6 bits', trigger: 'blur' }
+          { required: true, message: '请完整输入密码', trigger: 'blur' },
+          { type: 'string', min: 6, message: '密码长度不能小于六位', trigger: 'blur' }
         ],
         checkPassword: [
           { validator: validatePassCheck, trigger: 'blur' }
         ],
         email: [
-          { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
-          { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱', trigger: 'blur' }
         ],
       }
     }
@@ -114,7 +114,6 @@ export default {
               this.$Message.error(res.data.msg)
             }
           }, function(response){
-            // 响应错误回调 
              this.$Message.error(response.status+" "+response.statusText)
           });
       }
@@ -138,7 +137,6 @@ export default {
               this.$Message.error(res.data.msg)
             }
           }, function(response){
-            // 响应错误回调 
              this.$Message.error(response.status+" "+response.statusText)
           });
       }
@@ -148,6 +146,7 @@ export default {
     }
   },
   created () {
+    this.$cookie.delete('sessionid')
     if (this.initInfo()) {
       this.$router.push({name: 'home'})
     }

@@ -75,12 +75,13 @@ class QuestionViewSet(GenericViewSet,
         question = self.get_object()
         if question is None:
             return error('question not exists')
-        profile = request.user.profile
-        profile.watchedQuestion.add(question)
-        profile.save()
         if request.user.is_authenticated:
             Activity.watchQuestion(request.user.profile, question)
-        return success()
+            profile = request.user.profile
+            profile.watchedQuestion.add(question)
+            profile.save()
+            return success()
+        return error('please login at first')
 
     @detail_route(methods=['GET'])
     def cancel_watch(self, request, pk=None):
@@ -88,6 +89,6 @@ class QuestionViewSet(GenericViewSet,
         if question is None:
             return error('question not exists')
         profile = request.user.profile
-        profile.watchedQuestion.add(question)
+        profile.watchedQuestion.remove(question)
         profile.save()
         return success()

@@ -1,4 +1,5 @@
 const codeHandle = require('@/utils/code')
+import Vue from 'vue'
 const cookieManage = {
   created() {},
   date() {
@@ -31,6 +32,7 @@ const cookieManage = {
       this.$cookie.delete('userName')
       this.$cookie.delete('csrftoken')
       this.$cookie.delete('sessionid')
+      delete Vue.http.headers.common['X-CSRFTOKEN']
     }
   }
 }

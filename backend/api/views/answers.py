@@ -34,7 +34,7 @@ class AnswerViewSet(GenericViewSet,
         page = self.paginate_queryset(queryset)
         if page is not None:
             for instance in page:
-                instance.userSummary = self.request.user.profile
+                instance.userSummary = instance.author.profile
                 instance.comment_count = instance.comments.count()
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)

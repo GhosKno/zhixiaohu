@@ -18,6 +18,7 @@
           :time="item.add_time"
           :answers="item.answer_count"
           :watchers="item.watch_count"
+          :id="item.id"
         ></question-card>
       </Row>
     </div>
@@ -34,8 +35,8 @@ export default {
       questions: [],
       questionCount:'',
       nextUrl: '',
-      topicTitle: '区域经济学',
-      introduction: '区域经济学(Regional Economics，也称地区经济学)是经济学与地理学交叉而形成的应用经济学。区域经济学是从经济学角度研究区域经济发展与区域关系协调的科学。'
+      topicTitle: '',
+      introduction: ''
     }
   },
   components: {
@@ -57,13 +58,12 @@ export default {
     }
   },
   created () {
-    this.getQuestions()
-    return
     this.$http.get(`/api/topics/${this.$route.params.id}/`)
       .then(res => {
         this.topicTitle = res.body.data.label
         this.introduction = res.body.data.introduction
       })
+    this.getQuestions()
   }
 }
 </script>

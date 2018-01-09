@@ -45,7 +45,8 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('url', 'add_time', 'title', 'watch_count')
+        fields = ('id', 'url', 'add_time', 'title',
+                  'watch_count', 'answer_count')
 
 
 # all url
