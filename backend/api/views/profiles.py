@@ -158,7 +158,14 @@ class ProfileViewSet(GenericViewSet,
 
             for activity in page:
                 if activity.watch:
-                    activity.watch.is_watch = True
+                    user = request.user
+                    if user.is_authenticated:
+                        activity.watch.is_watch = \
+                        user.profile.watchedUser.filter(
+                            id = activity.watch.id
+                        ).exists()
+                    else:
+                        activity.watch.is_watch = False
                 elif activity.question:
                     activity.question.answer_count = \
                         activity.question.answers.count()
@@ -206,7 +213,14 @@ class ProfileViewSet(GenericViewSet,
         users = profile.watchedUser.all()
         profiles = []
         for user in users:
-            user.profile.is_watch = True
+            if request.user.is_authenticated:
+                if __name__ == '__main__':
+                    user.profile.is_watch = request.user.profile\
+                        .watchedUser.filter(
+                        id=user.id
+                    ).exists()
+            else:
+                user.profile.is_watch = False
             profiles.append(user.profile)
         page = self.paginate_queryset(profiles)
         if page is not None:

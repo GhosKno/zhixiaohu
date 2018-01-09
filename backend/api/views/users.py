@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from api.models import User, Message, Activity
 from api.serializers import LoginSerializer, RegisterSerializer, ResetPasswordSerializer, ProfileSerializer, \
-    MessageSerializer
+    MessageSerializer, EmailSerializer
 from utils.views import success, error
 
 
@@ -21,6 +21,8 @@ class UserViewSet(viewsets.GenericViewSet):
             return RegisterSerializer
         if self.action == 'messages':
             return MessageSerializer
+        if self.action == 'reset_email':
+            return EmailSerializer
         return ResetPasswordSerializer
 
     def get_queryset(self):
@@ -122,3 +124,13 @@ class UserViewSet(viewsets.GenericViewSet):
         user.profile.beWatchCount -= 1
         user.profile.save()
         return success()
+
+    # @list_route(methods=['POST'],
+    #             permission_classes=[IsAuthenticated])
+    # def reset_email(self, request):
+    #     data = request.data
+    #     seri = self.get_serializer(request.user, data=data)
+    #     if seri.is_valid():
+    #         seri.save()
+    #         return success()
+    #     return error(seri.errors)

@@ -18,10 +18,38 @@ from django.contrib import admin
 from django.urls import path, include
 
 from backend import settings
+import redis
+import threading
+
+from utils.heat import HeatQueue
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls'))
 ]
+
+
+def on_startup(r):
+    string = r.get('hot')
+    if string is not None:
+        # print("hot string" + string.decode("utf-8"))
+        HeatQueue.from_str(string.decode("utf-8") )
+
+
+def time_task():
+    # print('start timer task...........')
+    string = HeatQueue.to_str()
+    t = r.set('hot', string)
+    # print(t)
+    global timer
+    timer = threading.Timer(10 * 60, time_task)
+    timer.start()
+    # print('finish timer task...........')
+
+
+r = redis.StrictRedis(host='123.206.27.172', port=6379, password='canvasRedisPassvue')
+on_startup(r)
+timer = threading.Timer(5 * 10, time_task)
+timer.start()
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

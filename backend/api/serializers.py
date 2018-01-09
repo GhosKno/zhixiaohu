@@ -46,7 +46,7 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'url', 'add_time', 'title',
+        fields = ('url','id', 'add_time', 'title',
                   'watch_count', 'answer_count')
 
 
@@ -55,6 +55,11 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
 #     class Meta:
 #         model = Profile
 #         fields = ('avatar', 'nickname', 'description', 'id')
+
+class EmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', )
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
@@ -141,7 +146,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    userSummary = ProfileSerializer()
+    userSummary = ProfileSummarySerializer()
 
     class Meta:
         model = Comment
@@ -172,7 +177,7 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
 class ActivitySerializer(serializers.ModelSerializer):
     answer = AnswerSerializer(allow_null=True)
     question = QuestionListSerializer(allow_null=True)
-    watch = ProfileSummarySerializer(allow_null=True)
+    watch = ProfileSerializer(allow_null=True)
 
     class Meta:
         model = Activity
