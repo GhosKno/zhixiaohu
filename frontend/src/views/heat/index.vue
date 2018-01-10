@@ -75,6 +75,7 @@
           }
           this.$http.get(this.transUrl(this.nextUrl))
             .then(res => {
+              this.nextUrl = res.body.data.next
               setTimeout(() => {
                 this.answerList.push(...res.body.data.results)
                 resolve();

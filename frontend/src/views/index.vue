@@ -3,7 +3,7 @@
 	  <TopBar class="top-bar"></TopBar>
 		<Scroll
 			:on-reach-bottom="handleReachBottom"
-			:height="900"
+			:height="windowHeight"
 		>
 				<div class="container">
 					<div class="main">
@@ -66,6 +66,7 @@ export default {
         }
         this.$http.get(this.transUrl(this.nextUrl))
           .then(res => {
+            this.nextUrl = res.body.data.next
             setTimeout(() => {
               this.answerList.push(...(res.body.data.results));
               resolve();
@@ -73,6 +74,9 @@ export default {
           })
       });
     }
+  },
+  mounted () {
+    this.windowHeight = Math.max(document.body.clientHeight, 900)
   },
   created() {
     this.fetchAnswerList();

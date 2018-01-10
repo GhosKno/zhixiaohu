@@ -93,8 +93,8 @@
               this.nextPageUrl = res.body.data.next
               this.topicsCount = res.body.data.count
               setTimeout(() => {
-                resolve();
                 this.topicsList.push(...(res.body.data.results))
+                resolve();
               }, 500);
             })
         });
@@ -102,6 +102,8 @@
       addTopicHandle (res) {
         if(res.body.success) {
           this.getTopics()
+          this.topicForm.label = ''
+          this.topicForm.introduction = ''
         }
       },
       getTopics() {

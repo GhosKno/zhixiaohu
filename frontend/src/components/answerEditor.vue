@@ -36,7 +36,11 @@ export default {
       authorBadge:{
           default: "已婚人士/专业数星星团队成员/编程狂热者/不只是Python/并行框架/DL爱好者"
       },
-      pk: {}
+      pk: {},
+      successHandle: {
+          type: Function,
+          required: true
+      }
   },
   data(){
       return {
@@ -55,6 +59,7 @@ export default {
             if(res.body.success==true) {
                 console.log(res.body);
               this.$Message.success("回答成功");
+              this.successHandle();
             } else {
               this.$Message.error(res.body.msg);
             }

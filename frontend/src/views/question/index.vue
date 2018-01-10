@@ -1,74 +1,80 @@
 <template>
-  <div>
+  <div class="question">
     <div v-if="loading"></div>
     <NotFoundPage v-else-if="noFound"></NotFoundPage>
     <ErrPage v-else-if="err" :errCode="errCode" :errText="errText"></ErrPage>
     <div v-else>
       <TopBar class="top-bar"></TopBar>
-      <div class="header">
-          <div class="content">
-            <div class="description">
-                <div class="topics">
-                <a :href="`/topic/${topic.id}`" class="Tag" v-for="topic in question.topics" :key="topic.id">{{topic.label}}</a>
-                </div>
-                <h1 class="title">
-                    {{question.title}}
-                </h1>
+      <Scroll 
+      :on-reach-bottom="handleReachBottom" 
+      :height="windowHeight">
+        <div class="header">
+            <div class="content">
+              <div class="description">
+                  <div class="topics">
+                  <a :href="`/topic/${topic.id}`" class="Tag" v-for="topic in question.topics" :key="topic.id">{{topic.label}}</a>
+                  </div>
+                  <h1 class="title">
+                      {{question.title}}
+                  </h1>
+              </div>
+              <div class="countBoard">
+                  <a type="text" class="countItem">
+                      <div class="countName">
+                          关注者
+                      </div>
+                      <div class="countNum">
+                          {{question.watch_count}}
+                      </div>
+                  </a>
+                  <div class="countItem">
+                      <div class="countName">
+                          浏览量
+                      </div>
+                      <div class="countNum">
+                          {{question.visit_count}}
+                      </div>
+                  </div>
+              </div>
             </div>
-            <div class="countBoard">
-                <div class="countItem">
-                    <div class="countName">
-                        关注者
-                    </div>
-                    <div class="countNum">
-                        {{question.watch_count}}
-                    </div>
-                </div>
-                <div class="countItem">
-                    <div class="countName">
-                        浏览量
-                    </div>
-                    <div class="countNum">
-                        {{question.visit_count}}
-                    </div>
-                </div>
+            <div class="footer">
+            <TextWithToolBar 
+              :text="question.detail" 
+              :forQuestion="true"
+              @writeAnswer="showEditor=!showEditor"
+              :postTime="question.add_time"
+              :pk="$route.params.id"
+              :isWatch="question.is_watch"
+            ></TextWithToolBar>
             </div>
-          </div>
-          <div class="footer">
-          <TextWithToolBar 
-            :text="question.detail" 
-            :forQuestion="true"
-            @writeAnswer="showEditor=!showEditor"
-            @watch="question.watch_count++"
-            @cancelWatch="question.watch_count--"
-            :postTime="question.add_time"
-            :pk="$route.params.id"
-            :isWatch="question.is_watch"
-            :isOwner="$store.state.userid == question.author"
-           ></TextWithToolBar>
-          </div>
-      </div>
-      <div class="main">
-        <div class="answer-flow">
-          <AnswerEditor class="answer-editor card" v-if="showEditor" :pk="$route.params.id"></AnswerEditor>    
-          <div class="card">
-            <div class="topbar">
-                <div class="title">
-                    {{answerCount}} 个回答
-                </div>
-                <Select style="float: right;width:100px" placeholder="默认排序">
-                    <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select>
-            </div>
-            <AnswerCard
-              v-for="(item, index) in answerList"
-              :key="index"
-              :answer="item">
-            </AnswerCard>
-          </div>
         </div>
-        <SideBar class="sidebar"></SideBar>
-      </div>
+        <div class="main">
+          <div class="answer-flow">
+            <AnswerEditor 
+              class="answer-editor card" 
+              v-if="showEditor" 
+              :pk="$route.params.id"
+              :successHandle="() => {fetchAnswer();showEditor = false;}"
+            ></AnswerEditor>    
+            <div class="card">
+              <div class="topbar">
+                  <div class="title">
+                      {{answerCount}} 个回答
+                  </div>
+                  <Select style="float: right;width:100px" placeholder="默认排序">
+                      <Option v-for="item in answerSort" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                  </Select>
+              </div>
+              <AnswerCard
+                v-for="(item, index) in answerList"
+                :key="index"
+                :answer="item">
+              </AnswerCard>
+            </div>
+          </div>
+          <SideBar class="sidebar"></SideBar>
+        </div>
+    </Scroll>
     </div>
     </div>
 </template>
@@ -105,6 +111,7 @@ export default {
               label: '按时间排序'
           }
       ],
+      nextUrl: '',
       noFound: false,
       err: false,
       errText: "",
@@ -116,10 +123,18 @@ export default {
   methods: {
     handleReachBottom() {
       return new Promise(resolve => {
-        setTimeout(() => {
-          this.answerList.push(...this.answerList);
-          resolve();
-        }, 2000);
+        if(this.nextUrl == null || this.nextUrl.length == 0) {
+          this.$Message.info('没有更多内容了')
+          return resolve()
+        }
+        this.$http.get(this.transUrl(this.nextUrl))
+          .then(res => {
+            this.nextUrl = res.body.data.next
+            setTimeout(() => {
+              this.answerList.push(...(res.body.data.results));
+              resolve();
+            }, 1000);
+          })
       });
     },
     fetchQuestion: function(){
@@ -146,6 +161,7 @@ export default {
             if(res.body.success==true) {
               this.answerList=res.body.data.results
               this.answerCount=res.body.data.count
+              this.nextUrl = res.body.data.next
             } else {
               this.$Message.error(res.body.msg);
             }
@@ -159,7 +175,12 @@ export default {
     
   },
   mounted() {
-      this.fetchQuestion()
+    this.$nextTick(() => {
+      this.windowHeight = document.body.clientHeight
+    })
+  },
+  created () {
+    this.fetchQuestion()
   }
 };
 </script>
@@ -305,5 +326,12 @@ export default {
 .answer-editor{
  width: 696px;
  margin-bottom: 12px;
+}
+</style>
+<style lang="less">
+.question{
+  .ivu-scroll-loader:first-child {
+    background: #fff;
+  }
 }
 </style>

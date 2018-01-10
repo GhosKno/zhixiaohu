@@ -387,6 +387,7 @@ const TopBar = resolve => require(["@/components/topBar"], resolve);
           }
           if(!(this.nextUrl == null || this.nextUrl.length == 0)) {
             this.$http.get(this.transUrl(this.nextUrl)).then(res => {
+              this.nextUrl = res.body.data.next
               setTimeout(() => {
                 this[listName].push(...(res.body.data.results))
                 resolve();
