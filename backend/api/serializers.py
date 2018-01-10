@@ -46,7 +46,7 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('url','id', 'add_time', 'title',
+        fields = ('url', 'id', 'add_time', 'title',
                   'watch_count', 'answer_count')
 
 
@@ -59,7 +59,7 @@ class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', )
+        fields = ('email',)
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
@@ -121,10 +121,17 @@ class AnswerSerializer(serializers.ModelSerializer):
     has_approve = serializers.BooleanField()
     has_against = serializers.BooleanField()
     has_favorite = serializers.BooleanField()
+
     class Meta:
         model = Answer
         fields = ('id', 'userSummary', 'approve', 'question', 'has_approve',
                   'has_against', 'has_favorite', 'add_time', 'detail', 'comment_count')
+
+
+class AnswerUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ('detail',)
 
 
 class AnswerCreateSerializer(serializers.ModelSerializer):

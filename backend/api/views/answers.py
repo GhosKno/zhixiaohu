@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.response import Response
 
 from api.models import Answer, Message, Activity, Question
-from api.serializers import AnswerSerializer, CommentSerializer, AnswerCreateSerializer
+from api.serializers import AnswerSerializer, CommentSerializer, AnswerCreateSerializer, AnswerUpdateSerializer
 from utils.heat import HeatQueue
 from utils.views import error, success, GenericViewSet
 from utils import mixins
@@ -16,6 +16,7 @@ from utils import mixins
 class AnswerViewSet(GenericViewSet,
                     mixins.CreateModelMixin,
                     mixins.ListModelMixin,
+                    mixins.UpdateModelMixin,
                     mixins.RetrieveModelMixin):
     filter_backends = (SearchFilter,)
     search_fields = ('detail',)
@@ -28,6 +29,8 @@ class AnswerViewSet(GenericViewSet,
             return AnswerCreateSerializer
         if self.action == 'get_comments':
             return CommentSerializer
+        if self.action == 'update':
+            return AnswerUpdateSerializer
         return AnswerSerializer
 
     def list(self, request, *args, **kwargs):
