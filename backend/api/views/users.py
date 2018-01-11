@@ -60,7 +60,7 @@ class UserViewSet(viewsets.GenericViewSet):
         data = request.data
         seri = self.get_serializer(data=data)
         if not seri.is_valid():
-            return Response(seri.errors)
+            return error(seri.errors)
         seri.save()
         username = seri.validated_data['username']
         user = User.objects.get(username=username)

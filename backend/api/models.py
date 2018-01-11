@@ -1,5 +1,6 @@
 import random
-import string
+
+from random_words import RandomNicknames
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
@@ -11,8 +12,8 @@ class UserManager(models.Manager):
         user = User(username=username, email=email)
         user.set_password(password)
         user.save()
-        rand = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-        nickname = 'user-' + rand
+        gender = random.choice('fmu')
+        nickname = RandomNicknames().random_nick(gender=gender)
         profile = Profile(user=user, nickname=nickname)
         profile.save()
         return user
@@ -113,7 +114,7 @@ class Comment(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
 
-    avatar = models.ImageField(default='', upload_to='avatar')
+    avatar = models.ImageField(default='static/avatar.jpg', upload_to='avatar')
     nickname = models.CharField(max_length=30)
     description = models.TextField(max_length=500)
 
