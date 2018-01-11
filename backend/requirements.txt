@@ -22,6 +22,8 @@ Pygments==2.2.0
 pytz==2017.3
 PyYAML==3.12
 qiniu==7.2.0
+RandomWords==0.2.1
+redis==2.10.6
 requests==2.18.4
 rsa==3.4.2
 shellescape==3.4.1
