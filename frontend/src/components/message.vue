@@ -43,111 +43,108 @@
 <script>
 const AnswerListCard = resolve =>
   require(["@/components/answerListCard"], resolve);
+import api from "@/utils/api";
+
 export default {
-  name: 'message',
-  data () {
+  name: "message",
+  data() {
     return {
-      messages:[],
-      nextUrl: '',
+      messages: [],
+      nextUrl: "",
       showDetailModal: false,
-      currentAnswer: ''
-    }
+      currentAnswer: ""
+    };
   },
   components: {
     AnswerListCard
   },
   methods: {
-    getMessages() {
-      this.$http.get('/api/users/messages/')
-        .then(res => {
-          this.messages = res.body.data.results
-          this.nextUrl = res.body.data.next
-        })
-    },
     open() {
-      this.getMessages()
+      api.getMessages().then(res => {
+        this.messages = res.body.data.results;
+        this.nextUrl = res.body.data.next;
+      });
     },
     toQuestion(answerUrl, id) {
-      this.$http.get(`/api/messages/${id}/readed/`)
-      this.$http.get(this.transUrl(answerUrl))
-        .then(res => {
-          this.currentAnswer = res.body.data
-        })
-          this.showDetailModal = true
+      api.markRead(id);
+      this.$http.get(this.transUrl(answerUrl)).then(res => {
+        this.currentAnswer = res.body.data;
+      });
+      this.showDetailModal = true;
     },
     handleReachBottom() {
       return new Promise(resolve => {
-        if(this.nextUrl) {
-          this.$http.get('/api/users/messages/')
-            .then(res => {
-              setTimeout(() => {
-                this.messages.push(...(res.body.data.results))
-                resolve()
-              }, 1000)
-              this.nextUrl = res.body.data.next
-            })
+        if (this.nextUrl) {
+          api.getMessages().then(res => {
+            setTimeout(() => {
+              this.messages.push(...res.body.data.results);
+              resolve();
+            }, 1000);
+            this.nextUrl = res.body.data.next;
+          });
         }
-      })
+      });
     }
   },
-  created () {
-  }
-}
+  created() {}
+};
 </script>
 
 <style lang="less" scoped>
-  .ivu-modal{
-    left:20px !important;
-    margin:0 !important;
+.ivu-modal {
+  left: 20px !important;
+  margin: 0 !important;
+}
+.header {
+  p {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
   }
-  .header {
-    p{
-      text-align: center;
-      font-size: 1.5em;
-      font-weight: bold;
-    }
+}
+.message-body {
+  ::-webkit-scrollbar {
+    display: none;
   }
-  .message-body {
-    ::-webkit-scrollbar {
-      display:none;
+  .no-data-content {
+    font-size: 15px;
+    color: #8590a6;
+    text-align: center;
+    padding-top: 100px;
+  }
+  .message-content {
+    // height: 40px;
+    font-size: 15px;
+    padding: 5px 0px;
+    width: 95%;
+    margin: 0 auto;
+    border-bottom: 1px #dddee1 solid;
+    .user,
+    .question {
+      color: #3e7ac2;
     }
-    .no-data-content {
-      font-size: 15px;
+    .text {
+      margin: 0 3px;
+    }
+    .question {
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    // span{word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;overflow: hidden ;}
+    .time {
       color: #8590a6;
-      text-align: center;
-      padding-top: 100px;
-    }
-    .message-content{
-      // height: 40px;
-      font-size: 15px;
-      padding: 5px 0px;
-      width: 95%;
-      margin: 0 auto;
-      border-bottom: 1px #dddee1 solid;
-      .user, .question{
-        color: #3e7ac2;
-      }
-      .text {
-        margin: 0 3px;
-      }
-      .question {
-        cursor: pointer;
-        overflow: hidden;
-        text-overflow:ellipsis;
-        white-space: nowrap;
-      }
-      // span{word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;overflow: hidden ;}  
-      .time {
-        color: #8590a6;
-        display: block;
-        text-align: end;
-      }
+      display: block;
+      text-align: end;
     }
   }
-  .has-read {
+}
+.has-read {
+  color: #8590a6 !important;
+  .user,
+  .question {
     color: #8590a6 !important;
-    .user, .question{
-      color: #8590a6 !important;
-    }
   }
+}
 </style>

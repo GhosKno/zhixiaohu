@@ -55,56 +55,62 @@
 </template>
 
 <script>
-import commonEditor from '@/components/commonEditor'
+import commonEditor from "@/components/commonEditor";
+import api from "@/utils/api";
+
 export default {
-  name: 'questionAskModal',
-  props: {
-  },
-  data () {
+  name: "questionAskModal",
+  props: {},
+  data() {
     return {
-      selectTopics:[],
+      selectTopics: [],
       questionForm: {
-        title: '',
+        title: "",
         topics: [],
-        detail: ''
+        detail: ""
       },
       showQuestionForm: false,
       topicLoading: false,
-      topicOption: [],
-    }
+      topicOption: []
+    };
   },
   computed: {
     editor() {
-      return this.$refs.quillEditor.quill
+      return this.$refs.quillEditor.quill;
     }
   },
   methods: {
-    open () {
-      this.showQuestionForm = true
+    open() {
+      this.showQuestionForm = true;
     },
-    submitQuestion () {
-      this.questionForm.detail = this.$refs['quillEditor'].getHtmlContent()
-      this.questionForm.topics = this.selectTopics
-      this.$http.post('/api/questions/', this.questionForm)
-        .then(res => {
-          if(res.body.success) {
-            this.$Message.success('添加问题成功')
-            this.showQuestionForm = false
+    submitQuestion() {
+      this.questionForm.detail = this.$refs["quillEditor"].getHtmlContent();
+      this.questionForm.topics = this.selectTopics;
+      if (this.$refs.quillEditor.isEmpty()){
+        this.$Message.error("请填写问题");
+        return
+      }
+      api.postQuestion(this.questionForm).then(
+        res => {
+          if (res.body.success) {
+            this.$Message.success("添加问题成功");
+            this.showQuestionForm = false;
           } else {
-            this.$Message.info(`添加问题失败：(`)
+            this.$Message.info(res.body.msg);
           }
-        }, err => {
-          this.$Message.info(`添加问题失败：(`)
-        })
+        },
+        err => {
+          this.$Message.error(Object.keys(err.body)[0]+':'+err.body[Object.keys(err.body)[0]][0]);
+        }
+      );
     },
-    filterRemoteTopic (query) {
-      if (query !== '') {
-        this.topicLoading = true
-        this.$http.get(`/api/topics?search=${query}`)
-          .then(res => {
-            this.topicOption = res.body.data.results
-            this.topicLoading = false
-          })
+    filterRemoteTopic(query) {
+      if (query !== "") {
+        this.topicLoading = true;
+        api.searchTopics(query).then(res => {
+          this.topicOption = res.body.data.results;
+          this.topicLoading = false;
+        });
       } else {
         this.topicOption = [];
       }
@@ -113,12 +119,12 @@ export default {
   components: {
     commonEditor
   }
-}
+};
 </script>
 
 <style lang="less">
-@import 'quill/dist/quill.core.css';                                                                                                                 
-@import 'quill/dist/quill.snow.css';
+@import "quill/dist/quill.core.css";
+@import "quill/dist/quill.snow.css";
 .question-body {
   .question-input {
     margin-bottom: 20px;
@@ -135,12 +141,12 @@ export default {
     }
   }
 }
-.vertical-center-modal{
+.vertical-center-modal {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  .ivu-modal{
+  .ivu-modal {
     top: 0;
   }
 }

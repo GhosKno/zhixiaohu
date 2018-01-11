@@ -9,9 +9,9 @@
             width="400"
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">
-            <Avatar class="avatar" shape="square" size="large"  :src="author.avatar||'/static/avatar.jpg'"  />
+            <Avatar class="avatar" shape="square" size="large"  :src="author.avatar||require('@/assets/avatar.jpg')"  />
             <div class="api" slot="content">
-                <user-poptip ref="userPoptip" :id="author.id"></user-poptip>
+                <user-poptip ref="userPoptip" :id="author.id||0"></user-poptip>
             </div>
         </Poptip>
         <div class="author-text">
@@ -28,6 +28,9 @@
         :commentCount="answer.comment_count"
         :postTime="answer.add_time"
         :approve="answer.approve"
+        :hasApprove="answer.has_approve"
+        :hasAgainst="answer.has_against"
+        :hasFavorite="answer.has_favorite"
         :pk="answer.id"
         :isOwner="$store.state.userid == author.id"
         ></TextWithToolBar></div>
@@ -40,12 +43,7 @@ export default {
   components: { TextWithToolBar, UserPoptip},
   props:{
       feedTitle:{},
-      answer:{
-          userSummary:{
-              id:'',
-              nickname:''
-          }
-      },
+      answer:{required:true},
   },
   data() {
       return {

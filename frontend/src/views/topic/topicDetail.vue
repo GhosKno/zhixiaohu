@@ -1,16 +1,15 @@
 <template>
   <div>
-    <TopBar class="top-bar"></TopBar>
     <div class="topicDetail">
-      <Row class="topic-header">
+      <Row class="topic-header card">
         <div class="title">
-          {{topicTitle}}
+          话题 「 {{topicTitle}} 」
         </div>
         <div class="introduction">
-          {{introduction}}
+          介绍： {{introduction}}
         </div>
       </Row>
-      <Row class="topic-body">
+      <Row class="topic-body card">
         <div class="no-data-content" v-if="questions.length == 0">
           当前话题下还没有内容
         </div>
@@ -29,46 +28,66 @@
 </template>
 
 <script>
-const TopBar = resolve => require(['@/components/topBar'], resolve)
-const questionCard = resolve => require(['@/components/questionCard'], resolve)
+const questionCard = resolve => require(["@/components/questionCard"], resolve);
+import api from "@/utils/api";
+
 export default {
-  name: 'topicDetail',
-  data () {
+  name: "topicDetail",
+  data() {
     return {
       questions: [],
-      questionCount:'',
-      nextUrl: '',
-      topicTitle: '',
-      introduction: ''
-    }
+      questionCount: "",
+      nextUrl: "",
+      topicTitle: "",
+      introduction: ""
+    };
   },
   components: {
-    questionCard,
-    TopBar
+    questionCard
   },
   methods: {
-    getQuestions () {
-      if(this.nextUrl == null){
-        this.$Message.info('没有更多的问题了')
-        return
+    getQuestions() {
+      if (this.nextUrl == null) {
+        this.$Message.info("没有更多的问题了");
+        return;
       }
-      let url = (this.nextUrl.length == 0) ? `/api/topics/${this.$route.params.id}/get_questions/` : this.nextUrl
-      this.$http.get(this.transUrl(url)).then(res => {
-        this.questions.push(...(res.body.data.results))
-        this.nextUrl = res.body.data.next
-        this.questionCount = res.body.data.count
-      })
+      let url =
+        this.nextUrl.length == 0
+          ? `/api/topics/${this.$route.params.id}/get_questions/`
+          : this.nextUrl;
+      this.$http.get(this.transUrl(url)).then(
+        res => {
+          if (res.body.success) {
+            this.questions.push(...res.body.data.results);
+            this.nextUrl = res.body.data.next;
+            this.questionCount = res.body.data.count;
+          } else {
+            this.$Message.error(res.body.msg);
+          }
+        },
+        err => {
+          this.$Message.error(err.status + " " + err.statusText);
+        }
+      );
     }
   },
-  created () {
-    this.$http.get(`/api/topics/${this.$route.params.id}/`)
-      .then(res => {
-        this.topicTitle = res.body.data.label
-        this.introduction = res.body.data.introduction
-      })
-    this.getQuestions()
+  created() {
+    api.getTopic(this.$route.params.id).then(
+      res => {
+        if (res.body.success) {
+          this.topicTitle = res.body.data.label;
+          this.introduction = res.body.data.introduction;
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      },
+      err => {
+        this.$Message.error(err.status + " " + err.statusText);
+      }
+    );
+    this.getQuestions();
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -78,14 +97,11 @@ export default {
   width: 60%;
   margin: 0 auto;
   position: relative;
-  .topic-header, .topic-body {
-    background: #fff;
+  .topic-header,
+  .topic-body {
     padding: 16px 20px;
     padding-left: 50px;
     margin-bottom: 10px;
-    border-radius: 2px;
-    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
-    box-shadow: 0 1px 3px rgba(0,0,0,.1);
   }
   .topic-header {
     .title {

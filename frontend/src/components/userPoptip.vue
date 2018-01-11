@@ -4,7 +4,7 @@
     <div class="top-info">
       <Row>
         <Col span="5" class="avatar-content">
-          <img :src="user.avatar || '/static/avatar.jpg'">
+          <img :src="user.avatar || require('@/assets/avatar.jpg')">
         </Col>
         <Col span="19" class="info-content">
           <div class="nickname" @click="$router.push({path: `/profile/${id}`})">
@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import api from "@/utils/api";
+
 export default {
   name: 'userPopTipContent',
   props: {
@@ -47,7 +49,7 @@ export default {
   data () {
     return {
       user: {
-        avatar: '/static/avatar.jpg',
+        avatar: require('@/assets/avatar.jpg'),
         nickname: '小看山',
         description: 'null',
         answerCount: 0,
@@ -60,7 +62,7 @@ export default {
   methods: {
     load() {
       this.loading = true
-      this.$http.get(`/api/profiles/${this.id}/`)
+      api.getProfile(this.id)
         .then(res => {
           this.user = res.body.data
           setTimeout(() => {
@@ -71,9 +73,6 @@ export default {
     blur() {
       this.loading = true
     }
-  },
-  created () {
-    // this.load()
   }
 }
 </script>

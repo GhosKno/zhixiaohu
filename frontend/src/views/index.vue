@@ -1,23 +1,24 @@
 <template>
   <div>
-	  <TopBar class="top-bar"></TopBar>
-		<Scroll
-			:on-reach-bottom="handleReachBottom"
-			:height="windowHeight"
-		>
-				<div class="container">
-					<div class="main">
-						<SubMenuBar></SubMenuBar>
-					 	<div class="feed-flow">
-							<AnswerListCard
-								v-for="(item, index) in answerList"
-                :key="index"
-                :answer="item">
-							</AnswerListCard>
-						</div>			
-					</div>
-					<SideBar class="sidebar"></SideBar>
-				</div>	
+		<Scroll :on-reach-bottom="handleReachBottom" :height="windowHeight">
+		  <div class="container">
+				<div class="main">
+          <SubMenuBar></SubMenuBar>
+          <div class="section">
+            <AnswerListCard
+              v-for="(item, index) in answerList"
+              :key="index"
+              :answer="item">
+            </AnswerListCard>
+            <div style="color: #9eaad1;text-align: center;" v-if="emptyList">
+              <div style="font-size: 70px;">щ(ﾟДﾟщ)!||<br/> 空无一物</div>
+              _(:з」∠)_快去写点回答吧
+            </div>
+            <Spin size="large" fix v-if="loading"></Spin>
+          </div>
+		    </div>
+				<SideBar class="sidebar"></SideBar>
+			</div>
 		</Scroll>
   </div>
 </template>
@@ -27,61 +28,69 @@ const SubMenuBar = resolve => require(["@/components/subMenuBar"], resolve);
 const AnswerListCard = resolve =>
   require(["@/components/answerListCard"], resolve);
 const SideBar = resolve => require(["@/components/sideBar"], resolve);
-const TopBar = resolve => require(["@/components/topBar"], resolve);
 
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
+import api from "@/utils/api";
+
 export default {
-  name: "IdxPage",
+  name: "home",
   mixins: [cookieManage, initInfo],
-  components: { SubMenuBar, TopBar, AnswerListCard, SideBar },
+  components: { SubMenuBar, AnswerListCard, SideBar },
   data() {
     return {
-      windowHeight: "",
-      answerList: {
-          type: Array,
-      },
-      nextUrl: ''
+      windowHeight: 900,
+      answerList: {},
+      nextUrl: "",
+      emptyList: false,
+      loading: true
     };
   },
   methods: {
     fetchAnswerList() {
-      this.$http.get(`/api/answers/`)
-          .then(res => {
-            if(res.body.success==true) {
-              this.answerList=res.body.data.results
-              this.nextUrl = res.body.data.next
-            } else {
-              this.$Message.error(res.body.msg);
-            }
-          }, function(response){
-            this.$Message.error(response.status + " " + response.statusText);
-          });
+      api.getAnswers().then(
+        res => {
+          if (res.body.success == true) {
+            this.answerList = res.body.data.results;
+            this.nextUrl = res.body.data.next;
+          } else {
+            this.$Message.error(res.body.msg);
+          }
+          this.loading = false;
+        },
+        res => {
+          this.$Message.error(res.status + " " + res.statusText);
+          this.loading = false;
+        }
+      );
     },
     handleReachBottom() {
       return new Promise(resolve => {
-        if(this.nextUrl == null || this.nextUrl.length == 0) {
-          this.$Message.info('没有更多的内容了')
-          return resolve()
+        if (this.nextUrl == null || this.nextUrl.length == 0) {
+          this.$Message.info("没有更多的内容了");
+          return resolve();
         }
-        this.$http.get(this.transUrl(this.nextUrl))
-          .then(res => {
-            this.nextUrl = res.body.data.next
-            setTimeout(() => {
-              this.answerList.push(...(res.body.data.results));
-              resolve();
-            }, 1000);
-          })
+        this.$http.get(this.transUrl(this.nextUrl)).then(res => {
+          this.nextUrl = res.body.data.next;
+          setTimeout(() => {
+            this.answerList.push(...res.body.data.results);
+            resolve();
+          }, 1000);
+        });
       });
     }
   },
-  mounted () {
-    this.windowHeight = Math.max(document.body.clientHeight, 900)
-  },
   created() {
     this.fetchAnswerList();
-    if (this.initInfo()) {
-      this.$router.push({ name: "home" });
+  },
+  watch: {
+    loading() {
+      if (!this.answerList.length) {
+        this.emptyList = true;
+      }
+      if (this.answerList.length < 3) {
+        this.windowHeight = window.innerHeight - 60;
+      }
     }
   }
 };

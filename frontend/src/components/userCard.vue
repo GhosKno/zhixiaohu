@@ -9,7 +9,7 @@
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">
             <!-- <Avatar shape="square" size="large" :src="avatar"/> -->
-            <img :src="avatar || '/static/avatar.jpg'" alt="" style="height:100%;width:100%;">
+            <img :src="avatar || require('@/assets/avatar.jpg')" alt="" style="height:100%;width:100%;">
             <div class="api" slot="content">
                 <user-poptip ref="userPoptip" :id="userid"></user-poptip>
             </div>
@@ -74,10 +74,7 @@ const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
         type: Number,
         default: 0
       },
-      avatar: {
-        type: String,
-        default: '/static/avatar.jpg'
-      },
+      avatar: String,
       watchHandle: {
         type: Function,
         required: true
@@ -85,13 +82,21 @@ const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
     },
     methods: {
       watchPeopleHandle() {
-        this.$http.get(`/api/users/${this.userid}/${!this.isWatched ? 'watch' : 'cancel_watch'}`)
-          .then(res => {
+        if(this.isWatched){
+          api.watchSb(this.userid).then(res => {
             if(!res.body.success) {
               this.$Message.error('操作失败')
             }
             this.watchHandle()
           })
+        }else{
+          api.buWatchSb(this.userid).then(res => {
+            if(!res.body.success) {
+              this.$Message.error('操作失败')
+            }
+            this.watchHandle()
+          })
+        }
       }
     }
   }

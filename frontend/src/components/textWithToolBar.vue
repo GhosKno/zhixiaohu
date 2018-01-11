@@ -12,14 +12,16 @@
         :commentCount="commentCount"
         @toggleFold="fold=!fold;"
         @writeAnswer="$emit('writeAnswer')"
-        @cancelWatch="$emit('cancelWatch')"
+        @buWatch="$emit('buWatch')"
         @watch="$emit('watch')"
-        :approve="approve"
-        :hasApprove="hasApprove"
-        :hasAgainst="hasAgainst"
+        :zanNum="approve"
+        :hasZan="hasApprove"
+        :hasCai="hasAgainst"
+        :hasStar="hasFavorite"
         :pk="pk"
         :isWatch="isWatch"
-        :isOwner="isOwner"></ToolBar>
+        :isOwner="isOwner"
+        :copyText="copyText"></ToolBar>
 </div>
 </template>
 <script>
@@ -29,20 +31,18 @@ export default {
   components: { ToolBar },
   props:{
       text:{},
-      forQuestion:{
-          default:false
-      },
-      coverImg:{
-          default: false
-      },
-      commentCount:{},
+      forQuestion: false,
+      coverImg: false,
+      commentCount: Number,
       postTime:{},
-      approve:{},
+      approve: Number,
       pk:{},
-      isWatch:{},
-      hasApprove:{},
-      hasAgainst:{},
-      isOwner:{}
+      isWatch: Boolean,
+      hasApprove: Boolean,
+      hasAgainst: Boolean,
+      hasFavorite: Boolean,
+      isOwner: Boolean,
+      copyText: String,
   },
   data() {
       return {

@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import api from '@/utils/api'
+
 const initHandle = {
   created() {},
   data() {},
@@ -12,12 +14,11 @@ const initHandle = {
           id: this.getCookie('userId') || '',
           userName: this.getCookie('userName') || ''
         })
-        this.$http.get(`/api/profiles/${this.$store.state.userid}/`)
-          .then(res => {
-            if (res.body.success) {
-              this.$store.commit('AVATAR', res.body.data.avatar || '/static/avatar.jpg')
-            }
-          })
+        api.getProfile(this.$store.state.userid).then(res => {
+          if (res.body.success) {
+            this.$store.commit('AVATAR', res.body.data.avatar || require('@/assets/avatar.jpg'))
+          }
+        })
       }
       return loginState
     }

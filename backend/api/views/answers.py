@@ -67,6 +67,7 @@ class AnswerViewSet(GenericViewSet,
         answer.has_favorite = False
         answer.has_approve = False
         answer.has_against = False
+        answer.comment_count = answer.comments.count()
         seri = AnswerSerializer(answer, context={'request': request})
 #        headers = self.get_success_headers(seri.data)
         return Response({'success': True, 'data': seri.data}, status=status.HTTP_201_CREATED)
@@ -124,6 +125,9 @@ class AnswerViewSet(GenericViewSet,
         answer = self.get_object()
         if answer is None:
             return error('no answer found')
+        if profile.agreed.filter(id=answer.id).exists():
+            return error('you have agree this')
+
         answer.approve += 1
         answer.save()
         profile.agreed.add(answer)

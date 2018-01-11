@@ -1,6 +1,5 @@
 <template>
   <div class="profile-edit">
-    <TopBar class="top-bar"></TopBar>
     <Row>
       <Col span="18" offset="3" class="main-content">
         <div class="background"><img :src="avatarUrl" class="blur" alt=""></div>
@@ -91,12 +90,11 @@
 <script>
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
-const TopBar = resolve => require(["@/components/topBar"], resolve);
+import api from "@/utils/api";
 
 export default {
   name: "profileEdit",
   mixins: [cookieManage, initInfo],
-  components: { TopBar },
   data() {
     return {
       nickName: "",
@@ -105,56 +103,69 @@ export default {
       newNickName: "",
       isEditDescription: false,
       newDescription: "",
-      avatarUrl: "/static/avatar.jpg"
+      avatarUrl: require("@/assets/avatar.jpg")
     };
   },
   methods: {
     updateNickName() {
-      this.$http.post('/api/profiles/update_info/', {
-        nickname: this.newNickName
-      }).then(res => {
-        if(res.body.success) {
-          this.$Message.success('修改成功')
-          this.getProfile()
-          this.isEditNickName = false
-        } else {
-          this.$Message.error('修改失败' + res.body.msg)          
+      api.updateInfo({ nickname: this.newNickName }).then(
+        res => {
+          if (res.body.success) {
+            this.$Message.success("修改成功");
+            this.getProfile();
+            this.isEditNickName = false;
+          } else {
+            this.$Message.error("修改失败:" + res.body.msg);
+          }
+        },
+        err => {
+          this.$Message.error(err.status + " " + err.statusText);
         }
-      })
+      );
     },
     updatedescription() {
-      this.$http.post('/api/profiles/update_info/', {
-        description: this.newDescription
-      }).then(res => {
-        if(res.body.success) {
-          this.$Message.success('修改成功')
-          this.getProfile()
-          this.isEditDescription = false
-        } else {
-          this.$Message.error('修改失败' + res.body.msg)          
+      api.updateInfo({ description: this.newDescription }).then(
+        res => {
+          if (res.body.success) {
+            this.$Message.success("修改成功");
+            this.getProfile();
+            this.isEditDescription = false;
+          } else {
+            this.$Message.error("修改失败:" + res.body.msg);
+          }
+        },
+        err => {
+          this.$Message.error(err.status + " " + err.statusText);
         }
-      })
+      );
     },
     getProfile() {
-      this.$http.get(`/api/profiles/${this.$store.state.userid}/`).then(res => {
-        if (res.body.success) {
-          let data = res.body.data;
-          this.nickName = data.nickname;
-          this.description =
-            data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description;
-          this.newNickName = this.nickName;
-          this.newDescription = this.description;
-          this.avatarUrl = data.avatar || "/static/avatar.jpg";
-          this.initInfo();
+      api.getProfile(this.$store.state.userid).then(
+        res => {
+          if (res.body.success) {
+            let data = res.body.data;
+            this.nickName = data.nickname;
+            this.description =
+              data.description.length == 0 ? "这个用户很懒，什么也没留下" : data.description;
+            this.newNickName = this.nickName;
+            this.newDescription = this.description;
+            this.avatarUrl = data.avatar;
+            this.initInfo();
+          } else {
+            this.$Message.error(res.body.msg);
+          }
+        },
+        err => {
+          this.$Message.error(err.status + " " + err.statusText);
         }
-      });
+      );
     }
   },
   created() {
     if (this.initInfo()) {
       this.getProfile();
     } else {
-      this.$router.push({name: 'login'})
+      this.$router.push({ name: "login" });
     }
   }
 };
@@ -174,15 +185,15 @@ export default {
     overflow: hidden;
     position: relative;
   }
-  .blur {  
+  .blur {
     width: 70%;
     position: absolute;
     top: -30%;
     left: 15%;
     -webkit-filter: blur(10px); /* Chrome, Opera */
-       -moz-filter: blur(10px);
-        -ms-filter: blur(10px);    
-            filter: blur(10px);    
+    -moz-filter: blur(10px);
+    -ms-filter: blur(10px);
+    filter: blur(10px);
   }
   .edit-content {
     background: #fff;

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="topbar">
+    <div class="header">
         <div class="title">
             {{comments.length}} 条评论
         </div>
@@ -14,9 +14,9 @@
             v-bind:key="cm.id">
             <div class="meta">
                 <Poptip trigger="hover" placement="right" width="400">
-                    <Avatar class="avatar" shape="square" size="small"  :src="cm.userSummary.avatar"/>
+                    <Avatar class="avatar" shape="square" size="small"  :src="cm.userSummary.avatar||require('@/assets/avatar.jpg')"/>
                     <div class="api" slot="content">
-                        <user-poptip ref="userPoptip" :id="author.id"></user-poptip>
+                        <user-poptip ref="userPoptip" :id="cm.userSummary.id||0"></user-poptip>
                     </div>
                 </Poptip>
                 <span class="name">{{cm.userSummary.nickname}}</span>
@@ -27,8 +27,10 @@
             </div>
             <div class="tool">
                 <Button type="text" class="zan">
-                    <svg viewBox="0 0 20 18" aria-hidden="true" class="zanIcon"><g><path d="M.718 7.024c-.718 0-.718.63-.718.63l.996 9.693c0 .703.718.65.718.65h1.45c.916 0 .847-.65.847-.65V7.793c-.09-.88-.853-.79-.846-.79l-2.446.02zm11.727-.05S13.2 5.396 13.6 2.89C13.765.03 11.55-.6 10.565.53c-1.014 1.232 0 2.056-4.45 5.83C5.336 6.965 5 8.01 5 8.997v6.998c-.016 1.104.49 2 1.99 2h7.586c2.097 0 2.86-1.416 2.86-1.416s2.178-5.402 2.346-5.91c1.047-3.516-1.95-3.704-1.95-3.704l-5.387.007z"></path></g></svg>
-                {{cm.zan?cm.zan:"赞"}}
+                  <svg class="zanIcon">
+                    <use xlink:href="#zan"></use>
+                  </svg>
+                    {{cm.zan?cm.zan:"赞"}}
                 </Button>
             </div>
         </div>
@@ -52,9 +54,11 @@
 </template>
 <script>
 const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
-import timeago from "@/utils/time";
+import api from "@/utils/api";
+
 export default {
   name: "commentList",
+  components: { UserPoptip },
   props: {
     comments: {
       type: Array
@@ -82,34 +86,34 @@ export default {
   },
   methods: {
     postComment() {
-      this.$http.post(`/api/comments/`, this.commentForm)
-      .then(res => {
-        if (res.body.success == true) {
-          console.log(res.body);
-          this.$Message.success("评论成功");
-          this.comments.push(res.body.data)
-        } else {
-          this.$Message.error(res.body.msg);
+      api.postComment(this.commentForm).then(
+        res => {
+          if (res.body.success == true) {
+            this.$Message.success("评论成功");
+            this.comments.push(res.body.data);
+          } else {
+            this.$Message.error(res.body.msg);
+          }
+        },
+        res => {
+          this.$Message.error(response.status + " " + response.statusText);
         }
-      }, function(response) {
-        this.$Message.error(response.status + " " + response.statusText);
-      });
+      );
     },
     hideCommentBtn() {
-      if (this.commentForm.detail===""){
+      if (this.commentForm.detail === "") {
         setTimeout(() => {
-          this.showCommentBtn = false
+          this.showCommentBtn = false;
         }, 100);
       }
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
-.topbar {
+.header {
   background: #fff;
   border-bottom: 1px solid #f0f2f7;
   display: -webkit-box;
@@ -124,7 +128,7 @@ export default {
   height: 50px;
   padding: 0 20px;
 }
-.topbar .title {
+.header .title {
   display: inline-block;
   font-size: 15px;
   font-weight: 600;
@@ -183,10 +187,10 @@ export default {
 .meta {
   margin-bottom: 5px;
 }
-.commentEditor{
+.commentEditor {
   position: relative;
-    -webkit-transition: padding-right .3s ease;
-    transition: padding-right .3s ease;
+  -webkit-transition: padding-right 0.3s ease;
+  transition: padding-right 0.3s ease;
 }
 .commentEditor.is-active {
   padding-right: 94px;

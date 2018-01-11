@@ -49,8 +49,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.questionCard + .questionCard {
+  border-top: 1px #dddee1 solid;
+}
 .questionCard{ 
-  border-bottom: 1px #dddee1 solid;
   padding: 15px 30px;
   .header {
     font-size: 1.5em;

@@ -1,6 +1,5 @@
 <template>
   <div class="heat">
-    <TopBar class="top-bar"></TopBar>
     <Scroll 
       :on-reach-bottom="handleReachBottom" 
       :height="windowHeight">
@@ -53,68 +52,71 @@
 </template>
 
 <script>
-  const TopBar = resolve => require(['@/components/topBar'], resolve)
-  const AnswerListCard = resolve => require(['@/components/answerListCard'], resolve)
-  export default {
-    name: 'heat',
-    data () {
-      return {
-        windowHeight: '',
-        filename: '',
-        heatedTopoics: [],
-        curTopicId: '', // 当前查看话题列表
-        answerList: []
-      }
+const AnswerListCard = resolve =>
+  require(["@/components/answerListCard"], resolve);
+import api from "@/utils/api";
+
+export default {
+  name: "heat",
+  data() {
+    return {
+      windowHeight: "",
+      filename: "",
+      heatedTopoics: [],
+      curTopicId: "", // 当前查看话题列表
+      answerList: []
+    };
+  },
+  methods: {
+    handleReachBottom() {
+      return new Promise(resolve => {
+        if (!this.nextUrl) {
+          this.$Message.info("没有更多的内容了");
+          return resolve();
+        }
+        this.$http.get(this.transUrl(this.nextUrl)).then(res => {
+          this.nextUrl = res.body.data.next;
+          setTimeout(() => {
+            this.answerList.push(...res.body.data.results);
+            resolve();
+          }, 1000);
+        });
+      });
     },
-    methods: {
-      handleReachBottom () {
-        return new Promise(resolve => {
-          if(!this.nextUrl){
-            this.$Message.info('没有更多的内容了')
-            return resolve()
-          }
-          this.$http.get(this.transUrl(this.nextUrl))
-            .then(res => {
-              this.nextUrl = res.body.data.next
-              setTimeout(() => {
-                this.answerList.push(...res.body.data.results)
-                resolve();
-              }, 1000);
-            })
-        })
-      },
-      getHotTopics() {
-        this.$http.get('/api/topics/hot')
-          .then(res => {
-            this.heatedTopoics = res.body.data
-            this.curTopicId = this.heatedTopoics[0]? this.heatedTopoics[0].id : 0
-            this.viewTopicDetail(this.curTopicId)
-          })
-      },
-      viewTopicDetail(id) {
-        if(id == 0)
-          return
-        this.curTopicId = id
-        this.$http.get(`/api/topics/${id}/get_answers/`)
-          .then(res => {
-            this.answerList = res.body.data.results
-            this.nextUrl = res.body.data.next
-          })
-      }
+    getHotTopics() {
+      api.getTopics().then(res => {
+        this.heatedTopoics = res.body.data;
+        this.curTopicId = this.heatedTopoics[0] ? this.heatedTopoics[0].id : 0;
+        this.viewTopicDetail(this.curTopicId);
+      });
     },
-    components: {
-      TopBar,
-      AnswerListCard
-    },
-    mounted () {
-      this.$nextTick(() => {
-        this.windowHeight = document.body.clientHeight
-      })
-    },
-    created () {
-      this.getHotTopics()
+    viewTopicDetail(id) {
+      if (id == 0) return;
+      this.curTopicId = id;
+      api.getAnswersByTopic(id).then(res => {
+        if (res.body.success) {
+          this.answerList = res.body.data.results;
+          this.nextUrl = res.body.data.next;
+        } else {
+          this.$Message.error(res.body.msg);
+        }
+      }, err => {
+        this.$Message.error(err.status + " " + err.statusText);
+      });
     }
+  },
+  components: {
+    AnswerListCard
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.windowHeight = document.body.clientHeight;
+    });
+  },
+  created() {
+    this.getHotTopics();
   }
+};
 </script>
 
 <style lang="less" scoped>

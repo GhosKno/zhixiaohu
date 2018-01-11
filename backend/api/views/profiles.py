@@ -222,11 +222,10 @@ class ProfileViewSet(GenericViewSet,
         profiles = []
         for user in users:
             if request.user.is_authenticated:
-                if __name__ == '__main__':
-                    user.profile.is_watch = request.user.profile\
-                        .watchedUser.filter(
-                        id=user.id
-                    ).exists()
+                user.profile.is_watch = request.user.profile\
+                    .watchedUser.filter(
+                    id=user.id
+                ).exists()
             else:
                 user.profile.is_watch = False
             profiles.append(user.profile)

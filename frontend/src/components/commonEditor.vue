@@ -73,6 +73,11 @@
       getHtmlContent() {
         return this.quillEditorRoot.container.firstChild.innerHTML
       },
+      isEmpty() {
+        var text = this.quillEditorRoot.getText()
+        var s1 = text.replace(/[\r\n]/g, '').replace(/[ ]/g, '');
+        return (s1 == '') ? true : false;
+      },
       beforeUpload(file) {
         return this.upload(file)
       },

@@ -1,6 +1,5 @@
 <template>
   <div class="topic">
-    <TopBar class="top-bar"></TopBar>
     <Scroll 
       :on-reach-bottom="handleReachBottom" 
       :height="windowHeight">
@@ -63,9 +62,10 @@
 </template>
 
 <script>
-  const TopBar = resolve => require(['@/components/topBar'], resolve)
   const ZModal = resolve => require(['@/components/z-modal'], resolve)
   const AnswerListCard = resolve => require(['@/components/answerListCard'], resolve)
+  import api from "@/utils/api";
+
   export default {
     name: 'topic',
     data () {
@@ -107,18 +107,16 @@
         }
       },
       getTopics() {
-        this.$http.get('/api/topics/')
-          .then(res => {
-            this.topicsList = res.body.data.results
-            this.topicsCount = res.body.data.count
-            if(res.body.data.next) {
-              this.nextPageUrl = res.body.data.next
-            }
-          })
+        api.getAllTopics().then(res => {
+          this.topicsList = res.body.data.results
+          this.topicsCount = res.body.data.count
+          if(res.body.data.next) {
+            this.nextPageUrl = res.body.data.next
+          }
+        })
       }
     },
     components: {
-      TopBar,
       AnswerListCard,
       ZModal
     },
