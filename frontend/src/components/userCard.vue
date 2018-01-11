@@ -9,7 +9,7 @@
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">
             <!-- <Avatar shape="square" size="large" :src="avatar"/> -->
-            <img :src="avatar || require('@/assets/avatar.jpg')" alt="" style="height:100%;width:100%;">
+            <img :src="avatar" alt="" style="height:100%;width:100%;">
             <div class="api" slot="content">
                 <user-poptip ref="userPoptip" :id="userid"></user-poptip>
             </div>

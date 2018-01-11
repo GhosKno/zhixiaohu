@@ -10,7 +10,7 @@
         @on-popper-hide="() => $refs['userPoptip'].blur()"
         @on-popper-show="() => $refs['userPoptip'].load()"
         width="400">
-        <Avatar class="avatar" shape="square" size="small"  :src="author.avatar||require('@/assets/avatar.jpg')"  />
+        <Avatar class="avatar" shape="square" size="small"  :src="author.avatar"  />
         <div class="api" slot="content"> 
             <user-poptip ref="userPoptip" :id="author.id||0"></user-poptip>
         </div>
@@ -60,9 +60,11 @@ export default {
   methods: {
       
   },
+  created () {
+    this.author=this.answer.userSummary
+    this.copyText=this.answer.question.title+' '+this.author.nickname+'的回答 - 知小乎' + window.location.href
+  },
   mounted(){
-      this.author=this.answer.userSummary
-      this.copyText=this.answer.question.title+' '+this.author.nickname+'的回答 - 知小乎' + window.location.href
   }
 };
 </script>

@@ -9,7 +9,7 @@
             width="400"
             @on-popper-hide="() => $refs['userPoptip'].blur()"
             @on-popper-show="() => $refs['userPoptip'].load()">
-            <Avatar class="avatar" shape="square" size="large"  :src="author.avatar||require('@/assets/avatar.jpg')"  />
+            <Avatar class="avatar" shape="square" size="large"  :src="author.avatar"  />
             <div class="api" slot="content">
                 <user-poptip ref="userPoptip" :id="author.id||0"></user-poptip>
             </div>

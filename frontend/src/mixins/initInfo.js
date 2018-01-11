@@ -16,7 +16,7 @@ const initHandle = {
         })
         api.getProfile(this.$store.state.userid).then(res => {
           if (res.body.success) {
-            this.$store.commit('AVATAR', res.body.data.avatar || require('@/assets/avatar.jpg'))
+            this.$store.commit('AVATAR', res.body.data.avatar)
           }
         })
       }

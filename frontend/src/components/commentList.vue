@@ -15,7 +15,7 @@
             <div class="meta">
               <a class="user-info" @click="$router.push({path: '/profile/'+cm.userSummary.id})">
                 <Avatar class="avatar" shape="square" size="small"
-                  :src="cm.userSummary.avatar||require('@/assets/avatar.jpg')"/>
+                  :src="cm.userSummary.avatar"/>
                 <span class="name">{{cm.userSummary.nickname}}</span>
               </a>
                 <span class="time">{{timeago(cm.add_time)}}</span>

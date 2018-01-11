@@ -4,7 +4,7 @@
     <div class="top-info">
       <Row>
         <Col span="5" class="avatar-content">
-          <img :src="user.avatar || require('@/assets/avatar.jpg')">
+          <img :src="user.avatar">
         </Col>
         <Col span="19" class="info-content">
           <div class="nickname" @click="$router.push({path: `/profile/${id}`})">
@@ -49,7 +49,7 @@ export default {
   data () {
     return {
       user: {
-        avatar: require('@/assets/avatar.jpg'),
+        avatar: 'static/avatar.jpg',
         nickname: '小看山',
         description: 'null',
         answerCount: 0,

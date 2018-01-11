@@ -103,7 +103,7 @@ export default {
       newNickName: "",
       isEditDescription: false,
       newDescription: "",
-      avatarUrl: require("@/assets/avatar.jpg")
+      avatarUrl: 'static/avatar.jpg'
     };
   },
   methods: {

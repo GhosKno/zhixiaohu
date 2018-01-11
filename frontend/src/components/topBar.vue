@@ -33,9 +33,26 @@
             </div>
             <Button type="primary" class="askBtn" :class="{'is-active':showAskBtn}" @click="$refs['questionModal'].open()">提问</Button>
           </div>
-          <DropdownMenu slot="list" style="width: 380px;">
+          <DropdownMenu slot="list" style="width: 380px;" 
+              v-if="searchQuestions.length > 0 || 
+              searchTopics.length > 0 || 
+              searchAnswers.length > 0">
               <DropdownItem 
-              v-for="item in searchRes"
+              v-for="item in searchTopics"      
+              :key="item.id"
+              :name="item.id"
+              >{{item.label}}
+              </DropdownItem>
+              <DropdownItem 
+              v-for="(item, index) in searchQuestions"
+              :divided="index == 0"
+              :key="item.id"
+              :name="item.id"
+              >{{item.title}}
+              </DropdownItem>
+              <DropdownItem 
+              v-for="(item, index) in searchAnswers"
+              :divided="index == 0"
               :key="item.id"
               :name="item.id"
               >{{item.title}}
@@ -53,10 +70,14 @@
                 <Icon type="ios-bell"></Icon>
               </Badge>
             </Button>
-            <message ref="message" slot="content"></message>
+            <message 
+              ref="message" 
+              slot="content"
+              :readHandle="getUnreadMsg"
+            ></message>
           </Poptip>
           <Dropdown trigger="click">
-            <Avatar :src="$store.state.avatarUrl || require('@/assets/avatar.jpg')" />
+            <Avatar :src="$store.state.avatarUrl" />
             <DropdownMenu slot="list" class="userMenu">
               <DropdownItem><Button type="text" icon="person" @click="$router.push({path: `/profile/${$store.state.userid}`})">我的主页</Button></DropdownItem>
               <DropdownItem><Button type="text" icon="gear-b" @click="$refs['updatePwd'].open()">设置</Button></DropdownItem>
@@ -90,7 +111,9 @@ export default {
       showAskBtn: true,
       unreadMsgsCount: 0,
       searchData: "",
-      searchRes: []
+      searchQuestions: [],
+      searchAnswers: [],
+      searchTopics: [] 
     };
   },
   methods: {
@@ -125,7 +148,29 @@ export default {
         api.searchQuestion(this.searchData).then(
           res => {
             if (res.body.success) {
-              this.searchRes = res.body.data.results;
+              this.searchQuestions = res.body.data.results;
+            } else {
+              this.$Message.error(res.body.msg);
+            }
+          },
+          err => {
+            this.$Message.error(err.status + " " + err.statusText);
+          }
+        );
+        // api.searchAnswers(this.searchData).then(res => {
+        //     if (res.body.success) {
+        //       this.searchAnswers = res.body.data.results;
+        //     } else {
+        //       this.$Message.error(res.body.msg);
+        //     }
+        //   },
+        //   err => {
+        //     this.$Message.error(err.status + " " + err.statusText);
+        //   }
+        // );
+        api.searchTopics(this.searchData).then(res => {
+            if (res.body.success) {
+              this.searchTopics = res.body.data.results;
             } else {
               this.$Message.error(res.body.msg);
             }
@@ -137,6 +182,7 @@ export default {
       }
     },
     handleSearchResult(id) {
+      if(!id) return
       window.location = "/question/" + id;
     }
   },

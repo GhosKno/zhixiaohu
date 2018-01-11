@@ -55,6 +55,7 @@ export default {
       currentAnswer: ""
     };
   },
+  props: ['readHandle'],
   components: {
     AnswerListCard
   },
@@ -71,6 +72,7 @@ export default {
         this.currentAnswer = res.body.data;
       });
       this.showDetailModal = true;
+      this.readHandle()
     },
     handleReachBottom() {
       return new Promise(resolve => {

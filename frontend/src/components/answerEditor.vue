@@ -1,7 +1,7 @@
 <template>
   <div class="answer-card">
       <div class="info">
-        <Avatar class="avatar" shape="square" size="large"  :src="author.avatar||require('@/assets/avatar.jpg')" />
+        <Avatar class="avatar" shape="square" size="large"  :src="author.avatar" />
         <div class="author-text">
             <div class="name">
                 {{author.nickname}}

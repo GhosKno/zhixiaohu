@@ -116,7 +116,7 @@ export default {
               });
               this.$store.commit(
                 "AVATAR",
-                res.body.data.avatar || require("@/assets/avatar.jpg")
+                res.body.data.avatar
               );
               this.$router.push({ name: "home" });
             } else {

@@ -19,7 +19,7 @@
 <script>
 import ErrPage from "@/views/errors/err";
 import svgIcon from "@/components/svg";
-import TopBar from "@/components/topbar";
+import TopBar from "@/components/topBar";
 export default {
   name: "app",
   components: {
