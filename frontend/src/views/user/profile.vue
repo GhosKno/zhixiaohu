@@ -20,7 +20,11 @@
                   <div style="font-size:2em;font-weight:bold;">{{nickName}}</div>
                   <div style="font-size:1.3em;">{{description}}</div>
                 </Col>
-                <Col span="3" offset="8" class="parent-height">
+                <Col 
+                  :xs="{ span: 5, offset: 6 }" 
+                  :sm="{ span: 4, offset: 7 }" 
+                  :md="{ span: 4, offset: 7 }" 
+                  :lg="{ span: 3, offset: 8 }" class="parent-height">
                   <Button 
                     v-if="$route.params.id == $store.state.userid"
                     type="ghost" 
@@ -646,6 +650,7 @@ export default {
 }
 .profile {
   height: 100vh;
+  min-width: 1000px;
   .parent-height {
     height: 100%;
   }
