@@ -13,13 +13,11 @@
             v-for="cm of comments" 
             v-bind:key="cm.id">
             <div class="meta">
-                <Poptip trigger="hover" placement="right" width="400">
-                    <Avatar class="avatar" shape="square" size="small"  :src="cm.userSummary.avatar||require('@/assets/avatar.jpg')"/>
-                    <div class="api" slot="content">
-                        <user-poptip ref="userPoptip" :id="cm.userSummary.id||0"></user-poptip>
-                    </div>
-                </Poptip>
+              <a class="user-info" @click="$router.push({path: '/profile/'+cm.userSummary.id})">
+                <Avatar class="avatar" shape="square" size="small"
+                  :src="cm.userSummary.avatar||require('@/assets/avatar.jpg')"/>
                 <span class="name">{{cm.userSummary.nickname}}</span>
+              </a>
                 <span class="time">{{timeago(cm.add_time)}}</span>
             </div>
             <div class="content">
@@ -186,6 +184,9 @@ export default {
 }
 .meta {
   margin-bottom: 5px;
+}
+.meta a.user-info{
+  color: #1e1e1e;
 }
 .commentEditor {
   position: relative;

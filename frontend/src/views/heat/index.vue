@@ -84,7 +84,7 @@ export default {
       });
     },
     getHotTopics() {
-      api.getTopics().then(res => {
+      api.getHotTopics().then(res => {
         this.heatedTopoics = res.body.data;
         this.curTopicId = this.heatedTopoics[0] ? this.heatedTopoics[0].id : 0;
         this.viewTopicDetail(this.curTopicId);

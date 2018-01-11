@@ -445,7 +445,7 @@ export default {
     watchUserHandle() {
       // 关注用户/取消关注用户处理函数
       if (this.isWatched) {
-        api.buWatchSb(this.$route.params.id).then(
+        api.cancelWatchSb(this.$route.params.id).then(
           res => {
             if (!res.body.success) {
               this.$Message.error("取关失败");

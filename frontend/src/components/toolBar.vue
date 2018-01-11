@@ -1,7 +1,7 @@
 <template>
   <div class="toolBar">
     <div class="btn-group" v-if="forQuestion">
-        <Button v-if="newIsWatch" @click="buWatchQuestion()">取消关注</Button>
+        <Button v-if="newIsWatch" @click="cancelWatchQuestion()">取消关注</Button>
         <Button type="primary" @click="watchQuestion()" v-else>关注问题</Button>
         <Button type="ghost" class="writeBtn" @click="$emit('writeAnswer')">
           <svg class="writeIcon">
@@ -12,11 +12,11 @@
     </div>
     <!--点赞-->
     <div class="btn-group" v-else>
-        <Button class="voteBtn" :class="{'is-active': newHasZan}" :disabled="isOwner" @click="newHasZan?buZan():Zan()">
+        <Button class="voteBtn" :class="{'is-active': newHasZan}" :disabled="isOwner" @click="newHasZan?cancelZan():Zan()">
           <Icon type="arrow-up-b" class="voteIcon" size=16></Icon>
           <span class="voteNum">{{newZanNum}}</span>
         </Button>
-        <Button class="voteBtn" :class="{'is-active': newHasCai,'is-disappear': isOwner} " @click="newHasCai?buCai():Cai()">
+        <Button class="voteBtn" :class="{'is-active': newHasCai,'is-disappear': isOwner} " @click="newHasCai?CancelCai():Cai()">
         <Icon type="arrow-down-b" class="voteIcon" size=16></Icon></Button>
     </div>
     <Button type="text" class="actionBtn" v-if="!forQuestion" @click="toggleComment">
@@ -25,7 +25,7 @@
       </svg>
       {{commentBtn}}
     </Button>
-    <Dropdown trigger="click" :transfer="true" @on-click="share">
+    <Dropdown trigger="click" :transfer="true" @on-click="handleShare()">
       <Button type="text" class="actionBtn">
         <svg class="actionIcon">
           <use xlink:href="#share"></use>
@@ -54,23 +54,23 @@
       </DropdownMenu>
     </Dropdown>
       <span v-if="!forQuestion">
-        <Button type="text" class="actionBtn" @click="newHasStar?buStar():Star()">
+        <Button type="text" class="actionBtn" @click="newHasStar?CancelStar():Star()">
           <svg class="actionIcon starIcon" :class="{'is-active':newHasStar}">
             <use xlink:href="#star"></use>
           </svg> {{newHasStar?'取消收藏':'收藏'}}
         </Button>
         <Button type="text" class="actionBtn">
-          <Dropdown trigger="click" :transfer="true">
+          <Dropdown trigger="click" :transfer="true" @on-click="handleMore()">
               <svg class="actionIcon">
                 <use xlink:href="#more"></use>
               </svg>
               <DropdownMenu slot="list" v-if="isOwner">
-                <DropdownItem >删除</DropdownItem>
-                <DropdownItem>修改</DropdownItem>
+                <DropdownItem name="delete">删除</DropdownItem>
+                <DropdownItem name="edit">修改</DropdownItem>
               </DropdownMenu>
               <DropdownMenu slot="list" v-else>
-                  <DropdownItem>举报</DropdownItem>
-                  <DropdownItem>没有帮助</DropdownItem>
+                  <DropdownItem name="report">举报</DropdownItem>
+                  <DropdownItem name="noHelp">没有帮助</DropdownItem>
               </DropdownMenu>
           </Dropdown>
           <Poptip title="提示标题" content="提示内容">
@@ -172,9 +172,9 @@ export default {
         }
       );
     },
-    buWatchQuestion() {
-      this.$emit("buWatch");
-      api.buWatchQuestion(this.pk).then(
+    cancelWatchQuestion() {
+      this.$emit("cancelWatch");
+      api.cancelWatchQuestion(this.pk).then(
         res => {
           if (res.body.success == true) {
             this.newIsWatch = false;
@@ -202,7 +202,7 @@ export default {
       );
     },
     Zan() {
-      if (this.newHasCai) this.buCai();
+      if (this.newHasCai) this.CancelCai();
       api.zanAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
@@ -217,8 +217,8 @@ export default {
         }
       );
     },
-    buZan() {
-      api.buZanAnswer(this.pk).then(
+    cancelZan() {
+      api.cancelZanAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
             this.newZanNum--;
@@ -233,7 +233,7 @@ export default {
       );
     },
     Cai() {
-      if (this.newHasZan) this.buZan();
+      if (this.newHasZan) this.cancelZan();
       api.caiAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
@@ -247,8 +247,8 @@ export default {
         }
       );
     },
-    buCai() {
-      api.buCaiAnswer(this.pk).then(
+    CancelCai() {
+      api.CancelCaiAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
             this.newHasCai = false;
@@ -275,8 +275,8 @@ export default {
         }
       );
     },
-    buStar() {
-      api.buStarAnswer(this.pk).then(
+    CancelStar() {
+      api.CancelStarAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
             this.newHasStar = false;
@@ -289,7 +289,7 @@ export default {
         }
       );
     },
-    share(name) {
+    handleShare(name) {
       if (name == "weibo") {
         window.location =
           "http://service.weibo.com/share/share.php?appkey=&title=" +
@@ -300,7 +300,14 @@ export default {
       } else if (name == "weixin") {
         this.$Message.info("点击复制链接,分享给你的微信好友吧");
       }
-    }
+    },
+    handleMore(name) {
+      if (name == "delete") {
+        this.$Message.info("该回答将在 24h 后删除，取消请联系管理员");
+      } else if (name == "edit") {
+        this.$Message.info("点击复制链接,分享给你的微信好友吧");
+      }
+    },
   },
   created() {
     this.clipboard = new Clipboard(`#copyBtn${this._uid}`);

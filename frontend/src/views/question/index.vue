@@ -35,7 +35,7 @@
             :forQuestion="true"
             @writeAnswer="showEditor=!showEditor"
             @watch="question.watch_count++"
-            @buWatch="question.watch_count--"
+            @cancelWatch="question.watch_count--"
             :postTime="question.add_time"
             :pk="$route.params.id"
             :isWatch="question.is_watch"
