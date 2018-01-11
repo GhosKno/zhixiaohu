@@ -206,7 +206,7 @@ export default {
       api.zanAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
-            this.newZan++;
+            this.newZanNum++;
             this.newHasZan = true;
           } else {
             this.$Message.error(res.body.msg);
@@ -221,7 +221,7 @@ export default {
       api.buZanAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
-            this.newZan--;
+            this.newZanNum--;
             this.newHasZan = false;
           } else {
             this.$Message.error(res.body.msg);

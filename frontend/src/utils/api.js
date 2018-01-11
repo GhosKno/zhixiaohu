@@ -28,7 +28,7 @@ export default {
     watchSb(id) {
         return Vue.http.get(USER + id + '/watch/')
     },
-    buWatchSb(id) {
+    cancelWatchSb(id) {
         return Vue.http.get(USER + id + '/cancel_watch/')
     },
 
@@ -77,7 +77,7 @@ export default {
     watchQuestion(id) {
         return Vue.http.get(QUESTION + id + '/watch/')
     },
-    buWatchQuestion(id) {
+    cancelWatchQuestion(id) {
         return Vue.http.get(QUESTION + id + '/cancel_watch/')
     },
     getAnswersByQuestion(id) {
@@ -129,19 +129,19 @@ export default {
     zanAnswer(id) {
         return Vue.http.get(ANSWER + id + '/agree/')
     },
-    buZanAnswer(id) {
+    cancelZanAnswer(id) {
         return Vue.http.get(ANSWER + id + '/cancel_agree/')
     },
     caiAnswer(id) {
         return Vue.http.get(ANSWER + id + '/disagree/')
     },
-    buCaiAnswer(id) {
+    CancelCaiAnswer(id) {
         return Vue.http.get(ANSWER + id + '/cancel_disagree/')
     },
     starAnswer(id) {
         return Vue.http.get(ANSWER + id + '/favorite/')
     },
-    buStarAnswer(id) {
+    CancelStarAnswer(id) {
         return Vue.http.get(ANSWER + id + '/cancel_favorite/')
     },
     getComments(id) {
