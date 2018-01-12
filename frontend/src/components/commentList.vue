@@ -24,10 +24,11 @@
                 {{cm.detail}}
             </div>
             <div class="tool">
-                <Button type="text" class="zan">
+                <Button type="text" class="zan" @click="$Message.success('已赞~')">
                   <svg class="zanIcon">
                     <use xlink:href="#zan"></use>
                   </svg>
+                  <!-- TODO: add zan for comments -->
                     {{cm.zan?cm.zan:"赞"}}
                 </Button>
             </div>

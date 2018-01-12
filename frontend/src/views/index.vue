@@ -3,13 +3,50 @@
 		<Scroll :on-reach-bottom="handleReachBottom" :height="windowHeight">
 		  <div class="container">
 				<div class="main">
-          <SubMenuBar></SubMenuBar>
+          <div class="card sub-menu-bar">
+            <Button type="text" class="sub-menu-btn" @click="$refs['questionModal'].open()">
+                <svg class="icon" >
+                    <use xlink:href="#ask"></use>
+                </svg>
+                提问
+            </Button>
+            <Button type="text" class="sub-menu-btn" @click="handleShowQuestion()">
+                <svg class="icon" >
+                    <use xlink:href="#answer"></use>
+                </svg>
+                {{showQuestion?'围观':'回答'}}
+            </Button>
+            <Button type="text" class="sub-menu-btn" @click="$Notice.info({desc:'提问里也可以写文章哦（此功能待开发..(๑•ᴗ•๑)'})">
+                <svg class="icon" >
+                    <use xlink:href="#write"></use>
+                </svg>
+                写文章
+            </Button>
+            <Button type="text" class="sub-menu-btn btn-right" @click="$Notice.info({desc:'草稿箱为空（此功能待开发..(๑•ᴗ•๑)'})">
+                草稿
+            </Button>
+            <QuestionModal ref="questionModal"></QuestionModal>
+        </div>
           <div class="section">
-            <AnswerListCard
-              v-for="(item, index) in answerList"
+            <div v-if="showQuestion">
+            <QuestionCard
+              class="question-card card"
+              v-for="(ques, index) in questionList"
               :key="index"
-              :answer="item">
+              :title="ques.title"
+              :time="ques.add_time"
+              :answers="ques.answer_count"
+              :watchers="ques.watch_count"
+              :id="ques.id"
+            ></QuestionCard>
+            </div>
+            <div v-else>
+            <AnswerListCard
+              v-for="(ans, index) in answerList"
+              :key="index"
+              :answer="ans">
             </AnswerListCard>
+            </div>
             <div style="color: #9eaad1;text-align: center;" v-if="emptyList">
               <div style="font-size: 70px;">щ(ﾟДﾟщ)!||<br/> 空无一物</div>
               _(:з」∠)_快去写点回答吧
@@ -24,10 +61,12 @@
 </template>
 
 <script>
-const SubMenuBar = resolve => require(["@/components/subMenuBar"], resolve);
 const AnswerListCard = resolve =>
   require(["@/components/answerListCard"], resolve);
 const SideBar = resolve => require(["@/components/sideBar"], resolve);
+const QuestionModal = resolve =>
+  require(["@/components/questionAskModal"], resolve);
+const QuestionCard = resolve => require(["@/components/questionCard"], resolve);
 
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
@@ -36,14 +75,16 @@ import api from "@/utils/api";
 export default {
   name: "home",
   mixins: [cookieManage, initInfo],
-  components: { SubMenuBar, AnswerListCard, SideBar },
+  components: { AnswerListCard, SideBar, QuestionModal, QuestionCard },
   data() {
     return {
       windowHeight: 900,
-      answerList: {},
+      answerList: [],
+      questionList: [],
       nextUrl: "",
       emptyList: false,
-      loading: true
+      loading: true,
+      showQuestion: false
     };
   },
   methods: {
@@ -78,6 +119,32 @@ export default {
           }, 1000);
         });
       });
+    },
+    fetchQuestionList() {
+      api.getQuestions().then(
+        res => {
+          if (res.body.success == true) {
+            this.questionList = res.body.data.results;
+            this.nextUrl = res.body.data.next;
+          } else {
+            this.$Message.error(res.body.msg);
+          }
+          this.loading = false;
+        },
+        res => {
+          this.$Message.error(res.status + " " + res.statusText);
+          this.loading = false;
+        }
+      );
+    },
+    handleShowQuestion() {
+      if (this.showQuestion) {
+        this.fetchAnswerList();
+        this.showQuestion = false;
+      } else {
+        this.fetchQuestionList();
+        this.showQuestion = true;
+      }
     }
   },
   created() {
@@ -111,6 +178,28 @@ export default {
 }
 .main {
   width: 679px;
+}
+.sub-menu-bar {
+  line-height: 58px;
+}
+.sub-menu-btn {
+  font-size: 16px;
+  width: 100px;
+  height: 58px;
+}
+.btn-right {
+  font-weight: 600;
+  color: #8590a6;
+  float: right;
+}
+.icon {
+  vertical-align: text-bottom;
+  margin-bottom: -5px;
+  width: 24px;
+  height: 24px;
+}
+.question-card{
+  margin: 5px 0;
 }
 .sidebar {
   width: 296px;

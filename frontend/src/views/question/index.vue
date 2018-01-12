@@ -37,10 +37,10 @@
             @watch="question.watch_count++"
             @cancelWatch="question.watch_count--"
             :postTime="question.add_time"
-            :pk="$route.params.q_id"
+            :pk="question.id"
             :isWatch="question.is_watch"
             :isOwner="$store.state.userid == question.author"
-           ></TextWithToolBar>
+            :copyText="copyText"></TextWithToolBar>
       </div>
     </div>
     <div class="main">
@@ -78,7 +78,8 @@ export default {
       err: {},
       showEditor: false,
       answerForm: {},
-      newAnswer: {}
+      newAnswer: {},
+      copyText: ""
     };
   },
   methods: {
@@ -103,6 +104,10 @@ export default {
           if (res.body.success == true) {
             this.question = res.body.data;
             document.title = this.question.title + " - 知小乎";
+            this.copyText = document.title + " http://" +
+              window.location.host +
+              "/question/" +
+              this.question.id;
           } else {
             this.$emit("err"); // 404
           }
@@ -115,24 +120,27 @@ export default {
     postAnswer: function(html) {
       this.answerForm.question = this.$route.params.q_id;
       this.answerForm.detail = html;
-      api.postAnswer(this.answerForm).then(res => {
-        if (res.body.success == true) {
-          this.newAnswer = res.body.data;
-          this.showEditor = false;
-          this.$Message.success("回答成功");
-        } else {
-          this.$Message.error(res.body.msg);
+      api.postAnswer(this.answerForm).then(
+        res => {
+          if (res.body.success == true) {
+            this.newAnswer = res.body.data;
+            this.showEditor = false;
+            this.$Message.success("回答成功");
+          } else {
+            this.$Message.error(res.body.msg);
+          }
+        },
+        err => {
+          this.$Message.error(err.status + " " + err.statusText);
         }
-      }, err => {
-        this.$Message.error(err.status + " " + err.statusText);
-      });
+      );
     }
   },
   mounted() {
     this.fetchQuestion();
   },
   watch: {
-    '$route' (to, from){
+    $route(to, from) {
       this.fetchQuestion();
     }
   }
@@ -140,7 +148,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 .header {
   padding: 16px 0;
   position: relative;
@@ -149,11 +156,11 @@ export default {
   background: #fff;
   -webkit-box-shadow: 0 1px 3px 0 rgba(0, 37, 55, 0.1);
   box-shadow: 0 1px 3px 0 rgba(0, 37, 55, 0.1);
-  .title{
+  .title {
     cursor: pointer;
     color: #1e1e1e;
   }
-  .title:hover{
+  .title:hover {
     color: #0032bb;
   }
 }
@@ -230,7 +237,7 @@ export default {
   -ms-flex-align: start;
   align-items: flex-start;
   margin: 10px auto;
-  margin-bottom: 50px; 
+  margin-bottom: 50px;
   padding: 0 16px;
   width: 1000px;
   min-height: 100vh;

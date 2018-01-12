@@ -101,7 +101,7 @@ class TopicListSerializer(serializers.ModelSerializer):
 class QuestionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ('id', 'add_time', 'title', 'detail', 'topics', 'answer_count')
+        fields = ('id', 'add_time', 'title', 'detail', 'topics', 'answer_count', 'watch_count')
 
 
 class QuestionSummarySerializer(serializers.ModelSerializer):

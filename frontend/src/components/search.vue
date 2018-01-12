@@ -10,13 +10,13 @@
           @focus="showAskBtn = false" 
           @blur="showAskBtn = true"
           @keyup="handleSearch()"
-          @keyup.enter="seeAll"
+          @keydown.enter="seeAll"
           ref="input">
         <Button type="text" class="searchBtn" @click="seeAll()"><Icon type="ios-search-strong" class="searchIcon" size=20 ></Icon></Button>  
       </div>
       <Button type="primary" class="askBtn" :class="{'is-active':showAskBtn}" @click="$emit('ask')">提问</Button>
     </div>
-    <DropdownMenu slot="list" style="width: 380px;max-height: 500px;" >
+    <DropdownMenu  v-if="searchData" slot="list" style="width: 380px;max-height: 500px;" >
         <div class="divider" v-if="Questions.length">
           问题
         </div>
@@ -77,7 +77,7 @@
           <span class="intro">{{user.description}}</span>
           </div>
         </DropdownItem>
-        <div class="dropDownInfo" v-if="!(Questions.length || Topics.length || Answers.length)">
+        <div class="dropDownInfo" v-if="searchData && !(Questions.length || Topics.length || Answers.length)">
           没有找到有关的内容
         </div>
         <DropdownItem class="dropDownInfo" name="seeAll" divided v-else>

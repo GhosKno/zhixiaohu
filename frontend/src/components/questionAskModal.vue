@@ -87,7 +87,7 @@ export default {
       this.questionForm.detail = this.$refs["quillEditor"].getHtmlContent();
       this.questionForm.topics = this.selectTopics;
       if (this.$refs.quillEditor.isEmpty()){
-        this.$Message.error("请填写问题");
+        this.$Message.error("给问题加上描述吧~");
         return
       }
       api.postQuestion(this.questionForm).then(
@@ -100,7 +100,9 @@ export default {
           }
         },
         err => {
-          this.$Message.error(res.body.msg);
+          // TODO: 完善错误信息
+          // this.$Message.error(err.body.msg);
+          this.$Message.error("请检查输入");
         }
       );
     },

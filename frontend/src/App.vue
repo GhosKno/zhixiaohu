@@ -41,7 +41,7 @@ export default {
   },
   watch:{
     '$route' (to,from){
-      hasErr = false;
+      this.hasErr = false;
     }
   }
 };
