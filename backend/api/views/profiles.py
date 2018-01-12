@@ -5,7 +5,7 @@ from rest_framework.decorators import list_route, detail_route
 from rest_framework.parsers import MultiPartParser
 
 from api.models import Profile
-from api.serializers import ProfileSerializer, ProfileUpdateSerializer, AvatarSerializer, AnswerSerializer, \
+from api.serializers import ProfileSerializer, ProfileSummarySerializer, ProfileUpdateSerializer, AvatarSerializer, AnswerSerializer, \
     QuestionListSerializer, ActivitySerializer
 
 from utils.views import GenericViewSet, success, error
@@ -13,9 +13,10 @@ from utils import mixins
 
 
 class ProfileViewSet(GenericViewSet,
+                     mixins.ListModelMixin,
                      mixins.RetrieveModelMixin):
     filter_backends = (SearchFilter,)
-    search_fields = ('nickname',)
+    search_fields = ('nickname','description')
 
     queryset = Profile.objects.all()
 
@@ -26,7 +27,9 @@ class ProfileViewSet(GenericViewSet,
             return AvatarSerializer
         if self.action == 'activities':
             return ActivitySerializer
-        return ProfileUpdateSerializer
+        if self.action == 'update_info':
+            return ProfileUpdateSerializer
+        return ProfileSummarySerializer
 
     def retrieve(self, request, *args, **kwargs):
         profile = self.get_object()

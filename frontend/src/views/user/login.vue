@@ -98,8 +98,6 @@ export default {
       this.$refs[form].resetFields();
     },
     loginSubmit() {
-
-            console.log(this.loginForm)
       const submit = () => {
         api.login(this.loginForm).then(
           res => {

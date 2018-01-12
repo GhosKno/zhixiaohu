@@ -62,6 +62,7 @@ class Question(models.Model):
     topics = models.ManyToManyField(to=Topic, related_name='questions')
     visit_count = models.IntegerField(default=0)
     watch_count = models.IntegerField(default=0)
+    answer_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

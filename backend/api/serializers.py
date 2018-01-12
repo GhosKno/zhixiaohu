@@ -41,9 +41,6 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
-    answer_count = serializers.IntegerField()
-    watch_count = serializers.IntegerField()
-
     class Meta:
         model = Question
         fields = ('url', 'id', 'add_time', 'title',
@@ -104,7 +101,7 @@ class TopicListSerializer(serializers.ModelSerializer):
 class QuestionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ('id', 'add_time', 'title', 'detail', 'topics')
+        fields = ('id', 'add_time', 'title', 'detail', 'topics', 'answer_count')
 
 
 class QuestionSummarySerializer(serializers.ModelSerializer):
@@ -144,13 +141,12 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 class QuestionDetailSerializer(serializers.ModelSerializer):
     topics = TopicListSerializer(many=True)
     is_watch = serializers.BooleanField(default=False)
-    watch_count = serializers.IntegerField()
 
     class Meta:
         model = Question
         fields = ('author', 'id', 'add_time',
                   'watch_count', 'title', 'detail', 'topics',
-                  'visit_count', 'is_watch')
+                  'visit_count', 'is_watch', 'answer_count')
 
 
 class CommentSerializer(serializers.ModelSerializer):

@@ -9,8 +9,10 @@ const TopicDetailPage = resolve => require(['@/views/topic/topicDetail'], resolv
 const ProfilePage = resolve => require(['@/views/user/profile'], resolve)
 const ProfileEditPage = resolve => require(['@/views/user/profileEdit'], resolve)
 const QuestionPage = resolve => require(['@/views/question/index'], resolve)
+const AllAnswer = resolve => require(['@/views/question/all'], resolve)
+const Answer = resolve => require(['@/views/question/answer'], resolve)
+const SearchPage = resolve => require(['@/views/search/index'], resolve)
 const ErrPage = resolve => require(['@/views/errors/err'], resolve)
-
 export default [{
   path: '/',
   component: App, // 顶级路由, 对应 index.html
@@ -21,20 +23,30 @@ export default [{
       component: home
     },  
     { // 问题详情页
-      path: '/question/:id',
+      path: '/question/:q_id',
       component: QuestionPage,
-      children: [{ // 答案详情页
-        path: '/answer/:id',
+      children: [{
+        path: '',
+        component: AllAnswer
+      },{ // 答案详情页
+        path: 'answer/:a_id',
+        component: Answer
       }]
+    },
+    { // 搜索详情页
+      path: '/search/',
+      component: SearchPage,
+      meta: {title: '查找结果'}
     },
     { // 个人信息页
       path: '/profile/:id',
       component: ProfilePage,
-      children: [{
-        path: '/edit',
-        component: ProfileEditPage,
-        meta: {title: '修改信息'},
-      }]
+    },
+    {
+      path: '/profile-edit',
+      name: 'profileEdit',
+      component: ProfileEditPage,
+      meta: {title: '修改信息'},
     },
     {
       path: '/topics',

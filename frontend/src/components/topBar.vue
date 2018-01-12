@@ -18,47 +18,7 @@
               话题
           </a>
         </Nav>
-        <Dropdown trigger="custom" :visible="!showAskBtn" :transfer="true" placement="bottom-start" @on-click="handleSearchResult">    
-          <div class="search" :class="{'is-active':showAskBtn}">
-            <div class="wrapper">
-              <input class="input" 
-                maxlength="50" 
-                type="text" 
-                placeholder="搜索你想知道的问题..." required 
-                v-model="searchData"
-                @focus="showAskBtn = false" 
-                @blur="showAskBtn = true"
-                @keyup="handleSearch()">
-              <Button type="text" class="searchBtn"><Icon type="ios-search-strong" class="searchIcon" size=20 ></Icon></Button>  
-            </div>
-            <Button type="primary" class="askBtn" :class="{'is-active':showAskBtn}" @click="$refs['questionModal'].open()">提问</Button>
-          </div>
-          <DropdownMenu slot="list" style="width: 380px;" 
-              v-if="searchQuestions.length > 0 || 
-              searchTopics.length > 0 || 
-              searchAnswers.length > 0">
-              <DropdownItem 
-              v-for="item in searchTopics"      
-              :key="item.id"
-              :name="item.id"
-              >{{item.label}}
-              </DropdownItem>
-              <DropdownItem 
-              v-for="(item, index) in searchQuestions"
-              :divided="index == 0"
-              :key="item.id"
-              :name="item.id"
-              >{{item.title}}
-              </DropdownItem>
-              <DropdownItem 
-              v-for="(item, index) in searchAnswers"
-              :divided="index == 0"
-              :key="item.id"
-              :name="item.id"
-              >{{item.title}}
-              </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        <SearchBox @ask="$refs['questionModal'].open()"></SearchBox>
         <div class="rightBtns" v-if="!$store.state.isLogin">
           <Button type="ghost" class="loginBtn" @click="$router.push({name: 'login'})">登录</Button>
           <Button type="primary" class="joinBtn" @click="$router.push({name: 'login', params: {register: true}})">加入知小乎</Button>
@@ -96,24 +56,18 @@
 import cookieManage from "@/mixins/cookieManage";
 import initInfo from "@/mixins/initInfo";
 import api from "@/utils/api";
-
 const questionModal = resolve =>
   require(["@/components/questionAskModal.vue"], resolve);
 const updatePwdModal = resolve =>
   require(["@/components/updatePasswordModal.vue"], resolve);
 const Message = resolve => require(["@/components/message.vue"], resolve);
+const SearchBox = resolve => require(["@/components/search.vue"], resolve);
 export default {
   name: "topBar",
   mixins: [cookieManage, initInfo],
   data() {
     return {
-      theme1: "light",
-      showAskBtn: true,
       unreadMsgsCount: 0,
-      searchData: "",
-      searchQuestions: [],
-      searchAnswers: [],
-      searchTopics: [] 
     };
   },
   methods: {
@@ -143,53 +97,12 @@ export default {
         }
       );
     },
-    handleSearch() {
-      if (this.searchData != "") {
-        api.searchQuestion(this.searchData).then(
-          res => {
-            if (res.body.success) {
-              this.searchQuestions = res.body.data.results;
-            } else {
-              this.$Message.error(res.body.msg);
-            }
-          },
-          err => {
-            this.$Message.error(err.status + " " + err.statusText);
-          }
-        );
-        // api.searchAnswers(this.searchData).then(res => {
-        //     if (res.body.success) {
-        //       this.searchAnswers = res.body.data.results;
-        //     } else {
-        //       this.$Message.error(res.body.msg);
-        //     }
-        //   },
-        //   err => {
-        //     this.$Message.error(err.status + " " + err.statusText);
-        //   }
-        // );
-        api.searchTopics(this.searchData).then(res => {
-            if (res.body.success) {
-              this.searchTopics = res.body.data.results;
-            } else {
-              this.$Message.error(res.body.msg);
-            }
-          },
-          err => {
-            this.$Message.error(err.status + " " + err.statusText);
-          }
-        );
-      }
-    },
-    handleSearchResult(id) {
-      if(!id) return
-      window.location = "/question/" + id;
-    }
   },
   components: {
     questionModal,
     updatePwdModal,
-    Message
+    Message,
+    SearchBox
   },
   created() {
     if (this.initInfo()) this.getUnreadMsg();
@@ -255,75 +168,6 @@ header {
     }
     .userMenu button {
       font-size: 1.2em;
-    }
-  }
-}
-.search {
-  position: relative;
-  -webkit-transition: all .2s;
-  transition: all .2s;
-  &.is-active {
-    padding-right: 94px;
-  }
-  .wrapper {
-    position: relative;
-    .input {
-      width: 300px;
-      height: 34px;
-      padding-left: 10px;
-      padding-right: 50px;
-      font-size: 14px;
-      border: 1px solid #e7eaf1;
-      border-radius: 3px;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      background: #f7f8fa;
-      border: none;
-      outline: none;
-      -webkit-transition: all .2s;
-      transition: all .2s;
-      &:focus {
-        width: 380px;
-        background: #fff;
-        border: 1px solid #9fadc7;
-      }
-      &::placeholder {
-        color: #9fadc7;
-        font-weight: 500;
-      }
-    }
-    .input:focus + .searchBtn .searchIcon {
-      color: #0f88eb;
-    }
-    .input:valid + .searchBtn .searchIcon {
-      color: #fff;
-    }
-    .input:valid + .searchBtn {
-      background: #0f88eb;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      height: 100%;
-    }
-    .searchBtn {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .searchIcon {
-      color: #8590a6;
-    }
-  }
-  .askBtn {
-    position: absolute;
-    right: 15px;
-    bottom: 0;
-    opacity: 0;
-    transform: scale(0);
-    -webkit-transform: scale(0);
-    transition: opacity 0.2s, transform 0.2s, -webkit-transform 0.2s;
-    &.is-active {
-      opacity: 1;
-      transform: scale(1);
     }
   }
 }

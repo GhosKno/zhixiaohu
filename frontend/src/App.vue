@@ -38,6 +38,11 @@ export default {
       this.hasErr=true
       this.err=err
     }
+  },
+  watch:{
+    '$route' (to,from){
+      hasErr = false;
+    }
   }
 };
 </script>

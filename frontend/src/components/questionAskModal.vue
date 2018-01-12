@@ -100,7 +100,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(Object.keys(err.body)[0]+':'+err.body[Object.keys(err.body)[0]][0]);
+          this.$Message.error(res.body.msg);
         }
       );
     },

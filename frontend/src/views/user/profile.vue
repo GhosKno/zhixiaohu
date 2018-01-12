@@ -30,7 +30,7 @@
                     type="ghost" 
                     size="large"
                     style="bottom: 5px;position: absolute;"
-                    @click="$router.push({path: '~/edit'})"
+                    @click="$router.push({path: '/profile-edit'})"
                   >编辑个人资料</Button>
                   <Button 
                     v-else
@@ -588,7 +588,7 @@ export default {
       );
     },
     getHistory() {
-      //获取用户黑历史
+      //获取用户浏览历史
       api.getHistory(this.$route.params.id).then(
         res => {
           if (res.body.success) {

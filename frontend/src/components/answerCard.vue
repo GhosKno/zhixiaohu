@@ -16,7 +16,7 @@
         </Poptip>
         <div class="author-text">
         <div class="name">
-            {{author.nickname}}
+            <span style="cursor:pointer;" @click="$router.push({path: '/profile/'+author.id})">{{author.nickname}}</span>
         </div>
         <div class="badge-text">
             {{author.description||"这个人很懒,没有设置简介"}}
@@ -33,27 +33,51 @@
         :hasFavorite="answer.has_favorite"
         :pk="answer.id"
         :isOwner="$store.state.userid == author.id"
-        ></TextWithToolBar></div>
+        :fold="fold"
+        :copyText="copyText"></TextWithToolBar></div>
 </template>
 <script>
-const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
+const TextWithToolBar = resolve =>
+  require(["@/components/textWithToolBar"], resolve);
 const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
 export default {
   name: "answerCard",
-  components: { TextWithToolBar, UserPoptip},
-  props:{
-      feedTitle:{},
-      answer:{required:true},
+  components: { TextWithToolBar, UserPoptip },
+  props: {
+    feedTitle: {},
+    answer: { required: true },
+    fold: { default: true }
   },
   data() {
-      return {
-          author:{}
-      }
+    return {
+      author: {},
+      copyText: ""
+    };
   },
   methods: {
+    update() {
+      if (this.answer.question) {
+        this.author = this.answer.userSummary;
+        this.copyText =
+          this.answer.question.title +
+          " " +
+          this.author.nickname +
+          "的回答 - 知小乎 http://" +
+          window.location.host +
+          "/question/" +
+          this.answer.question.id +
+          "/answer/" +
+          this.answer.id;
+      }
+    }
   },
-  mounted(){
-      this.author=this.answer.userSummary
+  mounted() {
+    this.update();
+  },
+  watch: {
+    answer() {
+      this.update();
+    }
   }
 };
 </script>
@@ -70,28 +94,28 @@ export default {
   line-height: 1.625;
   margin: 0;
 }
-.info{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
+.info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
-.author-text{
-    margin-left: 5px;
+.author-text {
+  margin-left: 5px;
 }
-.name{
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 24px;
+.name {
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 24px;
 }
-.badge-text{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 14px;
-    line-height: 24px;
-    color: #555;
+.badge-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 24px;
+  color: #555;
 }
 </style>

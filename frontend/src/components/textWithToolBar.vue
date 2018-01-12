@@ -6,13 +6,13 @@
     </div>
     <div class="time">发布于{{this.timeago(postTime)}}</div>
     <ToolBar class="tool-bar"
-        :fold="fold" 
+        :fold="fold"
         :forQuestion="forQuestion" 
         :showFoldBtn="FoldByDefault"
         :commentCount="commentCount"
         @toggleFold="fold=!fold;"
         @writeAnswer="$emit('writeAnswer')"
-        @buWatch="$emit('buWatch')"
+        @cancelWatch="$emit('cancelWatch')"
         @watch="$emit('watch')"
         :zanNum="approve"
         :hasZan="hasApprove"
@@ -31,8 +31,8 @@ export default {
   components: { ToolBar },
   props:{
       text:{},
-      forQuestion: false,
-      coverImg: false,
+      forQuestion: Boolean,
+      coverImg: Boolean,
       commentCount: Number,
       postTime:{},
       approve: Number,
@@ -43,12 +43,15 @@ export default {
       hasFavorite: Boolean,
       isOwner: Boolean,
       copyText: String,
+      fold: {
+          type: Boolean,
+          default: true,
+      }
   },
   data() {
       return {
           fullAnswer: '',
           FoldByDefault: false,
-          fold: true
       }
   },
   methods: {
@@ -60,7 +63,7 @@ export default {
   mounted(){
       setTimeout(()=>{
           this.showFoldBtnFun();
-      },500)
+      },500);
   }
 };
 </script>

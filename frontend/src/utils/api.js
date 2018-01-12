@@ -84,14 +84,17 @@ export default {
     return Vue.http.get(QUESTION + id + '/get_answers/')
   },
 
-  searchQuestion(str) {
-    return Vue.http.get('/api/questions?search=' + str)
+  searchQuestion(str, page = 0) {
+    return Vue.http.get('/api/questions?' + (page ? 'page=' + page +'&': '')+'search=' + str)
   },
-  searchTopics(str) {
-    return Vue.http.get('/api/topics?search=' + str)
+  searchTopics(str, page = 0) {
+    return Vue.http.get('/api/topics?' + (page ? 'page=' + page +'&': '')+'search=' + str)
   },
-  searchAnswers(str) {
-    return Vue.http.get('/api/answers?search=' + str)
+  searchAnswers(str, page = 0) {
+    return Vue.http.get('/api/answers?' + (page ? 'page=' + page +'&': '')+'search=' + str)
+  },
+  searchProfile(str, page = 0) {
+    return Vue.http.get('/api/profiles?' + (page ? 'page=' + page +'&': '')+'search=' + str)
   },
 
   getAllTopics() {

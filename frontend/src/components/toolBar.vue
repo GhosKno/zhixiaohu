@@ -25,7 +25,7 @@
       </svg>
       {{commentBtn}}
     </Button>
-    <Dropdown trigger="click" :transfer="true" @on-click="handleShare()">
+    <Dropdown trigger="click" :transfer="true" @on-click="handleShare">
       <Button type="text" class="actionBtn">
         <svg class="actionIcon">
           <use xlink:href="#share"></use>
@@ -60,7 +60,7 @@
           </svg> {{newHasStar?'取消收藏':'收藏'}}
         </Button>
         <Button type="text" class="actionBtn">
-          <Dropdown trigger="click" :transfer="true" @on-click="handleMore()">
+          <Dropdown trigger="click" :transfer="true" @on-click="handleMore">
               <svg class="actionIcon">
                 <use xlink:href="#more"></use>
               </svg>
@@ -73,8 +73,6 @@
                   <DropdownItem name="noHelp">没有帮助</DropdownItem>
               </DropdownMenu>
           </Dropdown>
-          <Poptip title="提示标题" content="提示内容">
-          </Poptip>
         </Button>
       </span>
       <Button type="text" class="actionBtn right" v-if="showFoldBtn" @click="toggleFold">
@@ -128,6 +126,7 @@ export default {
       default: true
     },
     showFoldBtn: {
+      type: Boolean,
       default: true
     },
     commentCount: Number,
@@ -302,10 +301,18 @@ export default {
       }
     },
     handleMore(name) {
+      console.log(name)
       if (name == "delete") {
-        this.$Message.info("该回答将在 24h 后删除，取消请联系管理员");
+        this.$Notice.info({
+                    title: "删除成功",
+                    desc: "该回答将在 24h 后删除，取消请联系管理员"
+                });
       } else if (name == "edit") {
         this.$Message.info("点击复制链接,分享给你的微信好友吧");
+      } else if (name == "report") {
+        this.$Message.success("举报成功");
+      } else {
+        this.$Message.info("谢谢反馈")
       }
     },
   },

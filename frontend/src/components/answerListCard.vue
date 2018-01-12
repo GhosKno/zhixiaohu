@@ -16,14 +16,14 @@
         </div>
     </Poptip>
     <div class="name">
-        {{author.nickname}}
+        <span style="cursor:pointer;" @click="$router.push({path: '/profile/'+author.id})">{{author.nickname}}</span>
     </div>
     <div class="badge-text">
         {{author.description}}
     </div>
 </div>
     <div class="question">
-        <a :href="'/question/'+answer.question.id" class="title">{{answer.question.title}}</a>
+        <a @click="$router.push({path:'/question/'+answer.question.id+'/answer/'+answer.id})" class="title">{{answer.question.title}}</a>
     </div>
     <TextWithToolBar 
         :text="answer.detail" 
@@ -40,39 +40,55 @@
 </div>
 </template>
 <script>
-const TextWithToolBar = resolve => require(["@/components/textWithToolBar"], resolve);
+const TextWithToolBar = resolve =>
+  require(["@/components/textWithToolBar"], resolve);
 const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
 export default {
   name: "answerListCard",
   components: { TextWithToolBar, UserPoptip },
-  props:{
-      feedTitle:'',
-      answer:{required:true}
+  props: {
+    feedTitle: "",
+    answer: { required: true }
   },
   data() {
-      return {
-          author:{},
-          copyText:{},
-      }
+    return {
+      author: {},
+      copyText: {}
+    };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-      
+    update() {
+      if (this.answer.question) {
+        this.author = this.answer.userSummary;
+        this.copyText =
+          this.answer.question.title +
+          " " +
+          this.author.nickname +
+          "的回答 - 知小乎 http://" +
+          window.location.host +
+          "/question/" +
+          this.answer.question.id +
+          "/answer/" +
+          this.answer.id;
+      }
+    }
   },
-  created () {
-    this.author=this.answer.userSummary
-    this.copyText=this.answer.question.title+' '+this.author.nickname+'的回答 - 知小乎' + window.location.href
+  mounted() {
+    this.update();
   },
-  mounted(){
+  watch: {
+    answer() {
+      this.update();
+    }
   }
 };
 </script>
 
 <style scoped>
-.answer{
-    padding: 13px 18px;
-    margin-top: 10px;
+.answer {
+  padding: 13px 18px;
+  margin-top: 10px;
 }
 .feed-title {
   color: #8590a6;
@@ -94,34 +110,34 @@ export default {
   margin: 0;
   position: relative;
 }
-.title{
-    font-size: 18px;
-    font-weight: 600;
-    font-synthesis: style;
-    line-height: 1.6;
-    color: #1e1e1e;
-    margin-top: -4px;
-    margin-bottom: -4px;
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  font-synthesis: style;
+  line-height: 1.6;
+  color: #1e1e1e;
+  margin-top: -4px;
+  margin-bottom: -4px;
 }
-.title:hover{
-    color:#175199;
+.title:hover {
+  color: #175199;
 }
-.name{
-    margin-left: 5px;
-    display: inline;
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 24px;
+.name {
+  margin-left: 5px;
+  display: inline;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 24px;
 }
-.badge-text{
-    display: inline;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 14px;
-    line-height: 24px;
+.badge-text {
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 24px;
 }
-.avatar{
-    vertical-align: top;
+.avatar {
+  vertical-align: top;
 }
 </style>
