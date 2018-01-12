@@ -1,5 +1,6 @@
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.filters import SearchFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.models import Topic
@@ -9,15 +10,21 @@ from api.utils.views import error, success, GenericViewSet
 from api.utils import mixins
 
 
+class TopicSetPagination(PageNumberPagination):
+    page_size = 16
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
+
+
 # create topic | list topic(search) | list question assocated with topic
 class TopicViewSet(GenericViewSet,
                    mixins.RetrieveModelMixin,
                    mixins.ListModelMixin,
                    mixins.CreateModelMixin):
-
-    filter_backends = (SearchFilter, )
-    search_fields =('label', 'introduction')
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    filter_backends = (SearchFilter,)
+    search_fields = ('label', 'introduction')
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = TopicSetPagination
 
     def get_queryset(self, pk=None):
         return Topic.objects.all()
@@ -92,9 +99,3 @@ class TopicViewSet(GenericViewSet,
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
         return error('no more data')
-
-
-
-
-
-
