@@ -635,6 +635,10 @@ export default {
     this.getWatchQuestions();
     this.getCollectAnswer();
     this.getHistory();
+    if(this.$route.hash) {
+      this.morePaneActiveName = 'collectedAnswer'
+      this.profilePaneActiveName = 'more'
+    }
   },
   mounted() {
     this.$nextTick(() => {

@@ -6,7 +6,7 @@
                 <use xlink:href="#star"></use>
             </svg>
             <div class="nav-text" 
-                @click="$router.push({path: `/profile/${$store.state.userid}`})">
+                @click="$router.push({path: `/profile/${$store.state.userid}#favorite`})">
                 我的收藏</div>
         </a>
         <a class="nav" href="javascript:void(0);">

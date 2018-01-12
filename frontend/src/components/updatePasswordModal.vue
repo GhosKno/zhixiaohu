@@ -1,7 +1,7 @@
 <template>
   <z-modal
     action="/api/users/reset_password/"
-    :onSuccess="settingHandle()"
+    :onSuccess="settingHandle"
     :params="passwordForm"
     successMsg="成功修改密码"
     title="修改密码"
@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     settingHandle() {
-
+      this.$refs['pwdForm'].resetFields()
     },
     open() {
       this.$refs['updatePwd'].open()
