@@ -1,11 +1,13 @@
 from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.response import Response
 
+from api.apps import ApiCli
 from api.models import Question, Activity
 from api.serializers import QuestionCreateSerializer, QuestionDetailSerializer, AnswerSerializer
-from utils import mixins
-from utils.views import GenericViewSet, error, success
+from api.utils import mixins
+from api.utils.views import GenericViewSet, error, success
 
 
 # used for create or show user associated question
@@ -38,14 +40,21 @@ class QuestionViewSet(GenericViewSet,
                 .watchedQuestion\
                 .filter(title=question).count()
             question.is_watch = count
-            question.answer_count = question.answers.count()
-            question.watch_count = question.watchedUser.count()
         else:
             question.is_watch = False
+        ApiCli.process_question(question)
         seri = self.get_serializer(question)
         question.visit_count+=1
         question.save()
         return success(seri.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return success(data=serializer.data)
+        key = list(serializer.errors.keys())[0]
+        return error(key + ': ' + serializer.errors[key][0])
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -64,18 +73,7 @@ class QuestionViewSet(GenericViewSet,
         page = self.paginate_queryset(queryset)
         if page is not None:
             for answer in page:
-                profile = answer.author.profile
-                answer.userSummary = profile
-                answer.comment_count = answer.comments.count()
-                user = request.user
-                if user.is_authenticated:
-                    answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()
-                    answer.has_against = user.profile.disagreed.filter(id=answer.id).exists()
-                    answer.has_favorite = user.profile.favorites.filter(id=answer.id).exists()
-                else:
-                    answer.has_approve = False
-                    answer.has_against = False
-                    answer.has_favorite = False
+                ApiCli.process_answer(answer, request.user)
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)

@@ -1,15 +1,14 @@
 from django.contrib import auth
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from api.models import User, Message, Activity
+from api.models import User, Activity
 from api.serializers import LoginSerializer, RegisterSerializer, ResetPasswordSerializer, ProfileSerializer, \
     MessageSerializer, EmailSerializer
-from utils.views import success, error
+from api.utils.views import success, error
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -46,7 +45,8 @@ class UserViewSet(viewsets.GenericViewSet):
                 seri = ProfileSerializer(profile , context={'request': request})
                 return success(seri.data)
             return error('username or password not correct')
-        return error(seri.errors)
+        key = list(seri.errors.keys())[0]
+        return error(key + ': ' + seri.errors[key][0])
 
     @list_route(methods=['GET'],
                 permission_classes=(IsAuthenticated,))
@@ -60,7 +60,8 @@ class UserViewSet(viewsets.GenericViewSet):
         data = request.data
         seri = self.get_serializer(data=data)
         if not seri.is_valid():
-            return error(seri.errors)
+            key = list(seri.errors.keys())[0]
+            return error(key + ': ' + seri.errors[key][0])
         seri.save()
         username = seri.validated_data['username']
         user = User.objects.get(username=username)

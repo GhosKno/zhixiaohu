@@ -4,8 +4,8 @@ from rest_framework.response import Response
 
 from api.models import Comment
 from api.serializers import CommentSerializer, CommentCreateSerializer
-from utils.views import GenericViewSet
-from utils import mixins
+from api.utils.views import GenericViewSet
+from api.utils import mixins
 
 
 class CommentsViewSet(GenericViewSet,

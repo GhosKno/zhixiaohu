@@ -6,11 +6,12 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
-from api.models import Answer, Message, Activity, Question
+from api.apps import ApiCli
+from api.models import Answer, Message, Activity
 from api.serializers import AnswerSerializer, CommentSerializer, AnswerCreateSerializer, AnswerUpdateSerializer
-from utils.heat import HeatQueue
-from utils.views import error, success, GenericViewSet
-from utils import mixins
+from api.utils.heat import HeatQueue
+from api.utils import mixins
+from api.utils.views import error, success, GenericViewSet
 
 
 class AnswerViewSet(GenericViewSet,
@@ -39,17 +40,7 @@ class AnswerViewSet(GenericViewSet,
         page = self.paginate_queryset(queryset)
         if page is not None:
             for instance in page:
-                instance.userSummary = instance.author.profile
-                instance.comment_count = instance.comments.count()
-                user = request.user
-                if user.is_authenticated:
-                    instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
-                    instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
-                    instance.has_favorite = user.profile.favorites.filter(id=instance.id).exists()
-                else:
-                    instance.has_approve = False
-                    instance.has_against = False
-                    instance.has_favorite = False
+                ApiCli.process_answer(instance, request.user)
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -57,35 +48,25 @@ class AnswerViewSet(GenericViewSet,
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        question = serializer.validated_data['question']
-        #question = Question.objects.get(id=id)
-        if question.answers.filter(author=request.user).exists():
-            return error('you already answered this question')
-        answer = self.perform_create(serializer)
-        answer.userSummary = request.user.profile
-        answer.has_favorite = False
-        answer.has_approve = False
-        answer.has_against = False
-        answer.comment_count = answer.comments.count()
-        seri = AnswerSerializer(answer, context={'request': request})
-#        headers = self.get_success_headers(seri.data)
-        return Response({'success': True, 'data': seri.data}, status=status.HTTP_201_CREATED)
+        if serializer.is_valid():
+            question = serializer.validated_data['question']
+            if question.answers.filter(author=request.user).exists():
+                return error('you already answered this question')
+            answer = self.perform_create(serializer)
+            answer.userSummary = request.user.profile
+            answer.has_favorite = False
+            answer.has_approve = False
+            answer.has_against = False
+            answer.comment_count = answer.comments.count()
+            seri = AnswerSerializer(answer, context={'request': request})
+            return success(seri.data)
+        key = list(serializer.errors.keys())[0]
+        return error(key+': '+serializer.errors[key][0])
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance:
-            instance.userSummary = instance.author.profile
-            instance.comment_count = instance.comments.count()
-            user = request.user
-            if user.is_authenticated:
-                instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
-                instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
-                instance.has_favorite = user.profile.favorites.filter(id=instance.id).exists()
-            else:
-                instance.has_approve = False
-                instance.has_against = False
-                instance.has_favorite = False
+            ApiCli.process_answer(instance, request.user)
             serializer = self.get_serializer(instance)
             return success(serializer.data)
         return error('cant found')
@@ -101,8 +82,7 @@ class AnswerViewSet(GenericViewSet,
         page = self.paginate_queryset(queryset)
         if page is not None:
             for comment in page:
-                profile = comment.author.profile
-                comment.userSummary = profile
+                ApiCli.process_comment(comment)
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)

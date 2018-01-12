@@ -30,12 +30,12 @@ class AvatarSerializer(serializers.Serializer):
     file = serializers.ImageField(default='', )
 
 
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     is_watch = serializers.BooleanField(default=False)
 
     class Meta:
         model = Profile
-        fields = ('id', 'url', 'avatar', 'is_watch',
+        fields = ('id', 'avatar', 'is_watch',
                   'nickname', 'description', 'watchCount',
                   'beWatchCount', 'answerCount')
 
@@ -163,7 +163,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         fields = ('answer', 'detail', 'add_time')
 
 
-class MessageSerializer(serializers.HyperlinkedModelSerializer):
+class MessageSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username'

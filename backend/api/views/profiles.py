@@ -1,15 +1,15 @@
 from rest_framework.filters import SearchFilter
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.parsers import MultiPartParser
 
+from api.apps import ApiCli
 from api.models import Profile
 from api.serializers import ProfileSerializer, ProfileSummarySerializer, ProfileUpdateSerializer, AvatarSerializer, AnswerSerializer, \
     QuestionListSerializer, ActivitySerializer
 
-from utils.views import GenericViewSet, success, error
-from utils import mixins
+from api.utils.views import GenericViewSet, success, error
+from api.utils import mixins
 
 
 class ProfileViewSet(GenericViewSet,
@@ -56,7 +56,8 @@ class ProfileViewSet(GenericViewSet,
         if seri.is_valid():
             seri.save()
             return success()
-        return error(seri.errors)
+        key = list(seri.errors.keys())[0]
+        return error(key + ': ' + seri.errors[key])
 
     # upload avatar
     @list_route(methods=['POST'],
@@ -69,7 +70,8 @@ class ProfileViewSet(GenericViewSet,
             profile.avatar = avatar
             profile.save()
             return success()
-        return error(seri.errors)
+        key = list(seri.errors.keys())[0]
+        return error(key + ': ' + seri.errors[key][0])
 
     @detail_route(methods=['GET'])
     def favorites(self, request, pk=None):
@@ -80,18 +82,7 @@ class ProfileViewSet(GenericViewSet,
         page = self.paginate_queryset(answers)
         if page is not None:
             for answer in page:
-                profile = answer.author.profile
-                answer.userSummary = profile
-                user = request.user
-                if user.is_authenticated:
-                    answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()
-                    answer.has_against = user.profile.disagreed.filter(id=answer.id).exists()
-                    answer.has_favorite = user.profile.favorites.filter(id=answer.id).exists()
-                else:
-                    answer.has_approve = False
-                    answer.has_against = False
-                    answer.has_favorite = False
-                answer.comment_count = answer.comments.count()
+                ApiCli.process_answer(answer, request.user)
             serializer = AnswerSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -106,8 +97,7 @@ class ProfileViewSet(GenericViewSet,
         page = self.paginate_queryset(questions)
         if page is not None:
             for question in page:
-                question.answer_count = question.answers.count()
-                question.watch_count = question.watchedUser.count()
+                ApiCli.process_question(question)
             serializer = QuestionListSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -123,17 +113,7 @@ class ProfileViewSet(GenericViewSet,
         if page is not None:
             for answer in page:
                 profile = answer.author.profile
-                answer.userSummary = profile
-                answer.comment_count = answer.comments.count()
-                user = request.user
-                if user.is_authenticated:
-                    answer.has_approve = user.profile.agreed.filter(id=answer.id).exists()
-                    answer.has_against = user.profile.disagreed.filter(id=answer.id).exists()
-                    answer.has_favorite = user.profile.favorites.filter(id=answer.id).exists()
-                else:
-                    answer.has_approve = False
-                    answer.has_against = False
-                    answer.has_favorite = False
+                ApiCli.process_answer(answer, request.user)
             serializer = AnswerSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -148,8 +128,7 @@ class ProfileViewSet(GenericViewSet,
         page = self.paginate_queryset(questions)
         if page is not None:
             for question in page:
-                question.answer_count = question.answers.count()
-                question.watch_count = question.watchedUser.count()
+                ApiCli.process_question(question)
             serializer = QuestionListSerializer(page, many=True, context={'request': request})
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
@@ -167,32 +146,14 @@ class ProfileViewSet(GenericViewSet,
             for activity in page:
                 if activity.watch:
                     user = request.user
-                    if user.is_authenticated:
-                        activity.watch.is_watch = \
-                        user.profile.watchedUser.filter(
-                            id = activity.watch.id
-                        ).exists()
-                    else:
-                        activity.watch.is_watch = False
+                    ApiCli.process_profile(user, activity.watch)
                 elif activity.question:
-                    activity.question.answer_count = \
-                        activity.question.answers.count()
-                    activity.question.watch_count = \
-                        activity.question.watchedUser.count()
+                    ApiCli.process_question(activity.question)
                 elif activity.answer:
                     profile = activity.answer.author.profile
-                    activity.answer.userSummary = profile
                     instance = activity.answer
-                    instance.comment_count = instance.comments.count()
                     user = request.user
-                    if user.is_authenticated:
-                        instance.has_approve = user.profile.agreed.filter(id=instance.id).exists()
-                        instance.has_against = user.profile.disagreed.filter(id=instance.id).exists()
-                        instance.has_favorite = user.profile.favorites.filter(id=instance.id).exists()
-                    else:
-                        instance.has_approve = False
-                        instance.has_against = False
-                        instance.has_favorite = False
+                    ApiCli.process_answer(instance, user)
 
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
@@ -208,8 +169,7 @@ class ProfileViewSet(GenericViewSet,
         page = self.paginate_queryset(questions)
         if page is not None:
             for question in page:
-                question.answer_count = question.answers.count()
-                question.watch_count = question.watchedUser.count()
+                ApiCli.process_question(question)
             serializer = QuestionListSerializer(page, many=True,
                                                 context={'request': request})
             temp = self.get_paginated_response(serializer.data)
@@ -224,13 +184,7 @@ class ProfileViewSet(GenericViewSet,
         users = profile.watchedUser.all()
         profiles = []
         for user in users:
-            if request.user.is_authenticated:
-                user.profile.is_watch = request.user.profile\
-                    .watchedUser.filter(
-                    id=user.id
-                ).exists()
-            else:
-                user.profile.is_watch = False
+            ApiCli.process_profile(request.user, user)
             profiles.append(user.profile)
         page = self.paginate_queryset(profiles)
         if page is not None:

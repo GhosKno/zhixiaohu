@@ -2,7 +2,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.permissions import IsAuthenticated
 
 from api.models import Message
-from utils.views import GenericViewSet, success, error
+from api.utils.views import GenericViewSet, success, error
 
 
 class MessageViewSet(GenericViewSet):

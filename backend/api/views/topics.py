@@ -2,11 +2,11 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from api.models import Topic, Question
+from api.models import Topic
 from api.serializers import TopicListSerializer, QuestionListSerializer, AnswerSerializer
 
-from utils.views import error, success, GenericViewSet
-from utils import mixins
+from api.utils.views import error, success, GenericViewSet
+from api.utils import mixins
 
 
 # create topic | list topic(search) | list question assocated with topic
@@ -28,6 +28,15 @@ class TopicViewSet(GenericViewSet,
         if self.action == 'get_answers':
             return AnswerSerializer
         return TopicListSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return success(serializer.data)
+        key = list(serializer.errors.keys())[0]
+        return error(key + ': ' + serializer.errors[key][0])
 
     @detail_route(methods=['GET'])
     def get_questions(self, request, pk=None):

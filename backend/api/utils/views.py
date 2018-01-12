@@ -1,7 +1,7 @@
 from rest_framework.response import Response as __resp
 from rest_framework.viewsets import GenericViewSet as __View
 
-from utils import mixins
+from api.utils import mixins
 
 
 def success(data=None, context=None):

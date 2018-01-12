@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
 from backend import settings
-from utils.views import success
+from api.utils.views import success
 
 
 class ImageAPIView(APIView):

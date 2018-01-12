@@ -18,10 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 from backend import settings
-import redis
-import threading
-
-from utils.heat import HeatQueue
 
 urlpatterns = [
     path('admin/', admin.site.urls),
