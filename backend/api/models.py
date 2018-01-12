@@ -115,7 +115,7 @@ class Comment(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
 
-    avatar = models.ImageField(default='static/avatar.jpg', upload_to='avatar')
+    avatar = models.ImageField(default='/static/avatar.jpg', upload_to='avatar')
     nickname = models.CharField(max_length=30)
     description = models.TextField(max_length=500)
 

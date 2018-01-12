@@ -146,7 +146,7 @@ class ProfileViewSet(GenericViewSet,
             for activity in page:
                 if activity.watch:
                     user = request.user
-                    ApiCli.process_profile(user, activity.watch)
+                    ApiCli.process_profile(user, activity.watch.user)
                 elif activity.question:
                     ApiCli.process_question(activity.question)
                 elif activity.answer:

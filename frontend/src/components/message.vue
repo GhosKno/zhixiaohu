@@ -18,11 +18,11 @@
         <p>
           <span class="user">{{msg.author}}</span>
           <span class="text">回答了</span>
-          <span class="question" @click="toQuestion(msg.answer,msg.id)">
-            {{msg.question.slice(0,12)}}...
+          <span class="question" @click="toQuestion(msg.question.id,msg.answer,msg.id)">
+            {{msg.question.title.slice(0,12)}}...
           </span>
         </p>
-          <span class="time">{{msg.time}}</span>
+          <!-- <span class="time">{{msg.time}}</span> -->
         </div>
       </Scroll>
     </div>
@@ -66,13 +66,14 @@ export default {
         this.nextUrl = res.body.data.next;
       });
     },
-    toQuestion(answerUrl, id) {
+    toQuestion(questionid, answerid, id) {
       api.markRead(id);
-      this.$http.get(this.transUrl(answerUrl)).then(res => {
-        this.currentAnswer = res.body.data;
-      });
-      this.showDetailModal = true;
+      // this.$http.get(this.transUrl(answerUrl)).then(res => {
+      //   this.currentAnswer = res.body.data;
+      // });
+      // this.showDetailModal = true;
       this.readHandle()
+      this.$router.push({path: `/question/${questionid}/answer/${answerid}`})
     },
     handleReachBottom() {
       return new Promise(resolve => {

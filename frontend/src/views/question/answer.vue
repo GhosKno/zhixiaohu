@@ -5,6 +5,7 @@
         </Button>
         <div class="answer card">
         <AnswerCard
+         v-id="answer.id"
          :answer="answer"
          :fold="false"
         ></AnswerCard>

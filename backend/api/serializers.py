@@ -168,10 +168,7 @@ class MessageSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='username'
     )
-    question = serializers.SlugRelatedField(
-        read_only=True,
-        slug_field='title'
-    )
+    question = QuestionSummarySerializer()
 
     class Meta:
         model = Message
