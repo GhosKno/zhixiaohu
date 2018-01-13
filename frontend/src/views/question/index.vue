@@ -186,7 +186,7 @@ export default {
   width: 696px;
 }
 .sidebar {
-  width: 257px;
+  width: 280px;
 }
 .footer {
   width: 1000px;

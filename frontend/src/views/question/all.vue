@@ -10,10 +10,12 @@
     </div>
     <div class="main card">
     <AnswerCard
+    class="answer"
     v-for="(item, index) in answerList"
     :key="index"
     :answer="item"
-    @closeWriteAnswer="$emit('closeWriteAnswer')">
+    @closeWriteAnswer="$emit('closeWriteAnswer')"
+    :showQuestion="false">
     </AnswerCard>
     <Spin size="large" fix v-if="loading"></Spin>
     </div>
@@ -106,9 +108,9 @@ export default {
 
 .answer {
   position: relative;
-  padding: 5px 18px;
+  padding: 5px 10px;
   margin-top: 10px;
-  width: 694px;
+  width: 688px;
 }
 .answer + .answer:after {
   position: absolute;

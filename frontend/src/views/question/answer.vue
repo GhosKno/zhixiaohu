@@ -9,6 +9,7 @@
          :answer="answer"
          :fold="false"
          @closeWriteAnswer="$emit('closeWriteAnswer')"
+         :showQuestion="false"
         ></AnswerCard>
         <Spin size="large" fix v-if="loading"></Spin>
         </div>
