@@ -55,7 +55,6 @@ export default {
       currentAnswer: ""
     };
   },
-  props: ['readHandle'],
   components: {
     AnswerListCard
   },
@@ -67,12 +66,12 @@ export default {
       });
     },
     toQuestion(questionid, answerid, id) {
-      api.markRead(id);
-      // this.$http.get(this.transUrl(answerUrl)).then(res => {
-      //   this.currentAnswer = res.body.data;
-      // });
-      // this.showDetailModal = true;
-      this.readHandle()
+      api.markRead(id).then(res => {
+        if(res.body.success){
+          this.$emit('readed')
+        }
+        // TODO: handle err
+      });
       this.$router.push({path: `/question/${questionid}/answer/${answerid}`})
     },
     handleReachBottom() {

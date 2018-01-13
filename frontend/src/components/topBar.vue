@@ -33,14 +33,14 @@
             <message 
               ref="message" 
               slot="content"
-              :readHandle="getUnreadMsg"
+              @readed="getUnreadMsg"
             ></message>
           </Poptip>
           <Dropdown trigger="click">
             <Avatar :src="$store.state.avatarUrl" />
             <DropdownMenu slot="list" class="userMenu">
               <DropdownItem><Button type="text" icon="person" @click="$router.push({path: `/profile/${$store.state.userid}`})">我的主页</Button></DropdownItem>
-              <DropdownItem><Button type="text" icon="gear-b" @click="$refs['updatePwd'].open()">设置</Button></DropdownItem>
+              <DropdownItem><Button type="text" icon="gear-b" @click="$refs['updatePwd'].open()">修改密码</Button></DropdownItem>
               <DropdownItem><Button type="text" icon="log-out" @click="logout">退出</Button></DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -118,7 +118,6 @@ header {
   -webkit-box-shadow: 0 1px 3px 0 rgba(0, 34, 77, 0.1);
   box-shadow: 0 1px 3px 0 rgba(0, 34, 77, 0.1);
   background-clip: content-box;
-  z-index: 100;
   overflow: inherit;
   .inner {
     position: relative;

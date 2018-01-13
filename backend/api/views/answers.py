@@ -69,7 +69,7 @@ class AnswerViewSet(GenericViewSet,
             ApiCli.process_answer(instance, request.user)
             serializer = self.get_serializer(instance)
             return success(serializer.data)
-        return error('cant found')
+        return error('can\'t found')
 
     @detail_route(methods=['GET'])
     def get_comments(self, request, pk=None):

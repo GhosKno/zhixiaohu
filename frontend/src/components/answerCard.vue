@@ -31,6 +31,7 @@
         :hasApprove="answer.has_approve"
         :hasAgainst="answer.has_against"
         :hasFavorite="answer.has_favorite"
+        @closeWriteAnswer="$emit('closeWriteAnswer')"
         :pk="answer.id"
         :isOwner="$store.state.userid == author.id"
         :fold="fold"

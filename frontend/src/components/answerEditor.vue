@@ -11,22 +11,22 @@
             </div>
         </div>
       </div>
-      <common-editor
+      <CommonEditor
           ref="quillEditor"
           placeholder="在这里写下你的回答"
           :height="200"
-        ></common-editor>
+        ></CommonEditor>
     <Button type="primary" class="postBtn" @click="postAnswer">提交回答</Button>
   </div>
 </template>
 <script>
-import commonEditor from "@/components/commonEditor";
+const CommonEditor = resolve => require(["@/components/commonEditor"], resolve);
 import api from "@/utils/api";
 
 export default {
   name: "AnswerEditor",
   components: {
-    commonEditor
+    CommonEditor
   },
   data() {
     return {

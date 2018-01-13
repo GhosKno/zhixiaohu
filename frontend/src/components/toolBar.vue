@@ -3,11 +3,11 @@
     <div class="btn-group" v-if="forQuestion">
         <Button v-if="newIsWatch" @click="cancelWatchQuestion()">取消关注</Button>
         <Button type="primary" @click="watchQuestion()" v-else>关注问题</Button>
-        <Button type="ghost" class="writeBtn" @click="$emit('writeAnswer')">
+        <Button type="ghost" class="writeBtn" @click="handleWrite()">
           <svg class="writeIcon">
               <use xlink:href="#pen"></use>
           </svg>
-          写回答
+          {{writing?'放弃回答':'写回答'}}
         </Button>
     </div>
     <!--点赞-->
@@ -109,7 +109,8 @@ export default {
       newHasStar: Boolean,
       newZanNum: Number,
       newIsWatch: Boolean,
-      clipboard:{}
+      clipboard:{},
+      writing: false,
     };
   },
   props: {
@@ -301,20 +302,28 @@ export default {
       }
     },
     handleMore(name) {
-      console.log(name)
       if (name == "delete") {
         this.$Notice.info({
                     title: "删除成功",
                     desc: "该回答将在 24h 后删除，取消请联系管理员"
                 });
       } else if (name == "edit") {
-        this.$Message.info("点击复制链接,分享给你的微信好友吧");
+        this.$emit("editAnswer");
       } else if (name == "report") {
         this.$Message.success("举报成功");
       } else {
         this.$Message.info("谢谢反馈")
       }
     },
+    handleWrite(){
+      if(this.writing){
+        this.writing=false;
+        this.$emit('closeWriteAnswer');
+      }else{
+        this.writing=true;
+        this.$emit('writeAnswer');
+      }
+    }
   },
   created() {
     this.clipboard = new Clipboard(`#copyBtn${this._uid}`);

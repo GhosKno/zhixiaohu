@@ -85,16 +85,16 @@ export default {
   },
 
   searchQuestion(str, page = 0) {
-    return Vue.http.get('/api/questions?' + (page ? 'page=' + page +'&': '')+'search=' + str)
+    return Vue.http.get('/api/questions?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchTopics(str, page = 0) {
-    return Vue.http.get('/api/topics?' + (page ? 'page=' + page +'&': '')+'search=' + str)
+    return Vue.http.get('/api/topics?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchAnswers(str, page = 0) {
-    return Vue.http.get('/api/answers?' + (page ? 'page=' + page +'&': '')+'search=' + str)
+    return Vue.http.get('/api/answers?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchProfile(str, page = 0) {
-    return Vue.http.get('/api/profiles?' + (page ? 'page=' + page +'&': '')+'search=' + str)
+    return Vue.http.get('/api/profiles?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
 
   getAllTopics() {
@@ -120,8 +120,8 @@ export default {
   postAnswer(data) {
     return Vue.http.post(ANSWER, data)
   },
-  updateAnswer(data) {
-    return Vue.http.post(ANSWER, data)
+  updateAnswer(id, data) {
+    return Vue.http.put(ANSWER + id +'/', data)
   },
   getAnswers() {
     return Vue.http.get(ANSWER)

@@ -35,12 +35,12 @@
           </Option>
         </Select>
         <span class="editor-label">问题描述（可选）：</span>
-        <common-editor
+        <CommonEditor
           ref="quillEditor"
           placeholder="问题背景、条件等详细信息"
           :height="150"
           :imgUpload="false"
-        ></common-editor>
+        ></CommonEditor>
       </div>
       <div slot="footer" style="text-align:center;">
         <Button 
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import commonEditor from "@/components/commonEditor";
+import CommonEditor from "@/components/commonEditor";
 import api from "@/utils/api";
 
 export default {
@@ -86,23 +86,22 @@ export default {
     submitQuestion() {
       this.questionForm.detail = this.$refs["quillEditor"].getHtmlContent();
       this.questionForm.topics = this.selectTopics;
-      if (this.$refs.quillEditor.isEmpty()){
-        this.$Message.error("给问题加上描述吧~");
-        return
-      }
+      // if (this.$refs.quillEditor.isEmpty()){
+      //   this.$Message.error("给问题加上描述吧~");
+      //   return
+      // }
       api.postQuestion(this.questionForm).then(
         res => {
           if (res.body.success) {
             this.$Message.success("添加问题成功");
+            this.$router.push({path: '/question/'+res.body.data.id});
             this.showQuestionForm = false;
           } else {
             this.$Message.info(res.body.msg);
           }
         },
         err => {
-          // TODO: 完善错误信息
-          // this.$Message.error(err.body.msg);
-          this.$Message.error("请检查输入");
+          this.$Message.error(err.status+': '+err.statusText);
         }
       );
     },
@@ -119,7 +118,7 @@ export default {
     }
   },
   components: {
-    commonEditor
+    CommonEditor
   }
 };
 </script>

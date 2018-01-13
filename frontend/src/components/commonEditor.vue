@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div id="quillEditor" :style="{'height': `${height}px`}">
+    <div id="quillEditor" :style="{'height': `${height}px`, 'z-index': 999}">
     </div>
     <Upload 
       action="//up-z1.qiniu.com"
       :before-upload="beforeUpload"
       :data="uploadData"
-      :on-success="upScuccess"
+      :on-success="upSuccess"
       ref="upload"
       style="display: none;">
         <Button 
@@ -39,7 +39,8 @@
       },
       height: {
         default: 150
-      }
+      },
+      html: String
     },
     data(){
       return {
@@ -52,14 +53,14 @@
           placeholder: this.placeholder,
           modules: {
             toolbar: [
-              ['bold','italic','underline', 'strike'],
+              ['bold','underline', 'strike', 'color'],
               [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'color': [] }, { 'background': [] }],
-              [{ 'size': ['small', false, 'large', 'huge'] }],              
-              ['clean']
+              ['link', 'blockquote', 'code-block'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
             ],
             imageImport: true
           },
+          bounds: '#quillEditor',
           strict: false,
           theme: 'snow'
         },
@@ -73,10 +74,13 @@
       getHtmlContent() {
         return this.quillEditorRoot.container.firstChild.innerHTML
       },
+      setHtmlContent() {
+        this.quillEditorRoot.clipboard.dangerouslyPasteHTML(0, this.html);
+      },
       isEmpty() {
-        var text = this.quillEditorRoot.getText()
-        var s1 = text.replace(/[\r\n]/g, '').replace(/[ ]/g, '');
-        return (s1 == '') ? true : false;
+        var html = this.quillEditorRoot.getText()
+        var text = html.replace(/[\r\n]/g, '').replace(/[ ]/g, '');
+        return (text == '') ? true : false;
       },
       beforeUpload(file) {
         return this.upload(file)
@@ -91,7 +95,7 @@
             }
         })
       },
-      upScuccess(e, file, fileList) {
+      upSuccess(e, file, fileList) {
         let url = ''
         url = STATICDOMAIN + e.key
         if (url != null && url.length > 0) {
@@ -135,6 +139,13 @@
           fileInput.click()
         }
       })
+      this.setHtmlContent()
+    },
+    watch: {
+      html(){
+        console.log(this.html)
+        this.setHtmlContent()
+      }
     }
   }
 </script>

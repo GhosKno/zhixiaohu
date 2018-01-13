@@ -5,9 +5,10 @@
         </Button>
         <div class="answer card">
         <AnswerCard
-         v-id="answer.id"
+         v-if="answer.id"
          :answer="answer"
          :fold="false"
+         @closeWriteAnswer="$emit('closeWriteAnswer')"
         ></AnswerCard>
         <Spin size="large" fix v-if="loading"></Spin>
         </div>

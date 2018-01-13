@@ -33,7 +33,8 @@
           <TextWithToolBar 
             :text="question.detail" 
             :forQuestion="true"
-            @writeAnswer="showEditor=!showEditor"
+            @writeAnswer="showEditor=true"
+            @closeWriteAnswer="showEditor=false"
             @watch="question.watch_count++"
             @cancelWatch="question.watch_count--"
             :postTime="question.add_time"
@@ -49,7 +50,10 @@
         class="answer-editor card" 
         v-if="showEditor" 
         @post="postAnswer"></AnswerEditor>
-        <router-view @err="$emit('err')" :numOfAnswer="question.answer_count" :newAnswer="newAnswer"></router-view>
+        <router-view 
+        @err="$emit('err')" 
+        :numOfAnswer="question.answer_count"
+        @closeWriteAnswer="showEditor=false"></router-view>
       </div>
       <SideBar class="sidebar"></SideBar>
     </div>
@@ -78,7 +82,6 @@ export default {
       err: {},
       showEditor: false,
       answerForm: {},
-      newAnswer: {},
       copyText: ""
     };
   },
@@ -123,9 +126,9 @@ export default {
       api.postAnswer(this.answerForm).then(
         res => {
           if (res.body.success == true) {
-            this.newAnswer = res.body.data;
             this.showEditor = false;
             this.$Message.success("回答成功");
+            this.$router.push({path: '/question/'+this.$route.params.q_id+'/answer/'+res.body.data.id});
           } else {
             this.$Message.error(res.body.msg);
           }

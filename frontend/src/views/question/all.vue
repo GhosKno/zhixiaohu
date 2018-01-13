@@ -12,7 +12,8 @@
     <AnswerCard
     v-for="(item, index) in answerList"
     :key="index"
-    :answer="item">
+    :answer="item"
+    @closeWriteAnswer="$emit('closeWriteAnswer')">
     </AnswerCard>
     <Spin size="large" fix v-if="loading"></Spin>
     </div>
@@ -48,7 +49,6 @@ export default {
   },
   props: {
       numOfAnswer: 0,
-      newAnswer: {}
   },
   methods: {
     fetchAnswer: function() {
@@ -72,11 +72,6 @@ export default {
   },
   mounted() {
     this.fetchAnswer();
-  },
-  watch: {
-    newAnswer(){
-      this.answerList.push(this.newAnswer)
-    }
   }
 };
 </script>
