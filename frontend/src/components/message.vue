@@ -15,34 +15,19 @@
           :class="{'message-content': true, 'has-read': msg.has_read}"
           :key="index"
         >
-        <p>
           <span class="user">{{msg.author}}</span>
           <span class="text">回答了</span>
           <span class="question" @click="toQuestion(msg.question.id,msg.answer,msg.id)">
-            {{msg.question.title.slice(0,12)}}...
+            {{msg.question.title.slice(0,30)}}
           </span>
-        </p>
           <!-- <span class="time">{{msg.time}}</span> -->
         </div>
       </Scroll>
     </div>
-    <Modal 
-      v-model="showDetailModal" 
-      width="800"
-      :styles="{left: '20px', 'margin-left': '0px'}"
-    >
-      <AnswerListCard
-        v-if="Object.keys(currentAnswer).length > 0"
-        :answer="currentAnswer"
-      >
-      </AnswerListCard>
-    </Modal>
   </div>
 </template>
 
 <script>
-const AnswerListCard = resolve =>
-  require(["@/components/answerListCard"], resolve);
 import api from "@/utils/api";
 
 export default {
@@ -51,12 +36,8 @@ export default {
     return {
       messages: [],
       nextUrl: "",
-      showDetailModal: false,
       currentAnswer: ""
     };
-  },
-  components: {
-    AnswerListCard
   },
   methods: {
     open() {
@@ -121,6 +102,9 @@ export default {
     width: 95%;
     margin: 0 auto;
     border-bottom: 1px #dddee1 solid;
+    overflow: hidden;
+      white-space: nowrap;
+  text-overflow: ellipsis;
     .user,
     .question {
       color: #3e7ac2;
@@ -130,9 +114,6 @@ export default {
     }
     .question {
       cursor: pointer;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
     // span{word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;overflow: hidden ;}
     .time {

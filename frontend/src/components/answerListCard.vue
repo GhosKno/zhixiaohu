@@ -3,36 +3,38 @@
     <div class="feed-title">
         {{feedTitle}}
     </div>
-<div class="info">
-    <Poptip 
-        trigger="hover" 
-        placement="right-start"
-        @on-popper-hide="() => $refs['userPoptip'].blur()"
-        @on-popper-show="() => $refs['userPoptip'].load()"
-        width="400">
-        <Avatar class="avatar" shape="square" size="small"  :src="author.avatar"  />
-        <div class="api" slot="content"> 
-            <user-poptip ref="userPoptip" :id="author.id||0"></user-poptip>
-        </div>
-    </Poptip>
-    <div class="name">
-        <span style="cursor:pointer;" @click="$router.push({path: '/profile/'+author.id})">{{author.nickname}}</span>
-    </div>
-    <div class="badge-text">
-        {{author.description}}
-    </div>
-</div>
+    <div class="info" v-if="author">
+      <Poptip trigger="hover" width="400"
+          placement="right-start"
+          @on-popper-hide="() => $refs['userPoptip'].blur()"
+          @on-popper-show="() => $refs['userPoptip'].load()">
+          <Avatar class="avatar" shape="square" size="small"  :src="author.avatar"  />
+          <div class="api" slot="content"> 
+              <user-poptip ref="userPoptip" :id="author.id"></user-poptip>
+          </div>
+      </Poptip>
+      <div class="name">
+          <span style="cursor:pointer;" @click="$router.push({path: '/profile/'+author.id})">{{author.nickname}}</span>
+      </div>
+      <div class="badge-text">
+          {{author.description}}
+      </div>
+  </div>
     <div class="question">
         <a @click="$router.push({path:'/question/'+answer.question.id+'/answer/'+answer.id})" class="title">{{answer.question.title}}</a>
     </div>
     <TextWithToolBar 
+        v-if="answer"
         :text="answer.detail" 
         :numOfComment="answer.comment_count"
         :postTime="answer.add_time"
         :approve="answer.approve"
         :pk="answer.id"
+<<<<<<< Updated upstream
         :coverImg="answer.coverImg"
         @closeWriteAnswer="$emit('closeWriteAnswer')"
+=======
+>>>>>>> Stashed changes
         :hasApprove="answer.has_approve"
         :hasAgainst="answer.has_against"
         :hasFavorite="answer.has_favorite"
@@ -49,20 +51,16 @@ export default {
   components: { TextWithToolBar, UserPoptip },
   props: {
     feedTitle: "",
-    answer: { required: true }
+    answer: {}
   },
-  data() {
-    return {
-      author: {},
-      copyText: ""
-    };
-  },
-  computed: {},
-  methods: {
-    update() {
+  computed: {
+    author() {
+      if (this.answer.userSummary) return this.answer.userSummary;
+      return null;
+    },
+    copyText() {
       if (this.answer.question) {
-        this.author = this.answer.userSummary;
-        this.copyText =
+        return (
           this.answer.question.title +
           " " +
           this.author.nickname +
@@ -71,16 +69,10 @@ export default {
           "/question/" +
           this.answer.question.id +
           "/answer/" +
-          this.answer.id;
+          this.answer.id
+        );
       }
-    }
-  },
-  mounted() {
-    this.update();
-  },
-  watch: {
-    answer() {
-      this.update();
+      return "";
     }
   }
 };

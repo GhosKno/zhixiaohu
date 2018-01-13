@@ -12,7 +12,9 @@ const store = new Vuex.Store({
     userName: '',
     avatarUrl: ''
   },
-  actions,
+  actions: {
+    handler: () => {}
+  },
   mutations: {
     [LOGIN](state) {
       state.isLogin = true

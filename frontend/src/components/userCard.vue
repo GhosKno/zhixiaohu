@@ -20,8 +20,8 @@
       <div class="user-name" @click="$router.push({path: `/profile/${userid}`})">{{userName}}</div>
       <div class="description">{{description.length > 0 ? description : '这个用户很懒，什么都没留下'}}</div>
       <div class="detail" v-if="answer">
-        <span>{{answer}}回答</span>
-        <span>{{watched}}关注者</span>
+        <span>{{answer}} 个回答</span>
+        <span>{{watched}} 个关注者</span>
       </div>
     </Col>
     <Col span="5" class="button-handle" v-if="userid !== $store.state.userid">
@@ -40,6 +40,7 @@
 
 
 <script>
+import api from "@/utils/api";
 const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
   export default {
     name: 'userCard',

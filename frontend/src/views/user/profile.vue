@@ -152,7 +152,7 @@
                           class="no-data-content" 
                           v-if="watchedUser.length == 0"
                         >
-                          还没有关注用户
+                          空空如也~
                         </div>
                         <user-card
                           v-for="(user, index) in watchedUser"
@@ -173,7 +173,7 @@
                           class="no-data-content" 
                           v-if="watchedBy.length == 0"
                         >
-                          还没有关注用户
+                          空空如也~
                         </div>
                         <user-card
                           v-for="(user, index) in watchedBy"
@@ -609,6 +609,7 @@ export default {
         res => {
           if (res.body.success) {
             let data = res.body.data;
+            console.log(data);
             this.nickName = data.nickname;
             this.isWatched = data.is_watch;
             this.description =
@@ -624,26 +625,34 @@ export default {
           this.$Message.error(err.status + " " + err.statusText);
         }
       );
+    },
+    init() {
+      if (this.initInfo()) {
+        this.getProfile();
+      }
+      this.getActivities();
+      this.getWatchUser();
+      this.getWatchQuestions();
+      this.getCollectAnswer();
+      this.getHistory();
+      if (this.$route.hash) {
+        this.morePaneActiveName = "collectedAnswer";
+        this.profilePaneActiveName = "more";
+      }
     }
   },
   created() {
-    if (this.initInfo()) {
-      this.getProfile();
-    }
-    this.getActivities();
-    this.getWatchUser();
-    this.getWatchQuestions();
-    this.getCollectAnswer();
-    this.getHistory();
-    if(this.$route.hash) {
-      this.morePaneActiveName = 'collectedAnswer'
-      this.profilePaneActiveName = 'more'
-    }
+    this.init();
   },
   mounted() {
     this.$nextTick(() => {
       this.windowHeight = document.body.clientHeight;
     });
+  },
+  watch: {
+    $route(from, to) {
+      this.init();
+    }
   }
 };
 </script>
@@ -653,7 +662,7 @@ export default {
   overflow: hidden !important;
 }
 .profile {
-  height: 100vh;
+  height: auto;
   min-width: 1000px;
   .parent-height {
     height: 100%;
@@ -699,6 +708,8 @@ export default {
           .profile-pane-body {
             min-height: 300px;
             .activities-content {
+              margin: 15px 0;
+              border:1px solid #dddee1;
               .activities-header {
                 color: #8590a6;
                 margin: 10px 0 -5px 10px;
