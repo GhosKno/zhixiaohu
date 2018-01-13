@@ -61,7 +61,7 @@ const questionModal = resolve =>
 const updatePwdModal = resolve =>
   require(["@/components/updatePasswordModal.vue"], resolve);
 const Message = resolve => require(["@/components/message.vue"], resolve);
-const SearchBox = resolve => require(["@/components/search.vue"], resolve);
+const SearchBox = resolve => require(["@/components/searchBox.vue"], resolve);
 export default {
   name: "topBar",
   mixins: [cookieManage, initInfo],

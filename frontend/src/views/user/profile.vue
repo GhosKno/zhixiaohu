@@ -96,10 +96,10 @@
                           <div class="activities-header">
                             赞同了回答
                           </div>
-                          <AnswerListCard
+                          <AnswerCard
                             :answer="item.answer"
                           >
-                          </AnswerListCard>
+                          </AnswerCard>
                         </template>
                       </div>
                     </div>
@@ -113,12 +113,12 @@
                       >
                         还没有回答
                       </div>
-                      <AnswerListCard
+                      <AnswerCard
                         v-for="(item, index) in answerList"
                         :key="index"
                         :answer="item"
                       >
-                      </AnswerListCard>
+                      </AnswerCard>
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="提问" name="question">
@@ -214,12 +214,12 @@
                         >
                           还没有收藏的回答
                         </div>
-                        <AnswerListCard
+                        <AnswerCard
                           v-for="(item, index) in favorites"
                           :key="index"
                           :answer="item"
                         >
-                        </AnswerListCard>
+                        </AnswerCard>
                       </el-tab-pane>
                       <el-tab-pane class="more-tab-pane" label="围观历史" name="history">
                         <div 
@@ -289,8 +289,8 @@
 </template>
 
 <script>
-const AnswerListCard = resolve =>
-  require(["@/components/answerListCard"], resolve);
+const AnswerCard = resolve =>
+  require(["@/components/answerCard"], resolve);
 const userCard = resolve => require(["@/components/userCard"], resolve);
 const questionCard = resolve => require(["@/components/questionCard"], resolve);
 import cookieManage from "@/mixins/cookieManage";
@@ -301,7 +301,7 @@ export default {
   name: "profile",
   mixins: [cookieManage, initInfo],
   components: {
-    AnswerListCard,
+    AnswerCard,
     userCard,
     questionCard
   },

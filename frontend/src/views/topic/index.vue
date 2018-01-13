@@ -63,7 +63,7 @@
 
 <script>
   const ZModal = resolve => require(['@/components/z-modal'], resolve)
-  const AnswerListCard = resolve => require(['@/components/answerListCard'], resolve)
+  const AnswerCard = resolve => require(['@/components/answerCard'], resolve)
   import api from "@/utils/api";
 
   export default {
@@ -117,7 +117,7 @@
       }
     },
     components: {
-      AnswerListCard,
+      AnswerCard,
       ZModal
     },
     mounted () {

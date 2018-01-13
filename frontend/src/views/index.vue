@@ -41,11 +41,11 @@
             ></QuestionCard>
             </div>
             <div v-else>
-            <AnswerListCard
+            <AnswerCard
               v-for="(ans, index) in answerList"
               :key="index"
               :answer="ans">
-            </AnswerListCard>
+            </AnswerCard>
             </div>
             <div style="color: #9eaad1;text-align: center;" v-if="emptyList">
               <div style="font-size: 70px;">щ(ﾟДﾟщ)!||<br/> 空无一物</div>
@@ -61,8 +61,8 @@
 </template>
 
 <script>
-const AnswerListCard = resolve =>
-  require(["@/components/answerListCard"], resolve);
+const AnswerCard = resolve =>
+  require(["@/components/answerCard"], resolve);
 const SideBar = resolve => require(["@/components/sideBar"], resolve);
 const QuestionModal = resolve =>
   require(["@/components/questionAskModal"], resolve);
@@ -75,7 +75,7 @@ import api from "@/utils/api";
 export default {
   name: "home",
   mixins: [cookieManage, initInfo],
-  components: { AnswerListCard, SideBar, QuestionModal, QuestionCard },
+  components: { AnswerCard, SideBar, QuestionModal, QuestionCard },
   data() {
     return {
       windowHeight: 900,

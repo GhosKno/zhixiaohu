@@ -36,12 +36,12 @@
                 <div class="no-data-content" v-if="answerList.length == 0">
                   当前话题下没有内容
                 </div>
-                <AnswerListCard
+                <AnswerCard
 									v-for="(item, index) in answerList"
 									:key="index"
 									:answer="item"
 								>
-								</AnswerListCard>
+								</AnswerCard>
               </div>
             </Col>
           </Row>
@@ -52,8 +52,8 @@
 </template>
 
 <script>
-const AnswerListCard = resolve =>
-  require(["@/components/answerListCard"], resolve);
+const AnswerCard = resolve =>
+  require(["@/components/answerCard"], resolve);
 import api from "@/utils/api";
 
 export default {
@@ -106,7 +106,7 @@ export default {
     }
   },
   components: {
-    AnswerListCard
+    AnswerCard
   },
   mounted() {
     this.$nextTick(() => {

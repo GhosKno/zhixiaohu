@@ -1,5 +1,5 @@
 <template>
-<div class="answer" ref="answerCard">
+<div ref="answerCard" class="card">
     <div class="feed-title">
         {{feedTitle}}
     </div>
@@ -74,6 +74,10 @@ export default {
 </script>
 
 <style scoped>
+.card{
+  padding: 13px 18px;
+  margin-top: 10px;
+}
 .feed-title {
   color: #8590a6;
   line-height: 1;

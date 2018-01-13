@@ -19,12 +19,11 @@
         </TabPane>
 
         <TabPane class="panel" :label="'回答('+AnswerCount+')'" icon="chatbubbles">
-            <AnswerListCard
+            <AnswerCard
               v-for="(ans, index) in Answers"
               :key="index"
-              :answer="ans"
-              class="answer-card">
-            </AnswerListCard>
+              :answer="ans">
+            </AnswerCard>
             <Page class="pagination" :total="AnswerCount" @on-change="searchAnswer"></Page>
         </TabPane>
 
@@ -58,8 +57,8 @@
 </template>
 
 <script>
-const AnswerListCard = resolve =>
-  require(["@/components/answerListCard"], resolve);
+const AnswerCard = resolve =>
+  require(["@/components/answerCard"], resolve);
 import api from "@/utils/api";
 import common from "@/utils/common";
 
@@ -78,7 +77,7 @@ export default {
       ProfileCount: 0
     };
   },
-  components: { AnswerListCard },
+  components: { AnswerCard },
   methods: {
     searchQuestion(page = 0) {
       api.searchQuestion(this.SearchQuery, page).then(
@@ -215,9 +214,6 @@ export default {
       height: auto;
       max-height: 73px;
     }
-  }
-  .answer-card {
-    margin: 10px 0;
   }
   .intro {
     font-size: 14px;
