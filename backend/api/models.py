@@ -91,7 +91,7 @@ class Answer(models.Model):
 
     class Meta:
         db_table = 'answer'
-        ordering = ('add_time',)
+        ordering = ('-add_time',)
 
 
 class Comment(models.Model):
@@ -144,7 +144,7 @@ class Message(models.Model):
     has_read = models.BooleanField(default=False)
 
     receiver = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='messages')
-    author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='author')
+    author = models.ForeignKey(to=Profile, on_delete=models.CASCADE, related_name='author')
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE, related_name='question')
     answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE, related_name='answer')
     time = models.DateField(auto_now_add=True)
@@ -194,4 +194,4 @@ class Activity(models.Model):
 
     class Meta:
         db_table = 'activity'
-        ordering = ('time',)
+        ordering = ('-time',)

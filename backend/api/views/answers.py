@@ -182,7 +182,6 @@ def add_message(rec, question, answer, author):
                                      answer=answer,
                                      author=author)
     message.save()
-    return True
 
 
 def msg_thread(question, user, answer):
@@ -192,7 +191,7 @@ def msg_thread(question, user, answer):
     users = q_users | u_users  # merge
     for rec in users:
         receiver = rec.user
-        add_message(receiver, question, answer, user)
+        add_message(receiver, question, answer, user.profile)
 
     for topic in question.topics.all():
         HeatQueue.put(topic)
