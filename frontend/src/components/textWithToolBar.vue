@@ -19,7 +19,7 @@
             :fold="newFold"
             :forQuestion="forQuestion" 
             :showFoldBtn="foldByDefault"
-            :commentCount="commentCount"
+            :numOfComment="numOfComment"
             @toggleFold="newFold=!newFold;"
             @writeAnswer="$emit('writeAnswer')"
             @closeWriteAnswer="$emit('closeWriteAnswer')"
@@ -48,7 +48,7 @@ export default {
   props: {
     text: {},
     forQuestion: Boolean,
-    commentCount: Number,
+    numOfComment: Number,
     postTime: {},
     approve: Number,
     pk: {},

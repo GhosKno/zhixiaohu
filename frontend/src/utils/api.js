@@ -121,7 +121,7 @@ export default {
     return Vue.http.post(ANSWER, data)
   },
   updateAnswer(id, data) {
-    return Vue.http.put(ANSWER + id +'/', data)
+    return Vue.http.put(ANSWER + id + '/', data)
   },
   getAnswers() {
     return Vue.http.get(ANSWER)
@@ -147,8 +147,8 @@ export default {
   CancelStarAnswer(id) {
     return Vue.http.get(ANSWER + id + '/cancel_favorite/')
   },
-  getComments(id) {
-    return Vue.http.get(ANSWER + id + '/get_comments/')
+  getComments(id, page) {
+    return Vue.http.get(ANSWER + id + '/get_comments' + (page ? '?page=' + page : ''))
   },
   postComment(data) {
     return Vue.http.post(COMMENT, data)

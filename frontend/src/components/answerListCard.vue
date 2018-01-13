@@ -27,11 +27,12 @@
     </div>
     <TextWithToolBar 
         :text="answer.detail" 
-        :commentCount="answer.comment_count"
+        :numOfComment="answer.comment_count"
         :postTime="answer.add_time"
         :approve="answer.approve"
         :pk="answer.id"
         :coverImg="answer.coverImg"
+        @closeWriteAnswer="$emit('closeWriteAnswer')"
         :hasApprove="answer.has_approve"
         :hasAgainst="answer.has_against"
         :hasFavorite="answer.has_favorite"

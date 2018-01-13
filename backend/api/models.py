@@ -57,7 +57,7 @@ class Question(models.Model):
                                related_name="published")
     add_time = models.DateTimeField(u"添加时间", auto_now_add=True)
     title = models.CharField(u"标题", max_length=100, unique=True)
-    detail = models.TextField(u"描述")
+    detail = models.TextField(u"描述", blank=True)
     # watches in accounts
     topics = models.ManyToManyField(to=Topic, related_name='questions')
     visit_count = models.IntegerField(default=0)

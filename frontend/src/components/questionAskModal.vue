@@ -17,6 +17,7 @@
           placeholder="问题标题"
         />
         <Select
+          :transfer="true"
           class="question-input"
           v-model="selectTopics"
           filterable
@@ -84,12 +85,12 @@ export default {
       this.showQuestionForm = true;
     },
     submitQuestion() {
-      this.questionForm.detail = this.$refs["quillEditor"].getHtmlContent();
       this.questionForm.topics = this.selectTopics;
-      // if (this.$refs.quillEditor.isEmpty()){
-      //   this.$Message.error("给问题加上描述吧~");
-      //   return
-      // }
+      if (this.$refs.quillEditor.isEmpty()){
+        this.questionForm.detail = ""
+      } else {
+        this.questionForm.detail = this.$refs["quillEditor"].getHtmlContent();
+      }
       api.postQuestion(this.questionForm).then(
         res => {
           if (res.body.success) {

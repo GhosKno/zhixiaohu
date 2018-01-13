@@ -51,7 +51,7 @@ class AnswerViewSet(GenericViewSet,
         if serializer.is_valid():
             question = serializer.validated_data['question']
             if question.answers.filter(author=request.user).exists():
-                return error('you already answered this question')
+                return error('你已经回答过该问题了')
             answer = self.perform_create(serializer)
             answer.userSummary = request.user.profile
             answer.has_favorite = False
@@ -69,13 +69,13 @@ class AnswerViewSet(GenericViewSet,
             ApiCli.process_answer(instance, request.user)
             serializer = self.get_serializer(instance)
             return success(serializer.data)
-        return error('can\'t found')
+        return error('没有找到该回答')
 
     @detail_route(methods=['GET'])
     def get_comments(self, request, pk=None):
         answer = self.get_object()
         if answer is None:
-            return error("no answer found")
+            return error("没有找到该评论所在的回答")
 
         queryset = self.filter_queryset(answer.comments.all())
 
@@ -86,7 +86,7 @@ class AnswerViewSet(GenericViewSet,
             serializer = self.get_serializer(page, many=True)
             temp = self.get_paginated_response(serializer.data)
             return success(temp.data)
-        return error('no more data')
+        return error('没有更多了')
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -104,9 +104,9 @@ class AnswerViewSet(GenericViewSet,
         profile = request.user.profile
         answer = self.get_object()
         if answer is None:
-            return error('no answer found')
+            return error('没有找到你想赞的回答')
         if profile.agreed.filter(id=answer.id).exists():
-            return error('you have agree this')
+            return error('你已经赞过了')
 
         answer.approve += 1
         answer.save()
@@ -122,7 +122,7 @@ class AnswerViewSet(GenericViewSet,
         profile = request.user.profile
         answer = self.get_object()
         if answer is None:
-            return error('no answer found')
+            return error('没有找到你想取消赞的回答')
         answer.approve -= 1
         answer.save()
         profile.agreed.remove(answer)
@@ -135,7 +135,7 @@ class AnswerViewSet(GenericViewSet,
         profile = request.user.profile
         answer = self.get_object()
         if answer is None:
-            return error('no answer found')
+            return error('没有找到你想踩的回答')
         answer.against += 1
         answer.save()
         profile.disagreed.add(answer)
@@ -148,7 +148,7 @@ class AnswerViewSet(GenericViewSet,
         profile = request.user.profile
         answer = self.get_object()
         if answer is None:
-            return error('no answer found')
+            return error('没有找到你想取消踩的回答')
         answer.against -= 1
         answer.save()
         profile.disagreed.remove(answer)
@@ -160,7 +160,7 @@ class AnswerViewSet(GenericViewSet,
         profile = request.user.profile
         answer = self.get_object()
         if answer is None:
-            return error('no answer found')
+            return error('没有找到你想收藏的回答')
         profile.favorites.add(answer)
         profile.save()
         return success()
@@ -170,7 +170,7 @@ class AnswerViewSet(GenericViewSet,
         profile = request.user.profile
         answer = self.get_object()
         if answer is None:
-            return error('no answer found')
+            return error('没有找到你想取消收藏的回答')
         profile.favorites.remove(answer)
         profile.save()
         return success()

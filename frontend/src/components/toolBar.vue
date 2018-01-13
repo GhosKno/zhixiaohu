@@ -81,11 +81,11 @@
       </Button>
 <!-- 
 <Modal v-model="showComment" v-if="forQuestion">
-  <CommentList :commentCount="commentCount" :pk="pk" :comments="comments">
+  <CommentList :numOfComment="numOfComment" :pk="pk" :comments="comments">
   </CommentList>
 </Modal> -->
 <div class="commentCard" v-show="showComment">
-  <CommentList :commentCount="commentCount" :pk="pk" :comments="comments">
+  <CommentList :numOfComment="numOfComment" :pk="pk">
   </CommentList>
   <div slot="footer"></div>
 </div>
@@ -103,14 +103,13 @@ export default {
     return {
       showComment: false,
       commentBtn: "评论",
-      comments: [],
       newHasZan: Boolean,
       newHasCai: Boolean,
       newHasStar: Boolean,
       newZanNum: Number,
       newIsWatch: Boolean,
-      clipboard:{},
-      writing: false,
+      clipboard: {},
+      writing: false
     };
   },
   props: {
@@ -130,7 +129,7 @@ export default {
       type: Boolean,
       default: true
     },
-    commentCount: Number,
+    numOfComment: Number,
     pk: {},
     isWatch: {
       type: Boolean,
@@ -144,8 +143,8 @@ export default {
   methods: {
     toggleComment: function() {
       if (this.showComment) {
-        if (this.commentCount > 0) {
-          this.commentBtn = this.commentCount + " 条评论";
+        if (this.numOfComment > 0) {
+          this.commentBtn = this.numOfComment + " 条评论";
         } else {
           this.commentBtn = "评论";
         }
@@ -178,20 +177,6 @@ export default {
         res => {
           if (res.body.success == true) {
             this.newIsWatch = false;
-          } else {
-            this.$Message.error(res.body.msg);
-          }
-        },
-        err => {
-          this.$Message.error(err.status + " " + err.statusText);
-        }
-      );
-    },
-    getComments() {
-      api.getComments(this.pk).then(
-        res => {
-          if (res.body.success == true) {
-            this.comments = res.body.data.results;
           } else {
             this.$Message.error(res.body.msg);
           }
@@ -304,42 +289,51 @@ export default {
     handleMore(name) {
       if (name == "delete") {
         this.$Notice.info({
-                    title: "删除成功",
-                    desc: "该回答将在 24h 后删除，取消请联系管理员"
-                });
+          title: "删除成功",
+          desc: "该回答将在 24h 后删除，取消请联系管理员"
+        });
       } else if (name == "edit") {
         this.$emit("editAnswer");
       } else if (name == "report") {
         this.$Message.success("举报成功");
       } else {
-        this.$Message.info("谢谢反馈")
+        this.$Message.info("谢谢反馈");
       }
     },
-    handleWrite(){
-      if(this.writing){
-        this.writing=false;
-        this.$emit('closeWriteAnswer');
-      }else{
-        this.writing=true;
-        this.$emit('writeAnswer');
+    handleWrite() {
+      if (this.writing) {
+        this.writing = false;
+        this.$emit("closeWriteAnswer");
+      } else {
+        this.writing = true;
+        this.$emit("writeAnswer");
+      }
+    },
+    initData() {
+      this.clipboard = new Clipboard(`#copyBtn${this._uid}`);
+      this.clipboard.on("success", e => {
+        this.$Message.success("复制成功,分享给你的好友吧");
+      });
+      this.newHasCai = this.hasCai;
+      this.newHasZan = this.hasZan;
+      this.newHasStar = this.hasStar;
+      this.newZanNum = this.zanNum;
+      this.newIsWatch = this.isWatch;
+      this.showComment = false;
+      this.writing = false;
+      if (this.numOfComment > 0) {
+        this.commentBtn = this.numOfComment + " 条评论";
+      } else {
+        this.commentBtn = "评论";
       }
     }
   },
   created() {
-    this.clipboard = new Clipboard(`#copyBtn${this._uid}`);
-    this.clipboard.on("success", e => {
-      this.$Message.success("复制成功,分享给你的好友吧");
-    });
-    this.newHasCai = this.hasCai;
-    this.newHasZan = this.hasZan;
-    this.newHasStar = this.hasStar;
-    this.newZanNum = this.zanNum;
-    this.newIsWatch = this.isWatch;
-    if (!this.forQuestion) this.getComments();
-    if (this.commentCount > 0) {
-      this.commentBtn = this.commentCount + " 条评论";
-    } else {
-      this.commentBtn = "评论";
+    this.initData()
+  },
+  watch: {
+    '$route' (to, from) {
+      this.initData()
     }
   }
 };

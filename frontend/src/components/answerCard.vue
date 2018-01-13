@@ -25,7 +25,7 @@
     </div>
     <TextWithToolBar 
         :text="answer.detail" 
-        :commentCount="answer.comment_count"
+        :numOfComment="answer.comment_count"
         :postTime="answer.add_time"
         :approve="answer.approve"
         :hasApprove="answer.has_approve"

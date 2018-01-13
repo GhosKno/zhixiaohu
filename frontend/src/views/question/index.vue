@@ -177,10 +177,11 @@ export default {
   justify-content: space-between;
   width: 1000px;
   height: 100%;
-  padding: 0 16px;
-  margin: 0 auto;
+  margin: 10px auto;
 }
-
+.main{
+  margin-bottom: 20px;
+}
 .answer-flow {
   width: 696px;
 }
@@ -189,7 +190,6 @@ export default {
 }
 .footer {
   width: 1000px;
-  padding: 0 16px;
   margin: 0 auto;
 }
 .countItem {
@@ -228,22 +228,6 @@ export default {
   color: #3e7ac2;
   background: #eef4fa;
   border-radius: 100px;
-}
-.main {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: flex-start;
-  margin: 10px auto;
-  margin-bottom: 50px;
-  padding: 0 16px;
-  width: 1000px;
-  min-height: 100vh;
 }
 .answer-editor {
   width: 696px;
