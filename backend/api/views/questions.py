@@ -57,7 +57,10 @@ class QuestionViewSet(GenericViewSet,
         return error(key + ': ' + serializer.errors[key][0])
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        question = serializer.save(author=self.request.user)
+        profile = self.request.user.profile
+        profile.watchedQuestion.add(question)
+        profile.save()
 
     @detail_route(methods=['GET'])
     def get_answers(self, request, pk):

@@ -176,7 +176,7 @@ class AnswerViewSet(GenericViewSet,
         return success()
 
 
-def addMessageForUser(rec, question, answer, author):
+def add_message(rec, question, answer, author):
     message = Message.objects.create(receiver=rec,
                                      question=question,
                                      answer=answer,
@@ -192,6 +192,7 @@ def msg_thread(question, user, answer):
     users = q_users | u_users  # merge
     for rec in users:
         receiver = rec.user
-        addMessageForUser(receiver, question, answer, user)
+        add_message(receiver, question, answer, user)
+
     for topic in question.topics.all():
         HeatQueue.put(topic)
