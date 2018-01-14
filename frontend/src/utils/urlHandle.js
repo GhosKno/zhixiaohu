@@ -1,5 +1,5 @@
 const transUrl = (url) => {
-  if (url.includes('127.0.0.1')) {
+  if (url.includes('127.0.0.1') || url.includes('http')) {
     let re = /(\w+):\/\/([^\:|\/]+)(\:\d*)?(.*\/)([^#|\?|\n]+)?(#.*)?(\?.*)?/i;
     return url.match(re).slice(4).join('')
   }

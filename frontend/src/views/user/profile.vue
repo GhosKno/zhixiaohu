@@ -133,6 +133,7 @@
                       <question-card
                         v-for="(item, index) in askQuestion"
                         :key="index"
+                        :id="item.id"
                         :title="item.title"
                         :time="item.add_time"
                         :answers="item.answer_count"

@@ -83,7 +83,7 @@ const UserPoptip = resolve => require(["@/components/userPoptip"], resolve);
     },
     methods: {
       watchPeopleHandle() {
-        if(this.isWatched){
+        if(!this.isWatched){
           api.watchSb(this.userid).then(res => {
             if(!res.body.success) {
               this.$Message.error('操作失败')

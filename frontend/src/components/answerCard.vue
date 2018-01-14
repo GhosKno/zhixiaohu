@@ -60,7 +60,7 @@ export default {
       return null
     },
     copyText(){
-      if (this.answer.question){
+      if (this.answer){
         return this.answer.question.title +
           " " +
           this.author.nickname +
