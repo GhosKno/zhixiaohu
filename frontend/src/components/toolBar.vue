@@ -84,7 +84,7 @@
   <CommentList :numOfComment="numOfComment" :pk="pk" :comments="comments">
   </CommentList>
 </Modal> -->
-<div class="commentCard" v-show="showComment">
+<div class="commentCard" v-show="showComment && !forQuestion">
   <CommentList ref="commentList" :numOfComment="numOfComment" :pk="pk">
   </CommentList>
   <div slot="footer"></div>

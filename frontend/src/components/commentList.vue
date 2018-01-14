@@ -60,7 +60,7 @@ export default {
   name: "commentList",
   components: { UserPoptip },
   props: {
-    pk: {},
+    pk: 0,
     numOfComment: 0
   },
   data() {

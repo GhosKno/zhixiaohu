@@ -40,18 +40,17 @@ describe('AnswerCard.vue', () => {
       expect(vm.$el.querySelector('.question')).to.not.exist
       expect(vm.$data.copyText).to.equal('地球的半径是多少？ 马丽亚的回答 - 知小乎 http://' +
         window.location.host + '/question/4/answer/1')
-      done();
-    }, 200);
+      done()
+    }, 200)
   })
   it('点击用户昵称', () => {
     const Constructor = Vue.extend(AnswerCard)
     const vm = new Constructor(DATA).$mount()
-    const name = vm.$el.querySelector('.name');
-    name.click();
+    const name = vm.$el.querySelector('.name')
+    name.click()
     vm.$nextTick(() => {
-      expect(vm.$router.path).to.equal('/profile/2')
-      done();
-    });
-    
+      expect(vm.$route.path).to.equal('/profile/2')
+      done()
+    })
   })
 })
