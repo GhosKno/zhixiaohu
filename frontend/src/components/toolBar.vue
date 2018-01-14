@@ -158,11 +158,15 @@ export default {
       this.$emit("toggleFold");
     },
     watchQuestion() {
-      this.$emit("watch");
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       api.watchQuestion(this.pk).then(
         res => {
           if (res.body.success == true) {
             this.newIsWatch = true;
+            this.$emit("watch");
           } else {
             this.$Message.error(res.body.msg);
           }
@@ -173,11 +177,15 @@ export default {
       );
     },
     cancelWatchQuestion() {
-      this.$emit("cancelWatch");
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       api.cancelWatchQuestion(this.pk).then(
         res => {
           if (res.body.success == true) {
             this.newIsWatch = false;
+            this.$emit("cancelWatch");
           } else {
             this.$Message.error(res.body.msg);
           }
@@ -188,6 +196,10 @@ export default {
       );
     },
     Zan() {
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       if (this.newHasCai) this.CancelCai();
       api.zanAnswer(this.pk).then(
         res => {
@@ -204,6 +216,10 @@ export default {
       );
     },
     cancelZan() {
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       api.cancelZanAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
@@ -219,6 +235,10 @@ export default {
       );
     },
     Cai() {
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       if (this.newHasZan) this.cancelZan();
       api.caiAnswer(this.pk).then(
         res => {
@@ -234,6 +254,10 @@ export default {
       );
     },
     CancelCai() {
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       api.CancelCaiAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
@@ -248,6 +272,10 @@ export default {
       );
     },
     Star() {
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       api.starAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
@@ -262,6 +290,10 @@ export default {
       );
     },
     CancelStar() {
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       api.CancelStarAnswer(this.pk).then(
         res => {
           if (res.body.success == true) {
@@ -302,6 +334,10 @@ export default {
       }
     },
     handleWrite() {
+      if (!this.$store.state.isLogin){
+          this.$Message.info("加入知小乎，一起分享你刚编的故事吧~");
+          return
+      }
       if (this.writing) {
         this.writing = false;
         this.$emit("closeWriteAnswer");

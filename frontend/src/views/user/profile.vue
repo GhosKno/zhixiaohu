@@ -516,11 +516,13 @@ export default {
             this.activities = res.body.data.results;
             this.nextUrl = res.body.data.next;
           } else {
-            this.$Message.error(res.body.msg);
+            //this.$Message.error(res.body.msg);
+            this.$emit("err");
           }
         },
         err => {
-          this.$Message.error(err.status + " " + api.errInfo[err.status]);
+         //this.$Message.error(err.status + " " + api.errInfo[err.status]);
+         this.$emit("err");
         }
       );
     },
@@ -618,11 +620,13 @@ export default {
             this.watchedUserCount = data.watchCount;
             this.avatarUrl = data.avatar;
           } else {
-            this.$Message.error(res.body.msg);
+            //this.$Message.error(res.body.msg);
+            this.$emit("err");
           }
         },
         err => {
-          this.$Message.error(err.status + " " + api.errInfo[err.status]);
+          this.$emit("err");
+          //this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
