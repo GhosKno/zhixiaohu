@@ -144,7 +144,7 @@ export default {
     toggleComment: function() {
       if (this.showComment) {
         if (this.numOfComment > 0) {
-          this.refs.commentList.fetchComments()
+          this.$refs.commentList.fetchComments()
           this.commentBtn = this.numOfComment + " 条评论";
         } else {
           this.commentBtn = "评论";

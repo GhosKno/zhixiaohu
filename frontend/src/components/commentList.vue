@@ -33,7 +33,7 @@
               </Button>
           </div>
       </div>
-      <Page size="small" class="pagination" :total="numOfComment" @on-change="fetchComments"></Page>
+      <Page v-if="numOfComment>10" size="small" class="pagination" :total="numOfComment" @on-change="fetchComments"></Page>
     </div>
     <div class="footer">
       <div class="commentEditor" :class="{'is-active': showCommentBtn}" >
