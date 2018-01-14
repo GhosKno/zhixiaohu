@@ -7,6 +7,7 @@ from api.apps import ApiCli
 from api.models import Question, Activity
 from api.serializers import QuestionCreateSerializer, QuestionDetailSerializer, AnswerSerializer
 from api.utils import mixins
+from api.utils.heat import HeatQueue
 from api.utils.views import GenericViewSet, error, success
 
 
@@ -46,6 +47,8 @@ class QuestionViewSet(GenericViewSet,
         seri = self.get_serializer(question)
         question.visit_count+=1
         question.save()
+        for topic in question.topics.all():
+            HeatQueue.put_visited(topic)
         return success(seri.data)
 
     def create(self, request, *args, **kwargs):

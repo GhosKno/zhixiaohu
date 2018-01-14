@@ -194,4 +194,4 @@ def msg_thread(question, user, answer):
         add_message(receiver, question, answer, user.profile)
 
     for topic in question.topics.all():
-        HeatQueue.put(topic)
+        HeatQueue.put_answered(topic)
