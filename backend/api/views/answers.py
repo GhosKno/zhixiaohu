@@ -188,8 +188,14 @@ def msg_thread(question, user, answer):
     q_users = question.watchedUser.all()
     u_users = user.watchedBy.all()
 
+    temp = set()
+
     users = q_users | u_users  # merge
     for rec in users:
+        id = rec.user.id
+        if id in temp:
+            continue
+        temp.add(id)
         receiver = rec.user
         add_message(receiver, question, answer, user.profile)
 
