@@ -101,7 +101,7 @@ export default {
           this.$Message.error(res.body.msg);
         }
       }, err => {
-        this.$Message.error(err.status + " " + err.statusText);
+        this.$Message.error(err.status + " " + api.errInfo[err.status]);
       });
     }
   },

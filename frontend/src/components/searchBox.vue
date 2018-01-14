@@ -98,7 +98,10 @@ export default {
       Questions: [],
       Answers: [],
       Topics: [],
-      Profiles: []
+      Profiles: [],
+      errs: [],
+      failedMsg: [],
+      finishNum: 0
     };
   },
   methods: {
@@ -108,11 +111,13 @@ export default {
           if (res.body.success) {
             this.Questions = res.body.data.results;
           } else {
-            this.$Message.error(res.body.msg);
+            this.failedMsg.push(res.body.msg);
           }
+          this.finishNum++;
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.errs.push(err);
+          this.finishNum++;
         }
       );
     },
@@ -122,11 +127,13 @@ export default {
           if (res.body.success) {
             this.Answers = res.body.data.results;
           } else {
-            this.$Message.error(res.body.msg);
+            this.failedMsg.push(res.body.msg);
           }
+          this.finishNum++;
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.errs.push(err);
+          this.finishNum++;
         }
       );
     },
@@ -136,11 +143,13 @@ export default {
           if (res.body.success) {
             this.Topics = res.body.data.results;
           } else {
-            this.$Message.error(res.body.msg);
+            this.failedMsg.push(res.body.msg);
           }
+          this.finishNum++;
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.errs.push(err);
+          this.finishNum++;
         }
       );
     },
@@ -150,11 +159,13 @@ export default {
           if (res.body.success) {
             this.Profiles = res.body.data.results;
           } else {
-            this.$Message.error(res.body.msg);
+            this.failedMsg.push(res.body.msg);
           }
+          this.finishNum++;
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.errs.push(err);
+          this.finishNum++;
         }
       );
     },
@@ -168,24 +179,36 @@ export default {
     },
     handleSearchResult(id) {
       if (id.length == 1) return;
-      if (id[0] == 'a') {
+      if (id[0] == "a") {
         this.$router.push({ path: "/question/" + id.slice(1) });
-      } else if (id[0] == 'q') {
+      } else if (id[0] == "q") {
         this.$router.push({ path: "/question/" + id.slice(1) });
-      } else if (id[0] == 't') {
+      } else if (id[0] == "t") {
         this.$router.push({ path: "/topic/" + id.slice(1) });
-      } else if (id[0] == 'u') {
+      } else if (id[0] == "u") {
         this.$router.push({ path: "/profile/" + id.slice(1) });
-      } else if (id == 'seeAll') {
-        this.seeAll()
+      } else if (id == "seeAll") {
+        this.seeAll();
       }
     },
-    seeAll(){
-      this.$refs.input.blur()
+    seeAll() {
+      this.$refs.input.blur();
       this.$router.push({ path: "/search/?query=" + this.searchData });
     },
     getContent(html) {
       return common.getContent(html);
+    }
+  },
+  watch: {
+    finishNum() {
+      if (this.finishNum == 4) {
+        if (this.failedMsg.length) {
+          this.$Message.info(this.failedMsg[0]);
+        } else if (this.errs.length) {
+          this.$Message.error(this.errs[0].status + ' ' + api.errInfo[this.errs[0].status]);
+        }
+        this.finishNum = 0;
+      }
     }
   }
 };
@@ -295,7 +318,7 @@ export default {
       vertical-align: top;
     }
   }
-  .question-detail{
+  .question-detail {
     width: 280px;
     white-space: nowrap;
     text-overflow: ellipsis;

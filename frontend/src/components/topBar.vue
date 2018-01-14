@@ -82,7 +82,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
           this.cookieLogout();
         }
       );
@@ -93,7 +93,7 @@ export default {
           this.unreadMsgsCount = res.body.data.count;
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },

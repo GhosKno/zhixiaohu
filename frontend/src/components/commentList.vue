@@ -34,6 +34,7 @@
           </div>
       </div>
       <Page v-if="numOfComment>10" size="small" class="pagination" :total="numOfComment" @on-change="fetchComments"></Page>
+      <div v-else>还没有评论</div>
     </div>
     <div class="footer">
       <div class="commentEditor" :class="{'is-active': showCommentBtn}" >
@@ -97,7 +98,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },

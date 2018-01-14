@@ -143,7 +143,6 @@
     },
     watch: {
       html(){
-        console.log(this.html)
         this.setHtmlContent()
       }
     }

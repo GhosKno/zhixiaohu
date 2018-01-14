@@ -8,8 +8,16 @@ const ANSWER = '/api/answers/';
 const COMMENT = '/api/comments/';
 const MESSAGE = '/api/messages/';
 const MEDIA = '/api/media/';
-
+const errInfo = {
+  '403':"请检查是否登录",
+  '500':"服务器内部错误",
+  '502':"服务器故障，请稍后访问",
+  '503':"服务器维护中",
+  '504':"服务器维护或网络故障",
+  '404':"未找到",
+}
 export default {
+  errInfo,
   login(data) {
     return Vue.http.post(USER + 'login/', data)
   },
@@ -85,16 +93,16 @@ export default {
   },
 
   searchQuestion(str, page = 0) {
-    return Vue.http.get(QUESTION + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(QUESTION + '?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchTopics(str, page = 0) {
-    return Vue.http.get(TOPIC + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(TOPIC + '?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchAnswers(str, page = 0) {
-    return Vue.http.get(ANSWER + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(ANSWER + '?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchProfile(str, page = 0) {
-    return Vue.http.get(PROFILE + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(PROFILE + '?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
 
   getAllTopics() {

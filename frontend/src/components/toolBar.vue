@@ -168,7 +168,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -183,7 +183,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -199,7 +199,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -214,7 +214,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -229,7 +229,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -243,7 +243,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -257,7 +257,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -271,7 +271,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },

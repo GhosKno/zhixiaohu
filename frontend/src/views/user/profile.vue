@@ -459,7 +459,7 @@ export default {
             }
           },
           err => {
-            this.$Message.error(err.status + " " + err.statusText);
+            this.$Message.error(err.status + " " + api.errInfo[err.status]);
           }
         );
       } else {
@@ -472,7 +472,7 @@ export default {
             }
           },
           err => {
-            this.$Message.error(err.status + " " + err.statusText);
+            this.$Message.error(err.status + " " + api.errInfo[err.status]);
           }
         );
       }
@@ -490,7 +490,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
       api.getFollower(this.$route.params.id).then(
@@ -504,7 +504,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -520,7 +520,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -536,7 +536,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -552,7 +552,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -568,7 +568,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -584,7 +584,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -600,7 +600,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -610,7 +610,6 @@ export default {
         res => {
           if (res.body.success) {
             let data = res.body.data;
-            console.log(data);
             this.nickName = data.nickname;
             this.isWatched = data.is_watch;
             this.description =
@@ -623,7 +622,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },

@@ -13,7 +13,7 @@
                     'X-CSRFTOKEN': this.$cookie.get('csrftoken'),
                   }"
                   action="/api/profiles/avatar/"
-                  :show-upload-list=false
+                  :show-upload-list="false"
                   :on-success="getProfile"
                 >
                   <div class="edit-avatar">
@@ -119,7 +119,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -135,7 +135,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     },
@@ -156,7 +156,7 @@ export default {
           }
         },
         err => {
-          this.$Message.error(err.status + " " + err.statusText);
+          this.$Message.error(err.status + " " + api.errInfo[err.status]);
         }
       );
     }
