@@ -17,6 +17,7 @@
     @closeWriteAnswer="$emit('closeWriteAnswer')"
     :showQuestion="false">
     </AnswerCard>
+    <Page v-if="numOfAnswer>10" class="pagination" :total="numOfAnswer" @on-change="fetchAnswer"></Page>
     <Spin size="large" fix v-if="loading"></Spin>
     </div>
     <div style="text-align:center;font-size: 38px;color:#9eaad1;" v-if="!answerList.length">还没有任何回答 /(ㄒoㄒ)/~~</div>
@@ -53,8 +54,8 @@ export default {
       numOfAnswer: 0,
   },
   methods: {
-    fetchAnswer: function() {
-      api.getAnswersByQuestion(this.$route.params.q_id).then(
+    fetchAnswer: function(page = 0) {
+      api.getAnswersByQuestion(this.$route.params.q_id, page).then(
         res => {
           if (res.body.success == true) {
             this.answerList = res.body.data.results;
@@ -121,5 +122,8 @@ export default {
   display: block;
   border-bottom: 1px solid #f0f2f7;
   content: "";
+}
+.pagination{
+  margin-top: 20px;
 }
 </style>

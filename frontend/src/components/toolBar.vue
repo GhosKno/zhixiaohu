@@ -84,7 +84,7 @@
   <CommentList :numOfComment="numOfComment" :pk="pk" :comments="comments">
   </CommentList>
 </Modal> -->
-<div class="commentCard" v-show="showComment && !forQuestion">
+<div class="commentCard" v-show="showComment" v-if="!forQuestion">
   <CommentList ref="commentList" :numOfComment="numOfComment" :pk="pk">
   </CommentList>
   <div slot="footer"></div>
@@ -279,7 +279,7 @@ export default {
       if (name == "weibo") {
         window.location =
           "http://service.weibo.com/share/share.php?appkey=&title=" +
-          document.title +
+          this.copyText +
           "&url=" +
           this.$router.path +
           "&searchPic=false&style=simple";

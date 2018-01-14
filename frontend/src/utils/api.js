@@ -80,21 +80,21 @@ export default {
   cancelWatchQuestion(id) {
     return Vue.http.get(QUESTION + id + '/cancel_watch/')
   },
-  getAnswersByQuestion(id) {
-    return Vue.http.get(QUESTION + id + '/get_answers/')
+  getAnswersByQuestion(id, page = 0) {
+    return Vue.http.get(QUESTION + id + '/get_answers/' + (page ? '?page=' + page : ''))
   },
 
   searchQuestion(str, page = 0) {
-    return Vue.http.get('/api/questions?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(QUESTION + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchTopics(str, page = 0) {
-    return Vue.http.get('/api/topics?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(TOPIC + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchAnswers(str, page = 0) {
-    return Vue.http.get('/api/answers?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(ANSWER + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
   searchProfile(str, page = 0) {
-    return Vue.http.get('/api/profiles?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
+    return Vue.http.get(PROFILE + '/?' + (page ? 'page=' + page + '&' : '') + 'search=' + str)
   },
 
   getAllTopics() {
@@ -112,10 +112,9 @@ export default {
   getQuestionsByTopic(id) {
     return Vue.http.get(TOPIC + id + '/get_questions/')
   },
-  getAnswersByTopic(id) {
+  getAnswersByTopic(id, page = 0) {
     return Vue.http.get(TOPIC + id + '/get_answers/')
   },
-
 
   postAnswer(data) {
     return Vue.http.post(ANSWER, data)

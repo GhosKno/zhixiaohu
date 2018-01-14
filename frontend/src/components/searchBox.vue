@@ -41,11 +41,10 @@
           :name="'a'+ans.question.id+'/answer/'+ans.id"
           >
           <div class="search-res">
-          <Avatar size="small" :src="ans.userSummary.avatar"></Avatar>
-          <span class="name">{{ans.userSummary.nickname}}</span>
-          在 <span class="question in">{{ans.question.title}}</span> 下的回答
-          <div
-          v-html="getContent(ans.detail)"></div>
+            <Avatar size="small" :src="ans.userSummary.avatar"></Avatar>
+            <span class="name">{{ans.userSummary.nickname}}</span>
+            在 <span class="question in">{{ans.question.title}}</span> 下的回答
+            <div class="question-detail" v-html="getContent(ans.detail)"></div>
           </div>
         </DropdownItem>
 
@@ -295,6 +294,13 @@ export default {
       max-width: 190px;
       vertical-align: top;
     }
+  }
+  .question-detail{
+    width: 280px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    overflow: hidden;
   }
   .answer-count {
     float: right;
