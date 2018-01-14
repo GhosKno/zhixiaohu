@@ -148,7 +148,7 @@ export default {
     return Vue.http.get(ANSWER + id + '/cancel_favorite/')
   },
   getComments(id, page) {
-    return Vue.http.get(ANSWER + id + '/get_comments' + (page ? '?page=' + page : ''))
+    return Vue.http.get(ANSWER + id + '/get_comments' + (page ? '?page=' + page : '/'))
   },
   postComment(data) {
     return Vue.http.post(COMMENT, data)

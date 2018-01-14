@@ -85,7 +85,7 @@
   </CommentList>
 </Modal> -->
 <div class="commentCard" v-show="showComment">
-  <CommentList :numOfComment="numOfComment" :pk="pk">
+  <CommentList ref="commentList" :numOfComment="numOfComment" :pk="pk">
   </CommentList>
   <div slot="footer"></div>
 </div>
@@ -144,6 +144,7 @@ export default {
     toggleComment: function() {
       if (this.showComment) {
         if (this.numOfComment > 0) {
+          this.refs.commentList.fetchComments()
           this.commentBtn = this.numOfComment + " 条评论";
         } else {
           this.commentBtn = "评论";

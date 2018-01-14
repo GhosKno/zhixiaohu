@@ -86,6 +86,7 @@ export default {
   },
   methods: {
     fetchComments(page = 0) {
+      if(!this.pk) return
       if(page)this.curPage=page
       api.getComments(this.pk, page).then(
         res => {
@@ -125,7 +126,8 @@ export default {
     }
   },
   mounted() {
-    if (!this.forQuestion) this.fetchComments();
+    if (!this.forQuestion) 
+      this.fetchComments();
   }
 };
 </script>
