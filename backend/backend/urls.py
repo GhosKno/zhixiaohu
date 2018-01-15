@@ -13,9 +13,42 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import threading
+
+import redis
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from api.utils.heat import HeatQueue
+from backend import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('api.urls'))
 ]
+
+
+def on_startup(r):
+    string = r.get('hot')
+    if string is not None:
+        # print("hot string" + string.decode("utf-8"))
+        HeatQueue.from_str(string.decode("utf-8"))
+
+
+def time_task():
+    string = HeatQueue.to_str()
+    t = r.set('hot', string)
+    # print(t)
+    global timer
+    timer = threading.Timer(10 * 60, time_task)
+    timer.start()
+    # print('finish timer task...........')
+
+
+r = redis.StrictRedis(host='123.206.27.172', port=6379, password='canvasRedisPassvue')
+on_startup(r)
+timer = threading.Timer(5 * 10, time_task)
+timer.start()
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

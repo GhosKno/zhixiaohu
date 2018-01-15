@@ -18,3 +18,8 @@ static/
 
 # database
 db.sqlite3
+zhixiaohu
+
+media/
+api/migrations/
+api/migrations
